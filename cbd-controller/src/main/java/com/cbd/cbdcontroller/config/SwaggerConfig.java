@@ -1,4 +1,4 @@
-package com.cbd.cbdcontroller;
+package com.cbd.cbdcontroller.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.cbd")) //指定提供接口所在的基包
+                .apis(RequestHandlerSelectors.basePackage("com.cbd.cbdcontroller.controller")) //指定提供接口所在的基包
                 .build();
     }
 
