@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbd.cbddevice.dao.DeviceDao">
+    <resultMap id="deviceMap" type="com.cbd.cbdcommoninterface.pojo.device.DeviceInfo">
+        <result property="devID" column="devID"/>
+        <result property="devType" column="devType"/>
+        <result property="devManagerID" column="devManagerID"/>
+        <result property="devInputTime" column="devInputTime"/>
+        <result property="devGateWayID" column="devGateWayID"/>
+        <result property="companyID" column="companyID"/>
+        <result property="devFactoryID" column="devFactoryID"/>
+    </resultMap>
+    
+    <select id="findDeviceInfoByDevID" resultMap="deviceMap">
+        select *
+        from deviceInfo
+        where devID = #{devID}
+    </select>
+</mapper>
