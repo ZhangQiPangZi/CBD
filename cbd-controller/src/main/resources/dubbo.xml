@@ -25,6 +25,13 @@
     <dubbo:reference id="assignService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.AssignService"/>
     <dubbo:reference id="inputInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.InputInfoService"/>
     <dubbo:reference id="messageListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService"/>
+    <dubbo:reference id="installerUserService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.user.InstallerUserService"/>
+    <dubbo:reference id="taskListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.TaskListService"/>
+    <dubbo:reference id="updateTimeService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.common.UpdateTimeService"/>
+    <dubbo:reference id="removeOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RemoveOrderService"/>
+    <dubbo:reference id="completedListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.completed.CompletedListService"/>
+    <dubbo:reference id="installOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.InstallOrderService"/>
+    <dubbo:reference id="repairOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RepairOrderService"/>
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
 

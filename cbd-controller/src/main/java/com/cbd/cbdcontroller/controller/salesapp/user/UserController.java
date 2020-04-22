@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "user-info",method = RequestMethod.GET)
+    @RequestMapping(value = "/user-info",method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation("用户信息")
     public SalesInfoDO getUserInfo(@RequestParam String phoneNumber){
