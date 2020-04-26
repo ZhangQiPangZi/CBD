@@ -14,4 +14,11 @@ public interface RemoveOrderService {
      * @return
      */
     int removeDev(RemoveQuery query);
+
+    /**
+     * 拆除订单完成
+     * @param orderId
+     * @return
+     */
+    int removeOrderComplete(Integer orderId);
 }

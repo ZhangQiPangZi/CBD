@@ -21,7 +21,7 @@ public class InstallOrderController {
     @Autowired
     private InstallOrderService installOrderService;
 
-    @RequestMapping(value = "/installl-complete",method = RequestMethod.GET)
+    @RequestMapping(value = "/install-complete",method = RequestMethod.GET)
     @ApiOperation("安装订单完成")
     @ResponseBody
     public int installOrderComplete(@RequestParam Integer devId,@RequestParam Integer simId,@RequestParam Integer orderId){

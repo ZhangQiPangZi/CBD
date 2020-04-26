@@ -29,4 +29,11 @@ public class RemoveOrderController {
     public int removeDev(@RequestBody RemoveQuery query){
         return removeOrderService.removeDev(query);
     }
+
+    @RequestMapping(value = "/remove-complete",method = RequestMethod.GET)
+    @ApiOperation("订单完成")
+    @ResponseBody
+    public int removeOrderComplete(@RequestParam Integer orderId){
+        return removeOrderService.removeOrderComplete(orderId);
+    }
 }

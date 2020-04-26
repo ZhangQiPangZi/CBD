@@ -14,6 +14,7 @@ public interface UpdateTimeDao {
     /**
      * 工程师改变任务列表里的预约时间
      * @param orderTime
+     * @param orderId
      * @return
      */
     @Update("UPDATE installertasklist SET ordertime =#{orderTime} WHERE orderId =#{orderId}")
@@ -22,6 +23,7 @@ public interface UpdateTimeDao {
     /**
      * 工程师改变orderinfo里的预约时间
      * @param orderTime
+     * @param orderId
      * @return
      */
     @Update("UPDATE orderinfo SET ordertime=#{orderTime} WHERE id =#{orderId}")

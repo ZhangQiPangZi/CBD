@@ -25,14 +25,12 @@ public interface MessageListService {
      * 统计已指派订单的数量
      * @return
      */
-    @Select("SELECT COUNT(*) FROM orderinfo WHERE orderstateTypeCode = '1';")
     int processedCount();
 
     /**
      * 统计未指派订单的数量
      * @return
      */
-    @Select("SELECT COUNT(*) FROM orderinfo WHERE orderstateTypeCode = '-1';")
     int pendingCount();
 
     /**
@@ -47,6 +45,5 @@ public interface MessageListService {
      * @param id
      * @return
      */
-    @Update("UPDATE orderinfo SET installerId = NULL , orderStateTypeCode='-1' WHERE id = #{id};")
     int reAssign(@Param("id") Integer id);
 }
