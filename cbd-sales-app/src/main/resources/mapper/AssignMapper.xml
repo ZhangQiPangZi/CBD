@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cbd.salesapp.dao.workbench.AssignDao">
+
+    <select id="orderByLevel" parameterType="com.cbd.cbdcommoninterface.request.salesapp.workbench.AssignQuery" resultType="com.cbd.cbdcommoninterface.pojo.salesapp.workbench.InstallerInfoDO">
+        SELECT id,name,level,longitude,latitude
+        FROM installerinfo
+        WHERE id NOT IN
+        (SELECT installerId FROM installertasklist
+        WHERE orderTime = #{orderTime} AND state = '-1'
+        )
+        <if test="null!=key and ''!=key">
+            AND name LIKE '%${key}%'
+        </if>
+        <if test="true==flag">
+            ORDER BY level ASC;
+        </if>
+        <if test="false==flag">
+            ORDER BY level DESC;
+        </if>
+    </select>
+
+    <select id="orderByDistance" parameterType="com.cbd.cbdcommoninterface.request.salesapp.workbench.AssignQuery" resultType="com.cbd.cbdcommoninterface.pojo.salesapp.workbench.InstallerInfoDO">
+        SELECT id,name,level,longitude,latitude
+        FROM installerinfo
+        WHERE id NOT IN
+        (SELECT installerId FROM installertasklist
+        WHERE orderTime = #{orderTime} AND state = '-1');
+    </select>
+
+</mapper>

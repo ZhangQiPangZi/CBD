@@ -22,13 +22,23 @@
         interface是你要调用的那个具体服务的接口，也就是你在common-interface中定义的接口 -->
     <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
-    <dubbo:annotation package="com.cbd.cbddevice.service"/>
+    <dubbo:annotation package="com.cbd.salesapp.service"/>
 
     <!--服务提供者-->
     <!--这两行算是发布了一个服务，如果有多个服务需要发布，挨着往下写即可，消费者同理-->
     <!--protocol是采用的协议 ref是要发布的bean的引用，
         interface是要发布的服务的接口，也是在common-interface中定义的-->
-    <dubbo:service protocol="dubbo" ref="deviceService" interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
+    <dubbo:service protocol="dubbo" ref="userService" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.user.UserService"/>
     <!--要发布的服务的实现类-->
-    <bean id="deviceService" class="com.cbd.cbddevice.service.DeviceServiceImpl"/>
+    <bean id="userService" class="com.cbd.salesapp.service.user.UserServiceImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="assignService" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.AssignService" timeout="1200000"/>
+    <bean id="assignService" class="com.cbd.salesapp.service.workbench.AssignServiceImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="inputInfoService" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.InputInfoService" timeout="1200000"/>
+    <bean id="inputInfoService" class="com.cbd.salesapp.service.workbench.InputInfoServiceImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="messageListService" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService" timeout="1200000"/>
+    <bean id="messageListService" class="com.cbd.salesapp.service.messagelist.MessageListServiceImpl"/>
+
 </beans>
