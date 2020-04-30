@@ -1,27 +1,11 @@
 package com.cbd.cbdcommoninterface.pojo.device;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
 public class DeviceInfo implements Serializable {
-    public enum DevType{
-        /**
-         * 有线
-         */
-        WIRED,
-        /**
-         * 无线
-         */
-        WIRLESS,
-        /**
-         * 行车记录仪
-         */
-        DVR,
-        /**
-         * SIM卡
-         */
-        SIMCARD
-    }
 
     public enum DevStatus{
         /**
@@ -42,7 +26,7 @@ public class DeviceInfo implements Serializable {
         RETURN
     }
     private String devID;
-    private Integer devType;
+    private Integer devTypeID;
     private Integer devStatus;
     /**
      * 库管人员ID
@@ -51,6 +35,7 @@ public class DeviceInfo implements Serializable {
     /**
      * 设备入库时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date devInputTime;
     /**
      * 网关ID
@@ -73,12 +58,12 @@ public class DeviceInfo implements Serializable {
         this.devID = devID;
     }
 
-    public Integer getDevType() {
-        return devType;
+    public Integer getDevTypeID() {
+        return devTypeID;
     }
 
-    public void setDevType(Integer devType) {
-        this.devType = devType;
+    public void setDevTypeID(Integer devTypeID) {
+        this.devTypeID = devTypeID;
     }
 
     public Integer getDevStatus() {

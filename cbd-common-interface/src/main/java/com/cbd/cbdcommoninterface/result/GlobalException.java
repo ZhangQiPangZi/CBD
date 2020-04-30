@@ -1,7 +1,5 @@
-package com.cbd.cbdcontroller.handler;
+package com.cbd.cbdcommoninterface.result;
 
-
-import com.cbd.cbdcontroller.result.CodeMsg;
 
 public class GlobalException extends RuntimeException{
     private CodeMsg codeMsg;

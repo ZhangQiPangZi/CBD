@@ -2,8 +2,9 @@ package com.cbd.cbdcontroller.handler;
 
 
 
-import com.cbd.cbdcontroller.result.CodeMsg;
-import com.cbd.cbdcontroller.result.Result;
+import com.cbd.cbdcommoninterface.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.GlobalException;
+import com.cbd.cbdcommoninterface.result.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

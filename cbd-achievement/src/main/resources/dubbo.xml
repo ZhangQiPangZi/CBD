@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--注意：port ，消费者 ，提供者的顺序不要变-->
+    <dubbo:registry address="zookeeper://123.57.233.24:2181" timeout="60000"/>
+    <!-- port值-1 表示让dubbo自行找一个可用的port -->
+    <dubbo:protocol port="-1" name="dubbo"/>
+    <!-- 应用名 -->
+    <dubbo:application name="cbd-achievement"/>
+
+    <!--服务消费者-->
+    <!--关闭服务消费方所有服务的启动检查。dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成。-->
+    <dubbo:consumer check="false" />
+    <dubbo:reference id="companyService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService"/>
+    <dubbo:annotation package="com.cbd.cbddevice.service"/>
+
+    <dubbo:reference id="deviceService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
+    <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
+
+    <!--服务提供者-->
+    <dubbo:service protocol="dubbo" ref="achievementService" interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
+    <!--要发布的服务的实现类-->
+    <bean id="achievementService" class="com.cbd.cbdachievement.service.AchievementServiceImpl"/>
+</beans>

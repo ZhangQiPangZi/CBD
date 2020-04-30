@@ -6,6 +6,7 @@
         <module>cbd-achievement</module>
         <module>cbd-common-interface</module>
         <module>cbd-contract</module>
+        <module>cbd-company</module>
         <module>cbd-pay</module>
         <module>cbd-controller</module>
         <module>cbd-device</module>

@@ -1,4 +1,4 @@
-package com.cbd.cbdcontroller.result;
+package com.cbd.cbdcommoninterface.result;
 
 public class Result<T> {
     private String code;

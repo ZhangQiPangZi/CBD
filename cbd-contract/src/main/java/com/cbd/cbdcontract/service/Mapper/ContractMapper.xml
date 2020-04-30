@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbd.cbdcontract.dao.ContractDao">
+    <resultMap id="devTypeMap" type="com.cbd.cbdcommoninterface.pojo.device.DevType">
+        <result property="devName" column="devName"/>
+        <result property="devType" column="devType"/>
+    </resultMap>
+    <resultMap id="contractMap" type="com.cbd.cbdcommoninterface.pojo.contract.ContractInfo">
+        <result property="contractID" column="contractID"/>
+        <result property="companyID" column="companyID"/>
+        <result property="shopID" column="shopID"/>
+        <result property="partyAPersonID" column="partyAPersonID"/>
+        <result property="contractTypeID" column="contractTypeID"/>
+        <result property="dellFee" column="dellFee"/>
+        <result property="serverFee" column="serverFee"/>
+        <result property="serverYears" column="serverYears"/>
+        <result property="createTime" column="createTime"/>
+        <result property="devTypeID" column="devTypeID"/>
+        <result property="devNums" column="devNums"/>
+        <result property="contractStatus" column="contractStatus"/>
+    </resultMap>
+
+    <select id="findContractListByCondition" parameterType="com.cbd.cbdcommoninterface.dto.ContractConditionDto" resultType="java.lang.String">
+        select distinct contractID
+        from contractInfo c1 join contractType c2 on c1.contractTypeID = c2.contractTypeID
+        where c1.companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+            <if test="companylevel != null">and cpy.companylevel = #{companylevel}</if>
+            <if test="companyProvince != null and companyProvince != ''">and cpy.companyProvince = #{companyProvince}</if>
+            <if test="companyCity != null and companyCity != ''">and cpy.companyCity = #{companyCity}</if>
+            <if test="companyDistrict != null and companyDistrict != ''">and cpy.companyDistrict = #{companyDistrict}</if>
+          )
+          <if test="contractTypeName != null and contractTypeName != ''">and c2.contractTypeName = #{contractTypeName}</if>
+          <if test="contractStatus != null">c1.contractStatus = #{contractStatus}</if>
+        order by c1.createTime
+          <if test="timeSort == 0">desc </if>
+          <if test="timeSort == 1">asc </if>
+    </select>
+
+    <select id="findContractInfoByContractID" resultMap="contractMap">
+        select *
+        from contractInfo
+        where contractID = #{contractID}
+    </select>
+
+    <select id="getContractTypeName" resultType="java.lang.String">
+        select contractTypeName
+        from contractType
+        where contractTypeID = #{contractTypeID}
+    </select>
+
+
+</mapper>

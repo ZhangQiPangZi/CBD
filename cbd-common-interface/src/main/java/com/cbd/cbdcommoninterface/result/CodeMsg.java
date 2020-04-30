@@ -1,4 +1,4 @@
-package com.cbd.cbdcontroller.result;
+package com.cbd.cbdcommoninterface.result;
 
 import com.cbd.cbdcommoninterface.utils.ExpPrefixUtil;
 
@@ -15,6 +15,7 @@ public class CodeMsg {
     public static final CodeMsg UNLOGIN = new CodeMsg(ExpPrefixUtil.ComExpPrefix+"04", "未登录");
 
     /** 设备异常 **/
+    public static final CodeMsg OUT_OF_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"00", "库存不足");
 
 
     private CodeMsg(String code, String msg) {

@@ -27,6 +27,11 @@
     <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
     <dubbo:annotation package="com.cbd.cbdcontroller.handler"/>
 
+    <dubbo:reference id="contractService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>
+    <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
+
+
+
     <!--服务提供者-->
 
 

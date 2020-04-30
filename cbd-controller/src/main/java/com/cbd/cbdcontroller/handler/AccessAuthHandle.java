@@ -2,14 +2,15 @@ package com.cbd.cbdcontroller.handler;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
-import com.alibaba.dubbo.config.annotation.Reference;
 
 import com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService;
 import com.cbd.cbdcommoninterface.keys.AccessAuthKey;
 import com.cbd.cbdcommoninterface.pojo.user.AccessAuthEntity;
 import com.cbd.cbdcommoninterface.pojo.user.PermissionEntity;
 import com.cbd.cbdcommoninterface.pojo.user.UserEntity;
-import com.cbd.cbdcontroller.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.GlobalException;
+
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;

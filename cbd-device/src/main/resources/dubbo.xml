@@ -23,6 +23,8 @@
     <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.cbddevice.service"/>
+    <dubbo:reference id="companyService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService"/>
+    <dubbo:annotation package="com.cbd.cbddevice.service"/>
 
     <!--服务提供者-->
     <!--这两行算是发布了一个服务，如果有多个服务需要发布，挨着往下写即可，消费者同理-->
