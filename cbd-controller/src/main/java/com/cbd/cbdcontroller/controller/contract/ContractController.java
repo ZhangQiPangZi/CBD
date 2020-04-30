@@ -47,11 +47,11 @@ public class ContractController {
         return Result.success(contractService.distributeContractByContractIDAndCompanyName(contractRequest));
     }
 
-    @ApiOperation("根据合同ID获得不同时长续费金额(三种)")
-    @RequestMapping(value = "/findContractInfoByContractID", method = RequestMethod.POST)
-    public Result<List<Float>> getRenewMoneyByContractID(@RequestParam(value = "contractID") String contractID){
-        return Result.success(contractService.getRenewMoneyByContractID(contractID));
-    }
+//    @ApiOperation("根据合同ID获得不同时长续费金额(三种)")
+//    @RequestMapping(value = "/findContractInfoByContractID", method = RequestMethod.POST)
+//    public Result<List<Float>> getRenewMoneyByContractID(@RequestParam(value = "contractID") String contractID){
+//        return Result.success(contractService.getRenewMoneyByContractID(contractID));
+//    }
 
 
 

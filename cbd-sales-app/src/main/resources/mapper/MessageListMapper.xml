@@ -10,8 +10,9 @@
         LEFT JOIN installerinfo i
         ON o.installerId = i.id
         <if test="null!=orderTypeCode">
-            WHERE o.orderTypeCode=#{orderTypeCode};
+            WHERE o.orderTypeCode=#{orderTypeCode}
         </if>
+        ORDER BY o.orderStateTypeCode ASC
     </select>
 
     <select id="getOrderInfo" parameterType="java.lang.Integer" resultType="com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO">

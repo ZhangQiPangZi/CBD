@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask;
 
 import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfoDO;
+import com.cbd.cbdcommoninterface.request.PageRequest;
+import com.cbd.cbdcommoninterface.response.PageResponse;
 
 import java.util.List;
 
@@ -14,7 +16,8 @@ public interface TaskListService {
      * 获取该工程师所有待处理订单 按订单类型进行搜索
      * @param installerId
      * @param orderTypeCode
+     * @param pageRequest
      * @return
      */
-    List<OrderInfoDO> getTaskList(Integer installerId,Integer orderTypeCode);
+    PageResponse getTaskList(Integer installerId, Integer orderTypeCode, PageRequest pageRequest);
 }

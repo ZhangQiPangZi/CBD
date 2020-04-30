@@ -1,11 +1,12 @@
 package com.cbd.cbdcommoninterface.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 分页返回结果
  */
-public class PageResponse {
+public class PageResponse implements Serializable {
     /**
      * 当前页码
      */

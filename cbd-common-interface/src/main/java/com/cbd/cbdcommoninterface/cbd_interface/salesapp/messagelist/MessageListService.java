@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist;
 
 import com.cbd.cbdcommoninterface.pojo.salesapp.messagelist.OrderInfoDO;
+import com.cbd.cbdcommoninterface.request.PageRequest;
+import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -17,9 +19,10 @@ public interface MessageListService {
     /**
      * 获取所有订单列表 根据订单类型搜索
      * @param orderTypeCode
+     * @param pageRequest
      * @return
      */
-    List<OrderInfoDO> getList(@Param("orderTypeCode")Integer orderTypeCode);
+    PageResponse getList(Integer orderTypeCode, PageRequest pageRequest);
 
     /**
      * 统计已指派订单的数量
@@ -38,12 +41,12 @@ public interface MessageListService {
      * @param id
      * @return
      */
-    OrderInfoVO getOrderInfo(@Param("id") Integer id);
+    OrderInfoVO getOrderInfo(Integer id);
 
     /**
      * 重新指派工程师
      * @param id
      * @return
      */
-    int reAssign(@Param("id") Integer id);
+    int reAssign(Integer id);
 }

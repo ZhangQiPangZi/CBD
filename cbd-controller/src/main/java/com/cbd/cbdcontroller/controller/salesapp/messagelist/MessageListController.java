@@ -2,7 +2,10 @@ package com.cbd.cbdcontroller.controller.salesapp.messagelist;
 
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService;
 import com.cbd.cbdcommoninterface.pojo.salesapp.messagelist.OrderInfoDO;
+import com.cbd.cbdcommoninterface.request.PageRequest;
+import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO;
+import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +28,11 @@ public class MessageListController {
     @Autowired
     private MessageListService messageListService;
 
-    @RequestMapping(value = "/get-list",method = RequestMethod.GET)
+    @RequestMapping(value = "/get-list",method = RequestMethod.POST)
     @ApiOperation("获取订单列表")
     @ResponseBody
-    public List<OrderInfoDO> getList(@RequestParam(required = false) Integer orderTypeCode){
-        return messageListService.getList(orderTypeCode);
+    public Result<PageResponse> getList(@RequestParam(required = false) Integer orderTypeCode, @RequestBody PageRequest pageRequest){
+        return Result.success(messageListService.getList(orderTypeCode,pageRequest));
     }
 
     @RequestMapping(value = "/processed-count",method = RequestMethod.GET)

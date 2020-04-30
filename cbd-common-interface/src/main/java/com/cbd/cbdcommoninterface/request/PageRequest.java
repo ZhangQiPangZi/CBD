@@ -1,9 +1,12 @@
 package com.cbd.cbdcommoninterface.request;
 
+
+import java.io.Serializable;
+
 /**
  * 分页请求
  */
-public class PageRequest {
+public class PageRequest implements Serializable {
     /**
      * 当前页码
      */
