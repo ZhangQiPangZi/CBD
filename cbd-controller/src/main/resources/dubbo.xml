@@ -21,7 +21,6 @@
     <!-- id名字取成具体的服务名就行，check为false，
         interface是你要调用的那个具体服务的接口，也就是你在common-interface中定义的接口 -->
     <dubbo:reference id="deviceService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
-<<<<<<< HEAD
     <dubbo:reference id="userService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.user.UserService"/>
     <dubbo:reference id="assignService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.AssignService"/>
     <dubbo:reference id="inputInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.InputInfoService"/>
@@ -34,10 +33,8 @@
     <dubbo:reference id="installOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.InstallOrderService"/>
     <dubbo:reference id="repairOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RepairOrderService"/>
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
-=======
->>>>>>> zhq
     <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
-    <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
+
     <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
     <dubbo:annotation package="com.cbd.cbdcontroller.handler"/>
     <dubbo:reference id="contractService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>

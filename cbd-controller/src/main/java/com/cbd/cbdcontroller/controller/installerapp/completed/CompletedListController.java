@@ -2,9 +2,6 @@ package com.cbd.cbdcontroller.controller.installerapp.completed;
 
 import com.cbd.cbdcommoninterface.cbd_interface.installerapp.completed.CompletedListService;
 import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfoDO;
-import com.cbd.cbdcommoninterface.request.PageRequest;
-import com.cbd.cbdcommoninterface.response.PageResponse;
-import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +24,10 @@ public class CompletedListController {
     @Autowired
     private CompletedListService completedListService;
 
-    @RequestMapping(value = "/get-list",method = RequestMethod.POST)
+    @RequestMapping(value = "/get-list",method = RequestMethod.GET)
     @ApiOperation("获取已完成的订单")
     @ResponseBody
-    public Result<PageResponse> getList(@RequestParam Integer installerId, @RequestParam(required = false) Integer orderTypeCode,@RequestBody PageRequest pageRequest){
-        return Result.success(completedListService.getList(installerId,orderTypeCode,pageRequest));
+    public List<OrderInfoDO> getList(@RequestParam Integer installerId, @RequestParam(required = false) Integer orderTypeCode){
+        return completedListService.getList(installerId,orderTypeCode);
     }
 }

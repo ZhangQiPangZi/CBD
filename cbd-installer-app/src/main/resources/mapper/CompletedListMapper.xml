@@ -12,7 +12,7 @@
         <if test="null!=orderTypeCode">
             AND o.orderTypeCode = #{orderTypeCode}
         </if>
-        ORDER BY o.orderTime ASC
+        ORDER BY o.orderTime ASC;
     </select>
 
 </mapper>
