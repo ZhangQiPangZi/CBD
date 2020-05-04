@@ -1,9 +1,12 @@
 package com.cbd.cbdcommoninterface.cbd_interface.contract;
 
+import com.cbd.cbdcommoninterface.request.AddContractRequest;
 import com.cbd.cbdcommoninterface.request.DistributeContractRequest;
 import com.cbd.cbdcommoninterface.request.PageContractConditionRequest;
 import com.cbd.cbdcommoninterface.response.ContractInfoResponse;
+import com.cbd.cbdcommoninterface.response.PageContractListResponse;
 import com.cbd.cbdcommoninterface.response.PageResponse;
+import com.cbd.cbdcommoninterface.response.UnpaidContractInfoResponse;
 
 import java.util.List;
 
@@ -31,6 +34,12 @@ public interface ContractService {
     ContractInfoResponse findContractInfoByContractID(String contractID);
 
     /**
+     * 获取当前公司下可派发的合同列表
+     * @return
+     */
+    List<PageContractListResponse> findUsingContractListByCompanyID(String companyID);
+
+    /**
      * 根据合同ID和公司名进行合同派发
      * @param contractRequest
      * @return
@@ -44,4 +53,17 @@ public interface ContractService {
      */
     List<Float> getRenewMoneyByContractID(String contractID);
 
+    /**
+     *  获取之前未支付的合同信息
+     * @param companyID
+     * @return
+     */
+    UnpaidContractInfoResponse getUnPaidContractInfoByCompanyID(String companyID);
+
+    /**
+     * 新建合同，支付之前做
+     * @param addContractRequest
+     * @return
+     */
+    String addContract(AddContractRequest addContractRequest);
 }

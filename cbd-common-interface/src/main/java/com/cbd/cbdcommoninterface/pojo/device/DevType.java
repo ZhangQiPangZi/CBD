@@ -1,9 +1,12 @@
 package com.cbd.cbdcommoninterface.pojo.device;
 
-public class DevType {
+import java.io.Serializable;
+
+public class DevType implements Serializable {
     private Integer devTypeID;
     private String devName;
     private String devType;
+    private String devFactoryID;
 
     public Integer getDevTypeID() {
         return devTypeID;
@@ -27,5 +30,13 @@ public class DevType {
 
     public void setDevType(String devType) {
         this.devType = devType;
+    }
+
+    public String getDevFactoryID() {
+        return devFactoryID;
+    }
+
+    public void setDevFactoryID(String devFactoryID) {
+        this.devFactoryID = devFactoryID;
     }
 }

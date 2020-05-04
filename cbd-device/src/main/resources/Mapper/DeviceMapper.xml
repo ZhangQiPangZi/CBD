@@ -5,6 +5,7 @@
 <mapper namespace="com.cbd.cbddevice.dao.DeviceDao">
     <resultMap id="deviceMap" type="com.cbd.cbdcommoninterface.pojo.device.DeviceInfo">
         <result property="devID" column="devID"/>
+        <result property="SIMID" column="SIMID"/>
         <result property="devTypeID" column="devTypeID"/>
         <result property="devManagerID" column="devManagerID"/>
         <result property="devInputTime" column="devInputTime"/>
@@ -15,6 +16,7 @@
     <resultMap id="devTypeMap" type="com.cbd.cbdcommoninterface.pojo.device.DevType">
         <result property="devName" column="devName"/>
         <result property="devType" column="devType"/>
+        <result property="devFactoryID" column="devFactoryID"/>
     </resultMap>
     <resultMap id="devAllotMap" type="com.cbd.cbdcommoninterface.pojo.device.DeviceAllotRecord">
         <result property="srcCompanyID" column="srcCompanyID"/>
@@ -28,7 +30,8 @@
         <result property="devFactoryPersonPhone" column="devFactoryPersonPhone"/>
     </resultMap>
     <resultMap id="devMesMap" type="com.cbd.cbdcommoninterface.pojo.message.DeviceMessageRecord">
-        <result property="mesType" column=""/>
+        <result property="mesID" column="mesID"/>
+        <result property="mesType" column="mesType"/>
         <result property="srcManagerID" column="srcManagerID"/>
         <result property="dstManagerID" column="dstManagerID"/>
         <result property="mesStatus" column="mesStatus"/>
@@ -45,7 +48,7 @@
     <select id="findDeviceInfoByDevID" resultMap="deviceMap">
         select *
         from deviceInfo
-        where devID = #{devID}
+        where devID = #{devID} and recordStatus = 0
     </select>
 
     <select id="findAllDevFactoryNameByCompanyID" resultType="java.lang.String">
@@ -55,11 +58,11 @@
         select companyID
         from companyInfo cpy
         where lft BETWEEN #{lft} and #{rgt}
-        )
+        ) and d1.recordStatus = 0
     </select>
 
     <select id="findDevListByCondition" parameterType="com.cbd.cbdcommoninterface.dto.DevConditionDto" resultType="java.lang.String">
-      select distinct devID
+      select devID
       from deviceInfo d1 join deviceFactoryInfo d2 on d1.devFactoryID = d2.devFactoryID
       where d1.companyID in (
         select companyID
@@ -70,6 +73,7 @@
           <if test="companyCity != null and companyCity != ''">and cpy.companyCity = #{companyCity}</if>
           <if test="companyDistrict != null and companyDistrict != ''">and cpy.companyDistrict = #{companyDistrict}</if>
         )
+        and d1.recordStatus = 0
         <if test="devStatus != null">and d1.devStatus = #{devStatus}</if>
         <if test="devFactoryName != null and devFactoryName != ''">and d2.devFactoryName = #{devFactoryName}</if>
       order by d1.devInputTime
@@ -80,13 +84,13 @@
     <select id="getDevTypeByDevID" resultMap="devTypeMap">
         select *
         from deviceInfo d1 join deviceType d2 on d1.devTypeID = d2.devTypeID
-        where d1.devID = #{devID}
+        where d1.devID = #{devID} and d1.recordStatus = 0
     </select>
 
     <select id="getDevCompanyNameByDevID" resultType="java.lang.String">
         select companyName
         from deviceInfo d1 join companyInfo cpy on d1.companyID = cpy.companyID
-        where d1.devID = #{devID}
+        where d1.devID = #{devID} and d1.recordStatus = 0
     </select>
 
     <update id="updateDevStatusAndManager" parameterType="com.cbd.cbdcommoninterface.dto.AllocationDevDto">
@@ -101,8 +105,8 @@
     </insert>
 
     <insert id="insertAllotMessage" parameterType="com.cbd.cbdcommoninterface.pojo.message.DeviceMessageRecord">
-      insert into deviceMessageRecord(mesID, mesType, srcManagerID, dstManagerID, mesStatus, mesSendTime)
-      values (#{mesID}, #{mesType}, #{srcManagerID}, #{dstManagerID}, #{mesStatus}, #{mesSendTime})
+      insert into deviceMessageRecord(mesID, mesType, srcManagerID, dstManagerID, mesStatus, devName, mesSendTime)
+      values (#{mesID}, #{mesType}, #{srcManagerID}, #{dstManagerID}, #{mesStatus}, #{devName}, #{mesSendTime})
     </insert>
 
     <insert id="insertMessageIDMap" parameterType="com.cbd.cbdcommoninterface.pojo.message.DeviceMessageIDMap">
@@ -125,7 +129,7 @@
     <select id="findDeviceContactByDevID" resultMap="devReturnMap">
       select *
       from deviceInfo d1 join deviceFactoryInfo d2 on d1.devFactoryID = d2.devFactoryID
-      where d1.devID = #{devID}
+      where d1.devID = #{devID} and d1.recordStatus = 0
     </select>
 
     <select id="getDevMessageRecord" resultMap="devMesMap">
@@ -151,5 +155,34 @@
         set devNums = #{devNums}
         where mesID = #{mesID}
     </update>
+
+    <select id="getDevMessageListByManageIDAndMessageStatus" resultMap="devAllotMap">
+        select *
+        from deviceMessageRecord
+        where (srcManagerID = #{managerID} or dstManagerID = #{managerID}) <if test="mesStatus != null">and mesStatus = #{mesStatus}</if>
+    </select>
+
+    <update id="dealReturnDeviceByDevID">
+        update deviceInfo
+        set recordStatus = 1
+        where devID = #{devID}
+    </update>
+
+    <update id="updateSIMStatus">
+        update SIMInfo
+        set SIMStatus = #{SIMStatus}
+        where SIMID = #{SIMID}
+    </update>
+
+    <select id="getSIMIDByStatus" resultType="java.lang.String">
+        select SIMID
+        from SIMInfo
+        where SIMStatus = #{SIMStatus}
+    </select>
+
+    <insert id="insertDevice" parameterType="com.cbd.cbdcommoninterface.pojo.device.DeviceInfo">
+        insert into deviceInfo(devID, SIMID, devTypeID, devStatus, devManagerID, devInputTime, devGateWayID, companyID, devFactoryID)
+        values (#{devID}, #{SIMID}, #{devTypeID}, #{devStatus}, #{devManagerID}, #{devInputTime}, #{devGateWayID}, #{companyID}, #{devFactoryID})
+    </insert>
 
 </mapper>

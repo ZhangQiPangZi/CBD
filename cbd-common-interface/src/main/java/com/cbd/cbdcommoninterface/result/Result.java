@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.result;
 
-public class Result<T> {
+import java.io.Serializable;
+
+public class Result<T> implements Serializable {
     private String code;
     private String msg;
     private T data;

@@ -6,6 +6,7 @@
     <resultMap id="devTypeMap" type="com.cbd.cbdcommoninterface.pojo.device.DevType">
         <result property="devName" column="devName"/>
         <result property="devType" column="devType"/>
+        <result property="devFactoryID" column="devFactoryID"/>
     </resultMap>
     <resultMap id="contractMap" type="com.cbd.cbdcommoninterface.pojo.contract.ContractInfo">
         <result property="contractID" column="contractID"/>
@@ -22,8 +23,18 @@
         <result property="contractStatus" column="contractStatus"/>
     </resultMap>
 
+    <select id="findContractTypeNameByCompanyID" resultType="java.lang.String">
+        select distinct contractTypeName
+        from contractInfo c1 join contractType c2 on c1.contractTypeID = c2.contractTypeID
+        where c1.companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+          )
+    </select>
+
     <select id="findContractListByCondition" parameterType="com.cbd.cbdcommoninterface.dto.ContractConditionDto" resultType="java.lang.String">
-        select distinct contractID
+        select contractID
         from contractInfo c1 join contractType c2 on c1.contractTypeID = c2.contractTypeID
         where c1.companyID in (
           select companyID
@@ -35,7 +46,7 @@
             <if test="companyDistrict != null and companyDistrict != ''">and cpy.companyDistrict = #{companyDistrict}</if>
           )
           <if test="contractTypeName != null and contractTypeName != ''">and c2.contractTypeName = #{contractTypeName}</if>
-          <if test="contractStatus != null">c1.contractStatus = #{contractStatus}</if>
+          <if test="contractStatus != null">and c1.contractStatus = #{contractStatus}</if>
         order by c1.createTime
           <if test="timeSort == 0">desc </if>
           <if test="timeSort == 1">asc </if>
@@ -53,5 +64,38 @@
         where contractTypeID = #{contractTypeID}
     </select>
 
+    <select id="getDevType" resultMap="devTypeMap">
+        select *
+        from deviceType
+        where devTypeID = #{devTypeID}
+    </select>
 
+    <update id="updateContractByDistribute">
+        update contractInfo
+        set companyID = #{companyID} <if test="shopID != null">,shopID = #{shopID}</if>
+        where contractID = #{contractID}
+    </update>
+
+    <update id="updateContractStatus">
+        update contractInfo
+        set contractStatus = #{contractStatus}
+        where contractID = #{contractID}
+    </update>
+
+    <select id="getContractTypeID" resultType="java.lang.Integer">
+        select contractTypeID
+        from contractType
+        where contractTypeName = #{contractTypeName}
+    </select>
+
+    <select id="getDevTypeID" resultType="java.lang.Integer">
+        select devTypeID
+        from deviceType
+        where devName = #{devName}
+    </select>
+
+    <insert id="addContractInfo" parameterType="com.cbd.cbdcommoninterface.pojo.contract.ContractInfo">
+        insert into contractInfo(contractID, companyID, partyAPersonID, contractTypeID, dellFee, serverFee, serverYears, createTime, devTypeID, devNums, contractStatus)
+        values (#{contractID}, #{companyID}, #{partyAPersonID}, #{contractTypeID}, #{dellFee}, #{serverFee}, #{serverYears}, #{createTime}, #{devTypeID}, #{devNums}, #{contractStatus})
+    </insert>
 </mapper>

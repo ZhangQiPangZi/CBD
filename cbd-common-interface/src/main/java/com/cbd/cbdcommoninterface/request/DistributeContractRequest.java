@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.request;
 
-public class DistributeContractRequest {
+import java.io.Serializable;
+
+public class DistributeContractRequest implements Serializable {
     private String contractID;
     private String companyName;
 

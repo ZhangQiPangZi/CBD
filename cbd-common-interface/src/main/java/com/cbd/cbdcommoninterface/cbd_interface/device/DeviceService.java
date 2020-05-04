@@ -1,13 +1,19 @@
 package com.cbd.cbdcommoninterface.cbd_interface.device;
 
-import com.cbd.cbdcommoninterface.request.AllocationBathDevRequest;
-import com.cbd.cbdcommoninterface.request.AllocationDevRequest;
-import com.cbd.cbdcommoninterface.request.PageDevConditionRequest;
+import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 
 import java.util.List;
 
 public interface DeviceService {
+
+    /**
+     * 新增设备
+     * @param addDeviceRequest
+     * @return
+     */
+    Boolean addDeviceInfo(AddDeviceRequest addDeviceRequest);
+
     /**
      * 获取当前公司下的设备厂家列表
      * @param companyID
@@ -45,6 +51,21 @@ public interface DeviceService {
     List<DevInfoResponse> findDevInfoListByDevNameAndCompanyID(String devName, String companyID);
 
     /**
+     * 逻辑删除设备记录，确认设备返厂时用
+     * @param devID
+     * @return
+     */
+    Boolean delReturnDeviceByDevID(String devID);
+
+    /**
+     * 更新设备状态
+     * @param devID
+     * @param devStatus
+     * @return
+     */
+    Boolean updateDevStatusByDevIDAndDevStatus(String devID, Integer devStatus);
+
+    /**
      * 根据设备ID和公司名进行单个设备调拨
      * @param allocationDevRequest
      * @return
@@ -78,6 +99,25 @@ public interface DeviceService {
      * @return
      */
     Boolean confirmDeviceMessageByMesID(String mesID) ;
+
+    /**
+     * 新增合同设备调拨消息
+     */
+    Boolean addContractDeviceMessage(AddContractDevMesRequest contractDevMesRequest);
+
+    /**
+     * 判断此消息是否确认
+     * @param mesID
+     * @return
+     */
+    Boolean judgeConfirmMessage(String mesID);
+
+    /**
+     * 获取分类后的消息，mesStatus可以不传，代表查询所有消息
+     * @param messageRequest
+     * @return
+     */
+    PageResponse findMessageByManagerIDAndMessageStatus(GetMessageRequest messageRequest);
 
 
 }

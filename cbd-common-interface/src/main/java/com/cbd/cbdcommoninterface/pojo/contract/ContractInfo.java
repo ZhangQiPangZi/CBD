@@ -2,9 +2,10 @@ package com.cbd.cbdcommoninterface.pojo.contract;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ContractInfo {
+public class ContractInfo implements Serializable {
     public enum ContractStatus{
         /**
          * 新建未支付

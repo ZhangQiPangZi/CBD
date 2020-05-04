@@ -11,7 +11,6 @@ public class DevConditionDto {
          */
         ASC
     }
-    private String companyID;
     private String devFactoryName;
     private Integer devStatus;
     private Integer companylevel;
@@ -21,14 +20,6 @@ public class DevConditionDto {
     private Integer timeSort;
     private Integer lft;
     private Integer rgt;
-
-    public String getCompanyID() {
-        return companyID;
-    }
-
-    public void setCompanyID(String companyID) {
-        this.companyID = companyID;
-    }
 
     public String getDevFactoryName() {
         return devFactoryName;

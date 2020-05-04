@@ -13,6 +13,15 @@ import java.util.List;
 @Mapper
 @Repository
 public interface ContractDao {
+
+    /**
+     * 获取当前公司下的合同类别列表
+     * @param lft
+     * @param rgt
+     * @return
+     */
+    List<String> findContractTypeNameByCompanyID(@Param("lft") Integer lft, @Param("rgt") Integer rgt);
+
     /**
      *  根据指定条件获取对应的合同ID列表
      * @param contractConditionDto
@@ -35,4 +44,14 @@ public interface ContractDao {
     String getContractTypeName(@Param("contractTypeID") Integer contractTypeID);
 
     DevType getDevType(@Param("devTypeID") Integer devTypeID);
+
+    void updateContractByDistribute(@Param("contractID") String contractID, @Param("companyID") String companyID, @Param("shopID") String shopID);
+
+    void updateContractStatus(@Param("contractID") String contractID, @Param("contractStatus") Integer contractStatus);
+
+    Integer getContractTypeID(@Param("contractTypeName") String contractTypeName);
+
+    Integer getDevTypeID(@Param("devName") String devName);
+
+    void addContractInfo(ContractInfo contractInfo);
 }

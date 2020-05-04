@@ -2,7 +2,9 @@ package com.cbd.cbdcommoninterface.result;
 
 import com.cbd.cbdcommoninterface.utils.ExpPrefixUtil;
 
-public class CodeMsg {
+import java.io.Serializable;
+
+public class CodeMsg implements Serializable {
 
     private String code;
     private String msg;

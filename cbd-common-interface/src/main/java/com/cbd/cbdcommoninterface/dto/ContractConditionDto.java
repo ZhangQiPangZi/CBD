@@ -11,7 +11,6 @@ public class ContractConditionDto {
          */
         ASC
     }
-    private String companyID;
     private String contractTypeName;
     private Integer contractStatus;
     private Integer companylevel;
@@ -21,14 +20,6 @@ public class ContractConditionDto {
     private Integer timeSort;
     private Integer lft;
     private Integer rgt;
-
-    public String getCompanyID() {
-        return companyID;
-    }
-
-    public void setCompanyID(String companyID) {
-        this.companyID = companyID;
-    }
 
     public String getContractTypeName() {
         return contractTypeName;

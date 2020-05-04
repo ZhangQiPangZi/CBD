@@ -2,9 +2,10 @@ package com.cbd.cbdcommoninterface.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AllocationRecordResponse {
+public class AllocationRecordResponse implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date optTime;
     private String srcCompanyName;

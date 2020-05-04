@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.response;
 
-public class DevReturnResponse {
+import java.io.Serializable;
+
+public class DevReturnResponse implements Serializable {
     private String devFactoryPersonName;
     private String devFactoryPersonPhone;
 
