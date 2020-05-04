@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.request;
 
-public class PageCpyIDRequest {
+import java.io.Serializable;
+
+public class PageCpyIDRequest implements Serializable {
     private PageRequest pageRequest;
     private String CompanyID;
 

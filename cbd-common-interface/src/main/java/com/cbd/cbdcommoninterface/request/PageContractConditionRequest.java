@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.request;
 
-public class PageContractConditionRequest {
+import java.io.Serializable;
+
+public class PageContractConditionRequest implements Serializable {
     public enum timeSort{
         /**
          * 按合同创建时间降序排列

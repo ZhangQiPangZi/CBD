@@ -2,10 +2,12 @@ package com.cbd.cbdcommoninterface.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DevInfoResponse {
+public class DevInfoResponse implements Serializable {
     private String devID;
+    private String SIMID;
     private String devName;
     private String devStatus;
     private String devManagerName;
@@ -21,6 +23,14 @@ public class DevInfoResponse {
 
     public void setDevID(String devID) {
         this.devID = devID;
+    }
+
+    public String getSIMID() {
+        return SIMID;
+    }
+
+    public void setSIMID(String SIMID) {
+        this.SIMID = SIMID;
     }
 
     public String getDevName() {

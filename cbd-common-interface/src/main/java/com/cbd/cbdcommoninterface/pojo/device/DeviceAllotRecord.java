@@ -2,9 +2,10 @@ package com.cbd.cbdcommoninterface.pojo.device;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DeviceAllotRecord {
+public class DeviceAllotRecord implements Serializable {
     private String devID;
     private String srcCompanyID;
     private String dstCompanyID;

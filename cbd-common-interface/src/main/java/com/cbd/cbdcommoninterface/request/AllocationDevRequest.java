@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.request;
 
-public class AllocationDevRequest {
+import java.io.Serializable;
+
+public class AllocationDevRequest implements Serializable {
     private String devID;
     private String companyName;
 

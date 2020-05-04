@@ -1,10 +1,19 @@
-package com.cbd.cbdcommoninterface.response;
+package com.cbd.cbdcommoninterface.request;
 
 import java.io.Serializable;
 
-public class DevNameNumsResponse implements Serializable {
+public class AddContractDevMesRequest implements Serializable {
+    private String companyID;
     private String devName;
     private Integer devNums;
+
+    public String getCompanyID() {
+        return companyID;
+    }
+
+    public void setCompanyID(String companyID) {
+        this.companyID = companyID;
+    }
 
     public String getDevName() {
         return devName;

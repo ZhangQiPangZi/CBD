@@ -50,6 +50,11 @@ public class DeviceInfo implements Serializable {
      */
     private String devFactoryID;
 
+    /**
+     * 设备对应SIM卡ID
+     */
+    private String SIMID;
+
     public String getDevID() {
         return devID;
     }
@@ -112,5 +117,13 @@ public class DeviceInfo implements Serializable {
 
     public void setDevFactoryID(String devFactoryID) {
         this.devFactoryID = devFactoryID;
+    }
+
+    public String getSIMID() {
+        return SIMID;
+    }
+
+    public void setSIMID(String SIMID) {
+        this.SIMID = SIMID;
     }
 }

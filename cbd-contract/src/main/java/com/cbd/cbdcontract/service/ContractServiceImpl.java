@@ -9,21 +9,24 @@ import com.cbd.cbdcommoninterface.pojo.company.CompanyInfo;
 import com.cbd.cbdcommoninterface.pojo.contract.ContractInfo;
 import com.cbd.cbdcommoninterface.pojo.contract.ContractType;
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
+import com.cbd.cbdcommoninterface.request.AddContractRequest;
 import com.cbd.cbdcommoninterface.request.DistributeContractRequest;
 import com.cbd.cbdcommoninterface.request.PageContractConditionRequest;
 import com.cbd.cbdcommoninterface.request.PageRequest;
-import com.cbd.cbdcommoninterface.response.ContractInfoResponse;
-import com.cbd.cbdcommoninterface.response.PageContractListResponse;
-import com.cbd.cbdcommoninterface.response.PageDevListResponse;
-import com.cbd.cbdcommoninterface.response.PageResponse;
+import com.cbd.cbdcommoninterface.response.*;
+import com.cbd.cbdcommoninterface.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.GlobalException;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
 import com.cbd.cbdcontract.dao.ContractDao;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class ContractServiceImpl implements ContractService {
     @Autowired
@@ -35,7 +38,11 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<String> findContractTypeNameByCompanyID(String companyID) {
-        return null;
+        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(companyID);
+        Integer lft = cpyInfo.getLft();
+        Integer rgt = cpyInfo.getRgt();
+
+        return contractDao.findContractTypeNameByCompanyID(lft, rgt);
     }
 
     @Override
@@ -46,7 +53,6 @@ public class ContractServiceImpl implements ContractService {
          */
         CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(contractConditionRequest.getCompanyID());
         ContractConditionDto contractConditionDto = new ContractConditionDto();
-        contractConditionDto.setCompanyID(contractConditionRequest.getCompanyID());
         contractConditionDto.setCompanyCity(contractConditionRequest.getCompanyCity());
         contractConditionDto.setCompanyDistrict(contractConditionRequest.getCompanyDistrict());
         contractConditionDto.setCompanylevel(contractConditionRequest.getCompanylevel());
@@ -86,6 +92,7 @@ public class ContractServiceImpl implements ContractService {
         PageInfo<PageContractListResponse> devListResponsePageInfo = new PageInfo<>(contractListResponseList);
 
         return PageUtils.getPageResponse(devListResponsePageInfo);
+
     }
 
     @Override
@@ -119,12 +126,153 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public List<PageContractListResponse> findUsingContractListByCompanyID(String companyID) {
+        /**
+         * 给dto赋值，作为查询条件
+         */
+        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(companyID);
+        ContractConditionDto contractConditionDto = new ContractConditionDto();
+        contractConditionDto.setContractStatus(ContractInfo.ContractStatus.PAID.ordinal());
+        contractConditionDto.setTimeSort(ContractConditionDto.timeSort.DESC.ordinal());
+        contractConditionDto.setLft(cpyInfo.getLft());
+        contractConditionDto.setRgt(cpyInfo.getRgt());
+
+        /**
+         * 查询出来对应的ContractID，然后再获取包装返回的信息
+         */
+        List<String> contractIDList = contractDao.findContractListByCondition(contractConditionDto);
+        List<PageContractListResponse> contractListResponseList = new ArrayList<>();
+        for (String contractID : contractIDList){
+            ContractInfo contractInfo = contractDao.findContractInfoByContractID(contractID);
+            PageContractListResponse temp = new PageContractListResponse();
+            temp.setContractID(contractID);
+
+            CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(contractInfo.getCompanyID());
+            temp.setContractCompanyName(companyInfo.getCompanyName());
+
+            DevType devType = contractDao.getDevType(contractInfo.getDevTypeID());
+            temp.setDevName(devType.getDevName());
+
+            temp.setCreateTime(contractInfo.getCreateTime());
+
+            contractListResponseList.add(temp);
+        }
+
+        return contractListResponseList;
+    }
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
     public Boolean distributeContractByContractIDAndCompanyName(DistributeContractRequest contractRequest) {
+        /**
+         * 获取调拨公司的信息
+         */
+        CompanyInfo dstCpy = companyService.findCompanyInfoByCompanyName(contractRequest.getCompanyName());
+
+        String companyID = dstCpy.getCompanyID();
+        String shopID = null;
+        //如果派发的公司为4s店，则赋值给shopID
+        if(dstCpy.getCompanylevel().equals(CompanyInfo.Companylevel.DISCPY.ordinal())){
+            shopID = dstCpy.getCompanyID();
+        }
+        try {
+            contractDao.updateContractByDistribute(contractRequest.getContractID(),companyID, shopID);
+        }catch (Exception e){
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
+        }
+
         return true;
     }
 
     @Override
     public List<Float> getRenewMoneyByContractID(String contractID) {
-        return null;
+        ContractInfo contractInfo = contractDao.findContractInfoByContractID(contractID);
+        //获取当前合同的服务费用和时长
+        Float serverFee = contractInfo.getServerFee();
+        Float serverYears = contractInfo.getServerYears();
+
+        List<Float> renewMoneyList = new ArrayList<>();
+        // 计算半年金额为基本单元
+        Float halfMoney = (serverYears/0.5f)*serverFee;
+
+        // 三种年限金额放入list
+        renewMoneyList.add(halfMoney);
+        renewMoneyList.add(halfMoney*2);
+        renewMoneyList.add(halfMoney*6);
+
+        return renewMoneyList;
+    }
+
+    @Override
+    public UnpaidContractInfoResponse getUnPaidContractInfoByCompanyID(String companyID) {
+        //获取未支付合同id
+        ContractConditionDto conditionDto = new ContractConditionDto();
+        conditionDto.setContractStatus(ContractInfo.ContractStatus.UNPAID.ordinal());
+        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(companyID);
+        Integer lft = cpyInfo.getLft();
+        Integer rgt = cpyInfo.getRgt();
+        conditionDto.setLft(lft);
+        conditionDto.setRgt(rgt);
+        conditionDto.setTimeSort(ContractConditionDto.timeSort.DESC.ordinal());
+        List<String> IDList = contractDao.findContractListByCondition(conditionDto);
+        String contractID = IDList.get(0);
+
+        // 包装
+        ContractInfo contractInfo = contractDao.findContractInfoByContractID(contractID);
+        UnpaidContractInfoResponse contractInfoResponse = new UnpaidContractInfoResponse();
+        contractInfoResponse.setContractTypeName(contractDao.getContractTypeName(contractInfo.getContractTypeID()));
+        contractInfoResponse.setDellFee(contractInfo.getDellFee());
+        contractInfoResponse.setDevName(contractDao.getDevType(contractInfo.getDevTypeID()).getDevName());
+        contractInfoResponse.setDevNums(contractInfo.getDevNums());
+        contractInfoResponse.setServerFee(contractInfo.getServerFee());
+        contractInfoResponse.setServerYears(contractInfo.getServerYears());
+
+        return contractInfoResponse;
+    }
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public String addContract(AddContractRequest addContractRequest) {
+        //先删除当前公司之前的未支付合同,即公司只能有一份未支付合同
+        //获取未支付合同id
+        ContractConditionDto conditionDto = new ContractConditionDto();
+        conditionDto.setContractStatus(ContractInfo.ContractStatus.UNPAID.ordinal());
+        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(addContractRequest.getCompanyID());
+        Integer lft = cpyInfo.getLft();
+        Integer rgt = cpyInfo.getRgt();
+        conditionDto.setLft(lft);
+        conditionDto.setRgt(rgt);
+        conditionDto.setTimeSort(ContractConditionDto.timeSort.DESC.ordinal());
+        List<String> IDList = contractDao.findContractListByCondition(conditionDto);
+
+        String contractID = UUID.randomUUID().toString();
+        //删除即将合同状态变为过期
+        try{
+            if (!(IDList == null || IDList.isEmpty())){
+                String delContractID = IDList.get(0);
+                Integer contractStatus = ContractInfo.ContractStatus.EXPIRED.ordinal();
+                contractDao.updateContractStatus(delContractID, contractStatus);
+            }
+
+            //新建合同
+            ContractInfo contractInfo = new ContractInfo();
+            contractInfo.setCompanyID(addContractRequest.getCompanyID());
+            contractInfo.setContractID(contractID);
+            contractInfo.setContractStatus(ContractInfo.ContractStatus.UNPAID.ordinal());
+            contractInfo.setContractTypeID(contractDao.getContractTypeID(addContractRequest.getContractTypeName()));
+            contractInfo.setServerFee(addContractRequest.getServerFee());
+            contractInfo.setServerYears(addContractRequest.getServerYears());
+            contractInfo.setDellFee(addContractRequest.getDellFee());
+            contractInfo.setDevNums(addContractRequest.getDevNums());
+            contractInfo.setPartyAPersonID(addContractRequest.getUserID());
+            contractInfo.setDevTypeID(contractDao.getDevTypeID(addContractRequest.getDevName()));
+            contractInfo.setCreateTime(new Date());
+
+            contractDao.addContractInfo(contractInfo);
+        }catch (Exception e){
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
+        }
+
+        return contractID;
     }
 }

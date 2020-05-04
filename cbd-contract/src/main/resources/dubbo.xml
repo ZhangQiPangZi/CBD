@@ -18,10 +18,9 @@
     <!--关闭服务消费方所有服务的启动检查。dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成。-->
     <dubbo:consumer check="false" />
     <dubbo:reference id="companyService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService"/>
-    <dubbo:annotation package="com.cbd.cbddevice.service"/>
-
+    <dubbo:annotation package="com.cbd.cbdcontract.service"/>
     <dubbo:reference id="deviceService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
-    <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
+    <dubbo:annotation package="com.cbd.cbdcontract.service"/>
 
     <!--服务提供者-->
     <dubbo:service protocol="dubbo" ref="contractService" interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>

@@ -3,15 +3,14 @@ package com.cbd.cbddevice.service;
 
 import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
-import com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService;
 import com.cbd.cbdcommoninterface.dto.AllocationDevDto;
 import com.cbd.cbdcommoninterface.dto.ConfirmMessageDto;
 import com.cbd.cbdcommoninterface.dto.DevConditionDto;
-import com.cbd.cbdcommoninterface.keys.TestKey;
 import com.cbd.cbdcommoninterface.pojo.company.CompanyInfo;
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
 import com.cbd.cbdcommoninterface.pojo.device.DeviceAllotRecord;
 import com.cbd.cbdcommoninterface.pojo.device.DeviceInfo;
+import com.cbd.cbdcommoninterface.pojo.device.SIMInfo;
 import com.cbd.cbdcommoninterface.pojo.message.DeviceMessageIDMap;
 import com.cbd.cbdcommoninterface.pojo.message.DeviceMessageRecord;
 import com.cbd.cbdcommoninterface.request.*;
@@ -39,6 +38,39 @@ public class DeviceServiceImpl implements DeviceService {
     private CompanyService companyService;
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
+    public Boolean addDeviceInfo(AddDeviceRequest addDeviceRequest) {
+        int devNums = addDeviceRequest.getDevNums();
+        try{
+            for (int i = 0; i < devNums; i++) {
+                DeviceInfo deviceInfo = new DeviceInfo();
+                String devID = UUID.randomUUID().toString();
+                //选取一张SIM卡配对
+                List<String> SIMIDList = deviceDao.getSIMIDByStatus(SIMInfo.SIMStatus.IN.ordinal());
+                String SIMID = SIMIDList.get(0);
+
+                deviceInfo.setDevID(devID);
+                deviceInfo.setSIMID(SIMID);
+                deviceInfo.setCompanyID(addDeviceRequest.getCompanyID());
+                deviceInfo.setDevGateWayID(addDeviceRequest.getGateWayID());
+                deviceInfo.setDevManagerID(addDeviceRequest.getManagerID());
+                deviceInfo.setDevStatus(DeviceInfo.DevStatus.IN.ordinal());
+
+                DevType devType = deviceDao.findDevTypeByDevName(addDeviceRequest.getDevName());
+                deviceInfo.setDevTypeID(devType.getDevTypeID());
+                deviceInfo.setDevFactoryID(devType.getDevFactoryID());
+
+                deviceInfo.setDevInputTime(new Date());
+                deviceDao.insertDevice(deviceInfo);
+            }
+        }catch (GlobalException e){
+            throw e;
+        }
+
+        return true;
+    }
+
+    @Override
     public List<String> findAllDevFactoryNameByCompanyID(String companyID) {
         CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(companyID);
         Integer lft = cpyInfo.getLft();
@@ -55,7 +87,6 @@ public class DeviceServiceImpl implements DeviceService {
          */
         CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(pageDevConditionRequest.getCompanyID());
         DevConditionDto devConditionDto = new DevConditionDto();
-        devConditionDto.setCompanyID(pageDevConditionRequest.getCompanyID());
         devConditionDto.setCompanyCity(pageDevConditionRequest.getCompanyCity());
         devConditionDto.setCompanyDistrict(pageDevConditionRequest.getCompanyDistrict());
         devConditionDto.setCompanylevel(pageDevConditionRequest.getCompanylevel());
@@ -101,6 +132,7 @@ public class DeviceServiceImpl implements DeviceService {
          */
         DevInfoResponse devInfoResponse = new DevInfoResponse();
         devInfoResponse.setDevID(devID);
+        devInfoResponse.setSIMID(deviceInfo.getSIMID());
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(deviceInfo.getCompanyID());
         devInfoResponse.setDevCompanyName(companyInfo.getCompanyName());
         devInfoResponse.setDevGateWayID(deviceInfo.getDevGateWayID());
@@ -186,6 +218,36 @@ public class DeviceServiceImpl implements DeviceService {
         }
 
         return devInfoResponseList;
+    }
+
+    @Override
+    public Boolean delReturnDeviceByDevID(String devID) {
+        try {
+            deviceDao.dealReturnDeviceByDevID(devID);
+        }catch (GlobalException e){
+            throw e;
+        }
+
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public Boolean updateDevStatusByDevIDAndDevStatus(String devID, Integer devStatus) {
+        try {
+            AllocationDevDto devDto = new AllocationDevDto();
+            devDto.setDevStatus(devStatus);
+            devDto.setDevID(devID);
+            deviceDao.updateDevStatusAndManager(devDto);
+
+            //更改对应SIMStatus
+            String SIMID = findDevInfoByDevID(devID).getSIMID();
+            deviceDao.updateSIMStatus(SIMID, devStatus);
+        }catch (GlobalException e){
+            throw e;
+        }
+
+        return true;
     }
 
     @Override
@@ -316,6 +378,96 @@ public class DeviceServiceImpl implements DeviceService {
         return true;
     }
 
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public Boolean addContractDeviceMessage(AddContractDevMesRequest contractDevMesRequest) {
+        try{
+            String mesID = UUID.randomUUID().toString();
+            DeviceMessageRecord deviceMessageRecord = new DeviceMessageRecord();
+            deviceMessageRecord.setMesID(mesID);
+            deviceMessageRecord.setMesType(DeviceMessageRecord.MessageType.CONTRACT_ALLOCATION.ordinal());
+            // TODO 要调人事接口
+            //srcComapny为车百度总公司
+            String srcCompanyName = "车佰度总公司";
+            deviceMessageRecord.setSrcManagerID(companyService.findCompanyInfoByCompanyName(srcCompanyName).getCompanyManagerID());
+            // TODO 要调人事接口
+            deviceMessageRecord.setDstManagerID(companyService.findCompanyInfoByCompanyID(contractDevMesRequest.getCompanyID()).getCompanyManagerID());
+            // 新建消息为未确认状态
+            deviceMessageRecord.setMesStatus(DeviceMessageRecord.MessageStatus.UNCONFIRMED.ordinal());
+            deviceMessageRecord.setDevName(contractDevMesRequest.getDevName());
+            deviceMessageRecord.setMesSendTime(new Date());
+            deviceDao.insertAllotMessage(deviceMessageRecord);
+            deviceDao.updateDevMessageDevNums(contractDevMesRequest.getDevNums(), mesID);
+        }catch (Exception e){
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
+        }
+
+        return true;
+    }
+
+    @Override
+    public Boolean judgeConfirmMessage(String mesID) {
+       DeviceMessageRecord messageRecord = deviceDao.getDevMessageRecord(mesID);
+       Boolean isConfirmed = false;
+       if (messageRecord.getMesStatus().equals(DeviceMessageRecord.MessageStatus.CONFIRMED)){
+           isConfirmed = true;
+       }
+
+       return isConfirmed;
+    }
+
+    @Override
+    public PageResponse findMessageByManagerIDAndMessageStatus(GetMessageRequest messageRequest) {
+        PageRequest pageRequest = messageRequest.getPageRequest();
+        int pageNum = pageRequest.getPageNum();
+        int pageSize = pageRequest.getPageSize();
+        PageHelper.startPage(pageNum, pageSize);
+
+        String managerID = messageRequest.getManagerID();
+        Integer mesStatus = messageRequest.getMesStatus();
+        List<DeviceMessageRecord> messageRecordList = deviceDao.getDevMessageListByManageIDAndMessageStatus(managerID, mesStatus);
+
+        //包装成response
+        List<DevMessageResponse> devMessageResponseList = new ArrayList<>();
+        for (DeviceMessageRecord messageRecord : messageRecordList){
+            DevMessageResponse temp = new DevMessageResponse();
+            temp.setMesID(messageRecord.getMesID());
+            //如果是返厂消息，就直接赋值状态就行
+            if (messageRecord.getMesType().equals(DeviceMessageRecord.MessageType.RETURN.ordinal())){
+                temp.setMesType(DevMessageResponse.MesType.RETURN.ordinal());
+            }else {
+                String companyID = "";
+                if (messageRecord.getMesType().equals(DeviceMessageRecord.MessageType.ALLOCATION.ordinal())){
+                    // 如果是设备调拨消息
+                    if (messageRecord.getSrcManagerID().equals(managerID)){
+                        temp.setMesType(DevMessageResponse.MesType.ALLOCATION.ordinal());
+                        //TODO 要调人事接口，获取对应的companyId
+                        companyID = messageRecord.getDstManagerID();
+                    }else {
+                        //设备接收消息
+                        temp.setMesType(DevMessageResponse.MesType.ACCEPT.ordinal());
+                        //TODO 要调人事接口，获取对应的companyId
+                        companyID = messageRecord.getSrcManagerID();
+                    }
+                }else {
+                    temp.setMesType(DevMessageResponse.MesType.CONTRACT_ALLOCATION.ordinal());
+                    //TODO 要调人事接口，获取对应的companyId
+                    companyID = messageRecord.getDstManagerID();
+                }
+
+                temp.setCompanyName(companyService.findCompanyInfoByCompanyID(companyID).getCompanyName());
+                temp.setDevName(messageRecord.getDevName());
+                temp.setDevNums(messageRecord.getDevNums());
+            }
+
+            devMessageResponseList.add(temp);
+        }
+
+        PageInfo<DevMessageResponse> devMessageResponsePageInfo = new PageInfo<>(devMessageResponseList);
+
+        return PageUtils.getPageResponse(devMessageResponsePageInfo);
+    }
+
     @Transactional(rollbackFor=Exception.class)
     public Boolean doAllocationDevice(String companyName, String devID, String mesID, String devName) {
         /**
@@ -353,7 +505,7 @@ public class DeviceServiceImpl implements DeviceService {
             /**
              * 新增设备调拨消息
              */
-            insertAllotMessage(DeviceMessageRecord.MessageType.ALLOCATION.ordinal(), srcManagerID, dstManagerID, devID, mesID);
+            insertAllotMessage(DeviceMessageRecord.MessageType.ALLOCATION.ordinal(), srcManagerID, dstManagerID, devID, mesID, devName);
         }catch (Exception e){
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
@@ -361,7 +513,7 @@ public class DeviceServiceImpl implements DeviceService {
         return true;
     }
 
-    public void insertAllotMessage(int type, String srcManagerID, String dstManagerID, String devID, String mesID) {
+    public void insertAllotMessage(int type, String srcManagerID, String dstManagerID, String devID, String mesID, String devName) {
         // 这个if主要是防止批量调拨时消息重复插入
         if(deviceDao.getDevMessageRecord(mesID) == null){
             DeviceMessageRecord deviceMessageRecord = new DeviceMessageRecord();
@@ -371,6 +523,7 @@ public class DeviceServiceImpl implements DeviceService {
             deviceMessageRecord.setDstManagerID(dstManagerID);
             // 新建消息为未确认状态
             deviceMessageRecord.setMesStatus(DeviceMessageRecord.MessageStatus.UNCONFIRMED.ordinal());
+            deviceMessageRecord.setDevName(devName);
             deviceMessageRecord.setMesSendTime(new Date());
             deviceDao.insertAllotMessage(deviceMessageRecord);
         }

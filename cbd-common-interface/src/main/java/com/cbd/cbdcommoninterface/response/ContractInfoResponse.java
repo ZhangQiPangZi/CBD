@@ -2,9 +2,10 @@ package com.cbd.cbdcommoninterface.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ContractInfoResponse {
+public class ContractInfoResponse implements Serializable {
     private String contractID;
     private String contractCompanyName;
     private String shopName;

@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.pojo.contract;
 
-public class ContractType {
+import java.io.Serializable;
+
+public class ContractType implements Serializable {
     private Integer contractTypeID;
     private String contractTypeName;
 

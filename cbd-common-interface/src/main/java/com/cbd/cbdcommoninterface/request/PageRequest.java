@@ -1,6 +1,9 @@
 package com.cbd.cbdcommoninterface.request;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> zhq
 import java.io.Serializable;
 
 /**

@@ -85,4 +85,14 @@ public interface DeviceDao {
     void updateDevMessageStatus(ConfirmMessageDto confirmMessageDto);
 
     void updateDevMessageDevNums(@Param("devNums") int devNums, @Param("mesID") String mesID);
+
+    List<DeviceMessageRecord> getDevMessageListByManageIDAndMessageStatus(@Param("managerID") String managerID, @Param("mesStatus") Integer mesStatus);
+
+    void dealReturnDeviceByDevID(@Param("devID") String devID);
+
+    void updateSIMStatus(@Param("SIMID") String SIMID, @Param("SIMStatus") Integer SIMStatus);
+
+    List<String> getSIMIDByStatus(@Param("SIMStatus") Integer SIMStatus);
+
+    void insertDevice(DeviceInfo deviceInfo);
 }

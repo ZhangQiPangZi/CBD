@@ -1,5 +1,8 @@
 package com.cbd.cbdcommoninterface.cbd_interface.achievement;
 
+import com.cbd.cbdcommoninterface.request.PageCpyAchConditionRequest;
+import com.cbd.cbdcommoninterface.response.PageResponse;
+
 public interface AchievementService {
 
     /**
@@ -8,5 +11,12 @@ public interface AchievementService {
      * @param contractID
      * @return
      */
-    Boolean addAchievement(String salersID, String contractID);
+    Boolean addAchievement(String salersID, String contractID, String companyID);
+
+    /**
+     * 根据指定条件获取下级公司销售列表
+     * @param pageCpyAchConditionRequest
+     * @return
+     */
+    PageResponse findCompanyAchievementByCondition(PageCpyAchConditionRequest pageCpyAchConditionRequest);
 }

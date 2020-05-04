@@ -1,13 +1,11 @@
 package com.cbd.cbdcommoninterface.pojo.company;
 
-public class CompanyInfo {
+import java.io.Serializable;
+
+public class CompanyInfo implements Serializable {
     public enum Companylevel{
         /**
-         * 4s销售处
-         */
-        SALES,
-        /**
-         * 区县子公司
+         * 区县4s销售处
          */
         DISCPY,
         /**
@@ -17,8 +15,13 @@ public class CompanyInfo {
         /**
          * 省级子公司
          */
-        PROCPY
+        PROCPY,
+        /**
+         * 总公司
+         */
+        HEADCPY
     }
+
     private String companyID;
     private String companyName;
     private String companyPhone;

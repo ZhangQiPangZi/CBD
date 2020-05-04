@@ -1,21 +1,33 @@
 package com.cbd.cbdcommoninterface.request;
 
-public class PageCpyAchConditionRequest {
-    public enum sortType{
+import java.io.Serializable;
+
+public class PageCpyAchConditionRequest implements Serializable {
+    public enum sortMoney{
         /**
-         * 根据销售总金额排序
+         * 按销售额降序排列
          */
-        MONEY,
+        DESC,
         /**
-         * 根据完成的合同数量排序
+         * 按销售额升序排列
          */
-        CONTRACT
+        ASC
     }
+
+    private String companyID;
     private Integer companylevel;
     private String companyProvince;
     private String companyCity;
     private String companyDistrict;
-    private Integer sortType;
+    private Integer sortMoney;
+
+    public String getCompanyID() {
+        return companyID;
+    }
+
+    public void setCompanyID(String companyID) {
+        this.companyID = companyID;
+    }
 
     public Integer getCompanylevel() {
         return companylevel;
@@ -49,11 +61,11 @@ public class PageCpyAchConditionRequest {
         this.companyDistrict = companyDistrict;
     }
 
-    public Integer getSortType() {
-        return sortType;
+    public Integer getSortMoney() {
+        return sortMoney;
     }
 
-    public void setSortType(Integer sortType) {
-        this.sortType = sortType;
+    public void setSortMoney(Integer sortMoney) {
+        this.sortMoney = sortMoney;
     }
 }

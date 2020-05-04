@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.pojo.message;
 
-public class DeviceMessageIDMap {
+import java.io.Serializable;
+
+public class DeviceMessageIDMap implements Serializable {
     private String mesID;
     private String devID;
 

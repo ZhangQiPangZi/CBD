@@ -1,10 +1,7 @@
 package com.cbd.cbdcontroller.controller.device;
 
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
-import com.cbd.cbdcommoninterface.request.AllocationBathDevRequest;
-import com.cbd.cbdcommoninterface.request.AllocationDevRequest;
-import com.cbd.cbdcommoninterface.request.PageCpyIDRequest;
-import com.cbd.cbdcommoninterface.request.PageDevConditionRequest;
+import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 
 import com.cbd.cbdcommoninterface.result.Result;
@@ -24,6 +21,12 @@ import java.util.List;
 public class DeviceController {
     @Autowired
     private DeviceService deviceService;
+
+    @ApiOperation("新增设备")
+    @RequestMapping(value = "/addDeviceInfo", method = RequestMethod.POST)
+    public Result<Boolean> addDeviceInfo(@RequestBody AddDeviceRequest addDeviceRequest){
+        return Result.success(deviceService.addDeviceInfo(addDeviceRequest));
+    }
 
     @ApiOperation("获取当前公司下的设备厂家列表")
     @RequestMapping(value = "/findAllDevFactoryNameByCompanyID", method = RequestMethod.POST)
@@ -74,5 +77,28 @@ public class DeviceController {
         return Result.success(deviceService.confirmDeviceMessageByMesID(mesID));
     }
 
+    @ApiOperation("逻辑删除设备记录，确认设备返厂时用")
+    @RequestMapping(value = "/delReturnDeviceByDevID", method = RequestMethod.POST)
+    public Result<Boolean> delReturnDeviceByDevID(@RequestParam(value = "devID") String devID){
+        return Result.success(deviceService.delReturnDeviceByDevID(devID));
+    }
+
+    @ApiOperation("新增合同设备调拨消息")
+    @RequestMapping(value = "/addContractDeviceMessage", method = RequestMethod.POST)
+    public Result<Boolean> addContractDeviceMessage(@RequestBody AddContractDevMesRequest contractDevMesRequest){
+        return Result.success(deviceService.addContractDeviceMessage(contractDevMesRequest));
+    }
+
+    @ApiOperation("判断此消息是否确认")
+    @RequestMapping(value = "/judgeConfirmMessage", method = RequestMethod.POST)
+    public Result<Boolean> judgeConfirmMessage(@RequestParam(value = "mesID") String mesID){
+        return Result.success(deviceService.judgeConfirmMessage(mesID));
+    }
+
+    @ApiOperation("获取分类后的消息，mesStatus可以不传，代表查询所有消息")
+    @RequestMapping(value = "/findMessageByManagerIDAndMessageStatus", method = RequestMethod.POST)
+    public Result<PageResponse> findMessageByManagerIDAndMessageStatus(@RequestBody GetMessageRequest messageRequest){
+        return Result.success(deviceService.findMessageByManagerIDAndMessageStatus(messageRequest));
+    }
 
 }

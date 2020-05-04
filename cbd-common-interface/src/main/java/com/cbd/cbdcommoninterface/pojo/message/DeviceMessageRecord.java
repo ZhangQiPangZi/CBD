@@ -2,9 +2,10 @@ package com.cbd.cbdcommoninterface.pojo.message;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DeviceMessageRecord {
+public class DeviceMessageRecord implements Serializable {
 
     public enum MessageType{
         /**

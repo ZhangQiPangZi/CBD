@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.request;
 
-public class AllocationBathDevRequest {
+import java.io.Serializable;
+
+public class AllocationBathDevRequest implements Serializable {
     private String devName;
     private Integer devNums;
     private String curCompanyID;

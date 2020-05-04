@@ -31,4 +31,15 @@
         where companyName = #{companyName}
     </select>
 
+    <select id="findAllCompanyIDByCompanyID" resultType="java.lang.String">
+        select companyID
+        from companyInfo
+        where lft BETWEEN #{lft} and #{rgt}
+    </select>
+
+    <select id="getUpCompanyIDByCompanyID" resultType="java.lang.String">
+        select companyID
+        from companyInfo
+        where lft &lt;= #{lft} and rgt &gt;= {rgt}
+    </select>
 </mapper>

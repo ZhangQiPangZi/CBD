@@ -1,6 +1,8 @@
 package com.cbd.cbdcommoninterface.response;
 
-public class PageDevListResponse {
+import java.io.Serializable;
+
+public class PageDevListResponse implements Serializable {
     private String devID;
     private String devName;
     private String devType;
