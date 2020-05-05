@@ -1,7 +1,6 @@
 package com.cbd.cbdcontroller.controller.salesapp.messagelist;
 
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService;
-import com.cbd.cbdcommoninterface.pojo.salesapp.messagelist.OrderInfoDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO;
@@ -11,8 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author: Monster

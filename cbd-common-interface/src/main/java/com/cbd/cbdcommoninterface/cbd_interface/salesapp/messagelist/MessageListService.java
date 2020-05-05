@@ -1,14 +1,8 @@
 package com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist;
 
-import com.cbd.cbdcommoninterface.pojo.salesapp.messagelist.OrderInfoDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
-import java.util.List;
 
 /**
  * @author: Monster

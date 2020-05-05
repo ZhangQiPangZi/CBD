@@ -1,7 +1,7 @@
 package com.cbd.cbdcontroller.controller.installerapp.user;
 
 import com.cbd.cbdcommoninterface.cbd_interface.installerapp.user.InstallerUserService;
-import com.cbd.cbdcommoninterface.pojo.installerapp.user.InstallerInfoDO;
+import com.cbd.cbdcommoninterface.pojo.installerapp.user.InstallerInfosDO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class InstallerUserController {
     @RequestMapping(value = "/installer-user-info",method = RequestMethod.GET)
     @ApiOperation("用户信息")
     @ResponseBody
-    public InstallerInfoDO getUserInfo(@RequestParam String phoneNumber){
+    public InstallerInfosDO getUserInfo(@RequestParam String phoneNumber){
         return installerUserService.getUserInfo(phoneNumber);
     }
 

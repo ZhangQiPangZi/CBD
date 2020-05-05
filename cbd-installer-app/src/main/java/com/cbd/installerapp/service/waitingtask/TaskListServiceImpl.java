@@ -1,7 +1,7 @@
 package com.cbd.installerapp.service.waitingtask;
 
 import com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.TaskListService;
-import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfoDO;
+import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfosDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
@@ -27,8 +27,8 @@ public class TaskListServiceImpl implements TaskListService {
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
 
-        List<OrderInfoDO> result = taskListDao.getTaskList(installerId,orderTypeCode);
-        PageInfo<OrderInfoDO> resultList = new PageInfo<>(result);
+        List<OrderInfosDO> result = taskListDao.getTaskList(installerId,orderTypeCode);
+        PageInfo<OrderInfosDO> resultList = new PageInfo<>(result);
         return PageUtils.getPageResponse(resultList);
 
     }

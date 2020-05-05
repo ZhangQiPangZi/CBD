@@ -1,7 +1,6 @@
 package com.cbd.cbdcontroller.controller.installerapp.waitingtask;
 
 import com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.TaskListService;
-import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfoDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.result.Result;
@@ -10,8 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author: Monster

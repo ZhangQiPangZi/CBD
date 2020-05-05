@@ -1,7 +1,7 @@
 package com.cbd.installerapp.service.completed;
 
 import com.cbd.cbdcommoninterface.cbd_interface.installerapp.completed.CompletedListService;
-import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfoDO;
+import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfosDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
@@ -29,8 +29,8 @@ public class CompletedServiceImpl implements CompletedListService {
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
 
-        List<OrderInfoDO> result = completedListDao.getList(installerId,orderTypeCode);
-        PageInfo<OrderInfoDO> resultList = new PageInfo<>(result);
+        List<OrderInfosDO> result = completedListDao.getList(installerId,orderTypeCode);
+        PageInfo<OrderInfosDO> resultList = new PageInfo<>(result);
         return PageUtils.getPageResponse(resultList);
     }
 }

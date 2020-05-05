@@ -1,10 +1,7 @@
 package com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask;
 
-import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfoDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.response.PageResponse;
-
-import java.util.List;
 
 /**
  * @author: Monster

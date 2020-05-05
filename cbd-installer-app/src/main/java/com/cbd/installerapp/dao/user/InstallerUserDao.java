@@ -1,6 +1,6 @@
 package com.cbd.installerapp.dao.user;
 
-import com.cbd.cbdcommoninterface.pojo.installerapp.user.InstallerInfoDO;
+import com.cbd.cbdcommoninterface.pojo.installerapp.user.InstallerInfosDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -18,5 +18,5 @@ public interface InstallerUserDao {
      * @return
      */
     @Select("select * from installerinfo where phoneNumber=#{phoneNumber}")
-    InstallerInfoDO getUserInfo(@Param("phoneNumber") String phoneNumber);
+    InstallerInfosDO getUserInfo(@Param("phoneNumber") String phoneNumber);
 }

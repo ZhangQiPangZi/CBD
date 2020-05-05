@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @Description
  */
 @Data
-public class InstallerInfoDO implements Serializable {
+public class InstallerInfosDO implements Serializable {
     /**
      * 序号
      */

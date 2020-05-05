@@ -1,6 +1,6 @@
 package com.cbd.cbdcommoninterface.cbd_interface.installerapp.user;
 
-import com.cbd.cbdcommoninterface.pojo.installerapp.user.InstallerInfoDO;
+import com.cbd.cbdcommoninterface.pojo.installerapp.user.InstallerInfosDO;
 
 /**
  * @author: Monster
@@ -14,5 +14,5 @@ public interface InstallerUserService {
      * @param phoneNumber
      * @return
      */
-    InstallerInfoDO getUserInfo(String phoneNumber);
+    InstallerInfosDO getUserInfo(String phoneNumber);
 }

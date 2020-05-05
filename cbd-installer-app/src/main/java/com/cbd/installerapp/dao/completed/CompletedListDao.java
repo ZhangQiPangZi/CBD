@@ -1,6 +1,6 @@
 package com.cbd.installerapp.dao.completed;
 
-import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfoDO;
+import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfosDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,5 +19,5 @@ public interface CompletedListDao {
      * @param orderTypeCode
      * @return
      */
-    List<OrderInfoDO> getList(@Param("installerId") Integer installerId,@Param("orderTypeCode") Integer orderTypeCode);
+    List<OrderInfosDO> getList(@Param("installerId") Integer installerId, @Param("orderTypeCode") Integer orderTypeCode);
 }
