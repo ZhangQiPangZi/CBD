@@ -17,7 +17,7 @@ public class RemoveQuery implements Serializable {
     /**
      * 设备id
      */
-    private Integer devId;
+    private String devId;
     /**
      * 车主电话
      */

@@ -1,6 +1,7 @@
 package com.cbd.salesapp.service.messagelist;
 
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService;
+import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.DevIdDO;
 import com.cbd.cbdcommoninterface.pojo.salesapp.messagelist.OrderInfoDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.response.PageResponse;
@@ -49,8 +50,15 @@ public class MessageListServiceImpl implements MessageListService {
     }
 
     @Override
-    public int reAssign(Integer id){
+    public DevIdDO reAssign(Integer id, Integer orderTypeCode){
+        DevIdDO devIdDO = null;
+
+        if(orderTypeCode!=3){
+            devIdDO = messageListDao.getDevId(id);
+            messageListDao.deleteDevId(id);
+        }
         messageListDao.reAssign(id);
-        return messageListDao.removeFromTaskList(id);
+        messageListDao.removeFromTaskList(id);
+        return devIdDO;
     }
 }

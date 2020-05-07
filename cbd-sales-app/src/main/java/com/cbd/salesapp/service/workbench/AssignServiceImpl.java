@@ -97,6 +97,10 @@ public class AssignServiceImpl implements AssignService {
     public int assignInstaller(AssignQuery query){
         //指派后加入到安装工的任务列表
         assignDao.insertToTaskList(query);
+        //除拆除订单外 工程师都持有新设备
+        if (query.getOrderTypeCode()!=3){
+            assignDao.installerHasDev(query.getId(),query.getDevId(),query.getSimId(),query.getInstallerId());
+        }
         return assignDao.assignInstaller(query);
     }
 

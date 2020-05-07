@@ -22,7 +22,7 @@ public class InputInfoController {
     @Autowired
     private InputInfoService inputInfoService;
     /**
-     * 录入信息后 将生成的订单返回给前端 后期指派工程师会用到
+     * 录入信息后 将生成的订单id返回给前端 后期指派工程师会用到
      * @param query
      * @return
      */

@@ -17,5 +17,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "生成详细合同")
 @CrossOrigin
 public class GenerateContractController {
-    //TODO 此处生成详细的合同条例
+    //TODO 此处生成详细的合同条例 一段合同的条款 返回一段str
 }

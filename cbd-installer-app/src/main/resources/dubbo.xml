@@ -24,6 +24,9 @@
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.installerapp.service"/>
 
+    <dubbo:reference id="deviceService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
+    <dubbo:annotation package="com.cbd.cbdcontract.service"/>
+
     <!--服务提供者-->
     <!--这两行算是发布了一个服务，如果有多个服务需要发布，挨着往下写即可，消费者同理-->
     <!--protocol是采用的协议 ref是要发布的bean的引用，
@@ -55,4 +58,6 @@
     <dubbo:service protocol="dubbo" ref="repairOrderService" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RepairOrderService" timeout="1200000"/>
     <!--要发布的服务的实现类-->
     <bean id="repairOrderService" class="com.cbd.installerapp.service.waitingtask.RepairOrderServiceImpl"/>
+
+
 </beans>

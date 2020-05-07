@@ -17,6 +17,10 @@ public class AssignQuery implements Serializable {
      */
     private Integer id;
     /**
+     * 订单类型
+     */
+    private Integer orderTypeCode;
+    /**
      * 工程师id
      */
     private Integer installerId;
@@ -45,4 +49,14 @@ public class AssignQuery implements Serializable {
      */
     @ApiModelProperty(value = "升序降序的标志位",example = "false")
     private Boolean flag;
+    /**
+     * 设备id
+     */
+    @ApiModelProperty(value = "设备id",example = "dddsdazz")
+    private String devId;
+    /**
+     * simId
+     */
+    @ApiModelProperty(value = "sim卡id",example = "asdsde")
+    private String simId;
 }

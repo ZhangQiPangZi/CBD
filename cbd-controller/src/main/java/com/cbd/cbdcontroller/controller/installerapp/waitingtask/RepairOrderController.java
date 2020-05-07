@@ -33,7 +33,7 @@ public class RepairOrderController {
     @RequestMapping(value = "/order-complete",method = RequestMethod.GET)
     @ApiOperation("订单完成")
     @ResponseBody
-    public int orderComplete(@RequestParam(required = false) Integer devId,@RequestParam(required = false) Integer simId,@RequestParam Integer orderId,@RequestParam(required = false) String phoneNumber){
-        return repairOrderService.orderComplete(devId,simId,orderId,phoneNumber);
+    public int orderComplete(@RequestParam Integer flag,@RequestParam Integer orderId,@RequestParam String phoneNumber,@RequestParam Integer installerId){
+        return repairOrderService.orderComplete(flag,orderId,phoneNumber,installerId);
     }
 }

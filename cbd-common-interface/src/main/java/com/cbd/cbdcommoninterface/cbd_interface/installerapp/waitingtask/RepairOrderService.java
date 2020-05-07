@@ -17,13 +17,13 @@ public interface RepairOrderService {
     int changeDev(RemoveQuery query);
 
     /**
-     * 订单完成
+     * 维修订单完成
+     * @param flag
      * @param orderId
-     * @param devId
-     * @param simId
      * @param phoneNumber
+     * @param installerId
      * @return
      */
-    int orderComplete(Integer devId,Integer simId,Integer orderId,String phoneNumber);
+    int orderComplete(Integer flag,Integer orderId,String phoneNumber,Integer installerId);
 
 }

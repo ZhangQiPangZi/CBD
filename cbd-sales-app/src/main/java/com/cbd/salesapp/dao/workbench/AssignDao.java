@@ -40,6 +40,16 @@ public interface AssignDao {
     @Update("update orderinfo set installerId = #{query.installerId},orderStateTypeCode='1' WHERE id =#{query.id};")
     int assignInstaller(@Param("query") AssignQuery query);
 
+    /**
+     * 安装工持有设备的信息
+     * @param devId
+     * @param installerId
+     * @param orderId
+     * @param simId
+     * @return
+     */
+    @Insert("INSERT INTO installerhasdev VALUES(NULL,#{orderId},#{devId},#{simId},#{installerId},'-1');")
+    int installerHasDev(@Param("orderId") Integer orderId,@Param("devId") String devId,@Param("simId") String simId,@Param("installerId") Integer installerId );
 
     /**
      * 指派后加入到安装工的任务列表中

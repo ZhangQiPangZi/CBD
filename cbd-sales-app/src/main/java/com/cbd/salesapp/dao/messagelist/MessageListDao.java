@@ -1,5 +1,6 @@
 package com.cbd.salesapp.dao.messagelist;
 
+import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.DevIdDO;
 import com.cbd.cbdcommoninterface.pojo.salesapp.messagelist.OrderInfoDO;
 import com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO;
 import org.apache.ibatis.annotations.*;
@@ -48,6 +49,17 @@ public interface MessageListDao {
      */
     @Update("UPDATE orderinfo SET installerId = NULL , orderStateTypeCode='-1' WHERE id = #{id};")
     int reAssign(@Param("id") Integer id);
+
+    /**
+     * 重新指派安装或维修订单的时候 先获取指派给安装工的devId
+     * @param orderId
+     * @return
+     */
+    @Select("SELECT orderId as id,devId,simId FROM installerhasdev WHERE orderId = #{orderId};")
+    DevIdDO getDevId(@Param("orderId") Integer orderId);
+
+    @Delete("DELETE FROM installerhasdev WHERE orderId = #{orderId};")
+    int deleteDevId(@Param("orderId") Integer orderId);
 
     /**
      * 重新指派工程师时 将该订单从已指派的工程师的任务列表中移除

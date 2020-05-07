@@ -27,7 +27,7 @@ public class CompletedListController {
     @RequestMapping(value = "/get-list",method = RequestMethod.POST)
     @ApiOperation("获取已完成的订单")
     @ResponseBody
-    public Result<PageResponse> getList(@RequestParam Integer installerId, @RequestParam(required = false) Integer orderTypeCode, @RequestParam PageRequest pageRequest){
+    public Result<PageResponse> getList(@RequestParam Integer installerId, @RequestParam(required = false) Integer orderTypeCode, @RequestBody PageRequest pageRequest){
         return Result.success(completedListService.getList(installerId,orderTypeCode,pageRequest));
     }
 }

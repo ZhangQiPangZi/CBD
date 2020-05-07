@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "支付")
 @CrossOrigin
 public class PayController {
-    //TODO 微信支付
+    //TODO 张磊的支付接口
 
+    //TODO 插入支付记录到log表中
 
+    //TODO 张祺 achievement service接口里面的add方法
 
-    //TODO 支付宝支付
 }

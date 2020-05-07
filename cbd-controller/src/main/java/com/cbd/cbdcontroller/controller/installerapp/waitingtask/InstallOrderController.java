@@ -24,7 +24,7 @@ public class InstallOrderController {
     @RequestMapping(value = "/install-complete",method = RequestMethod.GET)
     @ApiOperation("安装订单完成")
     @ResponseBody
-    public int installOrderComplete(@RequestParam Integer devId,@RequestParam Integer simId,@RequestParam Integer orderId){
-        return installOrderService.installOrderComplete(devId,simId,orderId);
+    public int installOrderComplete(@RequestParam Integer installerId,@RequestParam Integer orderId){
+        return installOrderService.installOrderComplete(installerId,orderId);
     }
 }
