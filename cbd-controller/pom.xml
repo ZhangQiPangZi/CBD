@@ -11,6 +11,6 @@
         <artifactId>cbd</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
 </project>
