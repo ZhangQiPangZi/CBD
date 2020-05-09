@@ -35,7 +35,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 解决静态资源无法访问
-        registry.addResourceHandler("/**")
+        registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
         // 解决swagger无法访问
         registry.addResourceHandler("/swagger-ui.html")
