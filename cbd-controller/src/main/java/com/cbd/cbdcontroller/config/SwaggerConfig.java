@@ -3,6 +3,7 @@ package com.cbd.cbdcontroller.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -13,6 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
+@EnableWebMvc
 @EnableSwagger2
 public class SwaggerConfig extends WebMvcConfigurationSupport {
 
@@ -44,6 +46,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
         // 解决swagger的js文件无法访问
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        super.addResourceHandlers(registry);
     }
 
     @Override
