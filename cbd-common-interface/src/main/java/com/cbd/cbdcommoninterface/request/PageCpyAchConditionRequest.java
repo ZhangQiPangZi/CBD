@@ -1,5 +1,7 @@
 package com.cbd.cbdcommoninterface.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 public class PageCpyAchConditionRequest implements Serializable {
@@ -15,10 +17,15 @@ public class PageCpyAchConditionRequest implements Serializable {
     }
 
     private String companyID;
+    @ApiModelProperty(value = "公司级别", example = "0 区县4s销售处 1 市级子公司 2 省级子公司 3 总公司")
     private Integer companylevel;
+    @ApiModelProperty(value = "公司所在省名")
     private String companyProvince;
+    @ApiModelProperty(value = "公司所在市名")
     private String companyCity;
+    @ApiModelProperty(value = "公司所在区县名")
     private String companyDistrict;
+    @ApiModelProperty(value = "销售金额排序", example = "0 按销售额降序排列 1 升序")
     private Integer sortMoney;
 
     public String getCompanyID() {

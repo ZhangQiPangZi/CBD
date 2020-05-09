@@ -1,13 +1,17 @@
 package com.cbd.cbdcommoninterface.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 public class AddDeviceRequest implements Serializable {
 
     private String devName;
+    @ApiModelProperty(value = "设备数量")
     private Integer devNums;
     private String managerID;
     private String companyID;
+    @ApiModelProperty(value = "网关id")
     private Integer gateWayID;
 
     public String getDevName() {

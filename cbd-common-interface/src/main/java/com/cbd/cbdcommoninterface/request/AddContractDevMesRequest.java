@@ -1,10 +1,13 @@
 package com.cbd.cbdcommoninterface.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 public class AddContractDevMesRequest implements Serializable {
     private String companyID;
     private String devName;
+    @ApiModelProperty(value = "设备数量")
     private Integer devNums;
 
     public String getCompanyID() {
