@@ -8,12 +8,12 @@ import com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.AssignService
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.InputInfoService;
 import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.DevIdDO;
 import com.cbd.cbdcommoninterface.pojo.salesapp.user.SalesInfoDO;
-import com.cbd.cbdcommoninterface.request.PageContractConditionRequest;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.request.salesapp.workbench.AssignQuery;
 import com.cbd.cbdcommoninterface.request.salesapp.workbench.OrderInfoQuery;
 import com.cbd.cbdcommoninterface.response.ContractInfoResponse;
 import com.cbd.cbdcommoninterface.response.DevInfoResponse;
+import com.cbd.cbdcommoninterface.response.PageContractListResponse;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO;
 import com.cbd.cbdcommoninterface.response.salesapp.workbench.InstallerInfoVO;
@@ -136,15 +136,15 @@ public class SalesappController {
     }
 
     /**
-     * @Description 实际上的参数仅需要companyID
-     * @param contractConditionRequest
+     *
+     * @param companyID
      * @return
      */
-    @RequestMapping(value = "/contract-list",method = RequestMethod.POST)
-    @ApiOperation("返回合同类型列表")
+    @RequestMapping(value = "/contract-list",method = RequestMethod.GET)
+    @ApiOperation("返回合同列表")
     @ResponseBody
-    public Result<PageResponse> findContractList(@RequestBody PageContractConditionRequest contractConditionRequest){
-        return Result.success(contractService.findContractListByCondition(contractConditionRequest));
+    public Result<List<PageContractListResponse>> findContractList(@RequestParam String companyID){
+        return Result.success(contractService.findUsingContractListByCompanyID(companyID));
     }
 
     /**
