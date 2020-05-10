@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
             GlobalException globalException = (GlobalException) e;
             return Result.error(globalException.getCodeMsg());
         } else {
-            return Result.error(CodeMsg.SERVER_ERROR);
+            return Result.error(CodeMsg.SERVER_ERROR,e);
         }
     }
 }

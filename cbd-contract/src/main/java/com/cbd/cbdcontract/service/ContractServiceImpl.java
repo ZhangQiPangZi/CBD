@@ -20,7 +20,9 @@ import com.cbd.cbdcommoninterface.utils.PageUtils;
 import com.cbd.cbdcontract.dao.ContractDao;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@Slf4j
 public class ContractServiceImpl implements ContractService {
     @Autowired
     CompanyService companyService;
@@ -103,8 +107,12 @@ public class ContractServiceImpl implements ContractService {
 
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(contractInfo.getCompanyID());
         contractInfoResponse.setContractCompanyName(companyInfo.getCompanyName());
-        CompanyInfo shopInfo = companyService.findCompanyInfoByCompanyID(contractInfo.getShopID());
-        contractInfoResponse.setShopName(shopInfo.getCompanyName());
+        //存在未派发至4s店的合同
+        String shopID = contractInfo.getShopID();
+        if (shopID!=null && !shopID.isEmpty()){
+            CompanyInfo shopInfo = companyService.findCompanyInfoByCompanyID(shopID);
+            contractInfoResponse.setShopName(shopInfo.getCompanyName());
+        }
 
         String contractTypeName = contractDao.getContractTypeName(contractInfo.getContractTypeID());
         contractInfoResponse.setContractTypeName(contractTypeName);
