@@ -6,6 +6,7 @@ import com.cbd.cbdcommoninterface.pojo.device.DeviceInfo;
 import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.DevIdDO;
 import com.cbd.installerapp.dao.waitingtask.InstallOrderDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author: Monster
@@ -19,6 +20,7 @@ public class InstallOrderServiceImpl implements InstallOrderService {
     private DeviceService deviceService;
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public int installOrderComplete(Integer installerId,Integer orderId){
         //先查找出安装工没有安装的设备 然后在改变orderinfo里的信息
         DevIdDO temp = installOrderDao.findDevId(installerId,orderId);
@@ -34,5 +36,6 @@ public class InstallOrderServiceImpl implements InstallOrderService {
         deviceService.updateDevStatusByDevIDAndDevStatus(devId, DeviceInfo.DevStatus.USE.ordinal());
 
         return installOrderDao.complete(orderId);
+
     }
 }
