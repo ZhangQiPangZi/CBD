@@ -28,7 +28,7 @@ public class RemoveOrderServiceImpl implements RemoveOrderService {
         //拆除设备前先找到对应的设备id
         String devId = removeOrderDao.getDevId(query.getPhoneNumber());
 
-        //拆除设备 拆除前看设备的状态
+        //拆除设备 改变设备状态
         if("入库".equals(query.getRemoveResult())){
             deviceService.updateDevStatusByDevIDAndDevStatus(devId, DeviceInfo.DevStatus.IN.ordinal());
         }else {

@@ -80,7 +80,7 @@ public class InstallerappController {
     }
 
     @RequestMapping(value = "/remove-complete",method = RequestMethod.GET)
-    @ApiOperation("订单完成")
+    @ApiOperation("拆除订单完成")
     @ResponseBody
     public int removeOrderComplete(@RequestParam Integer orderId){
         return removeOrderService.removeOrderComplete(orderId);
@@ -94,7 +94,7 @@ public class InstallerappController {
     }
 
     @RequestMapping(value = "/order-complete",method = RequestMethod.GET)
-    @ApiOperation("订单完成")
+    @ApiOperation("维修订单完成")
     @ResponseBody
     public int orderComplete(@RequestParam Integer flag,@RequestParam Integer orderId,@RequestParam String phoneNumber,@RequestParam Integer installerId){
         return repairOrderService.orderComplete(flag,orderId,phoneNumber,installerId);
