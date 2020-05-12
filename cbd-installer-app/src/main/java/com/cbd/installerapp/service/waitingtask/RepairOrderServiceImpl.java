@@ -9,6 +9,7 @@ import com.cbd.installerapp.dao.waitingtask.InstallOrderDao;
 import com.cbd.installerapp.dao.waitingtask.RemoveOrderDao;
 import com.cbd.installerapp.dao.waitingtask.RepairOrderDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author: Monster
@@ -27,6 +28,7 @@ public class RepairOrderServiceImpl implements RepairOrderService {
     private DeviceService deviceService;
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public int changeDev(RemoveQuery query){
         //拆除前获取要拆除的devId
         String devId = removeOrderDao.getDevId(query.getPhoneNumber());
@@ -47,6 +49,7 @@ public class RepairOrderServiceImpl implements RepairOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public int orderComplete(Integer flag,Integer orderId,String phoneNumber,Integer installerId){
 
         //先查找出还未使用的设备信息(新设备)

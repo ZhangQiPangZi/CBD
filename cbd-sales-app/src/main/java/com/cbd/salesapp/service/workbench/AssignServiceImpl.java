@@ -7,6 +7,7 @@ import com.cbd.cbdcommoninterface.response.salesapp.workbench.InstallerInfoVO;
 import com.cbd.cbdcommoninterface.utils.LocationUtils;
 import com.cbd.salesapp.dao.workbench.AssignDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,6 +95,7 @@ public class AssignServiceImpl implements AssignService {
     }
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public int assignInstaller(AssignQuery query){
         //指派后加入到安装工的任务列表
         assignDao.insertToTaskList(query);

@@ -1,11 +1,8 @@
 package com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench;
 
-import com.cbd.cbdcommoninterface.pojo.salesapp.workbench.InstallerInfoDO;
 import com.cbd.cbdcommoninterface.request.salesapp.workbench.AssignQuery;
 import com.cbd.cbdcommoninterface.response.salesapp.workbench.InstallerInfoVO;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 

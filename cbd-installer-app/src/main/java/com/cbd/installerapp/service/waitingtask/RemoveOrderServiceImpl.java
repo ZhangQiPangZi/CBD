@@ -7,6 +7,7 @@ import com.cbd.cbdcommoninterface.request.installerapp.waitingtask.RemoveQuery;
 import com.cbd.installerapp.dao.waitingtask.InstallOrderDao;
 import com.cbd.installerapp.dao.waitingtask.RemoveOrderDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author: Monster
@@ -22,6 +23,7 @@ public class RemoveOrderServiceImpl implements RemoveOrderService {
     private DeviceService deviceService;
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public int removeDev(RemoveQuery query){
         //拆除设备前先找到对应的设备id
         String devId = removeOrderDao.getDevId(query.getPhoneNumber());
