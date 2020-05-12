@@ -27,6 +27,6 @@ public interface RepairOrderDao {
      * @param phoneNumber
      * @return
      */
-    @Update("UPDATE orderinfo SET devId = #{devId},simId = #{simId} WHERE phoneNumber =#{phoneNumber} AND orderStateTypeCode = '1' ")
+    @Update("UPDATE orderinfo SET devId = #{devId},simId = #{simId} WHERE phoneNumber =#{phoneNumber} AND orderTypeCode = '1' ")
     int reInstall(@Param("devId") String devId,@Param("simId") String simId,@Param("phoneNumber") String phoneNumber);
 }
