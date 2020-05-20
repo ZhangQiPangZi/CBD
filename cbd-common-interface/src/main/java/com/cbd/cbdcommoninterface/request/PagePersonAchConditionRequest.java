@@ -2,9 +2,9 @@ package com.cbd.cbdcommoninterface.request;
 
 import java.io.Serializable;
 
-public class PageCpyAchConditionRequest implements Serializable {
+public class PagePersonAchConditionRequest implements Serializable {
     private PageRequest pageRequest;
-    private String companyName;
+    private String salersID;
     private Integer year;
     private Integer month;
     private String contractTypeName;
@@ -17,12 +17,12 @@ public class PageCpyAchConditionRequest implements Serializable {
         this.pageRequest = pageRequest;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getSalersID() {
+        return salersID;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setSalersID(String salersID) {
+        this.salersID = salersID;
     }
 
     public Integer getYear() {

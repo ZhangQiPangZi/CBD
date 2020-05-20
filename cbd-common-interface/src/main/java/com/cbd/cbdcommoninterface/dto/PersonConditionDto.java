@@ -1,28 +1,17 @@
-package com.cbd.cbdcommoninterface.request;
+package com.cbd.cbdcommoninterface.dto;
 
-import java.io.Serializable;
-
-public class PageCpyAchConditionRequest implements Serializable {
-    private PageRequest pageRequest;
-    private String companyName;
+public class PersonConditionDto {
+    private String salersID;
     private Integer year;
     private Integer month;
     private String contractTypeName;
 
-    public PageRequest getPageRequest() {
-        return pageRequest;
+    public String getSalersID() {
+        return salersID;
     }
 
-    public void setPageRequest(PageRequest pageRequest) {
-        this.pageRequest = pageRequest;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setSalersID(String salersID) {
+        this.salersID = salersID;
     }
 
     public Integer getYear() {

@@ -1,5 +1,6 @@
 package com.cbd.cbdcommoninterface.cbd_interface.device;
 
+import com.cbd.cbdcommoninterface.pojo.device.DevType;
 import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 
@@ -119,5 +120,10 @@ public interface DeviceService {
      */
     PageResponse findMessageByManagerIDAndMessageStatus(GetMessageRequest messageRequest);
 
-
+    /**
+     * 根据设备名获取设备类别信息
+     * @param devName
+     * @return
+     */
+    DevType findDevTypeByDevName(String devName);
 }

@@ -468,6 +468,11 @@ public class DeviceServiceImpl implements DeviceService {
         return PageUtils.getPageResponse(devMessageResponsePageInfo);
     }
 
+    @Override
+    public DevType findDevTypeByDevName(String devName) {
+        return deviceDao.findDevTypeByDevName(devName);
+    }
+
     @Transactional(rollbackFor=Exception.class)
     public Boolean doAllocationDevice(String companyName, String devID, String mesID, String devName) {
         /**
