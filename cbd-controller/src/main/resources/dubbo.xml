@@ -32,6 +32,15 @@
     <dubbo:reference id="completedListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.completed.CompletedListService"/>
     <dubbo:reference id="installOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.InstallOrderService"/>
     <dubbo:reference id="repairOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RepairOrderService"/>
+    
+    <dubbo:reference id="ICarInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ICarInfoService"/>
+    <dubbo:reference id="ICompanyInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService"/>
+    <dubbo:reference id="ILoginService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ILoginService"/>
+    <dubbo:reference id="IPowerService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IPowerService"/>
+    <dubbo:reference id="IRoleDefineService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService"/>
+    <dubbo:reference id="ITrackLastService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ITrackLastService"/>
+
+
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
 
