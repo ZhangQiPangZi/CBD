@@ -2,6 +2,7 @@ package com.cbd.cbdcommoninterface.cbd_interface.user;
 
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.user;
+import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.leiVo.*;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +30,13 @@ public interface IUserService {
 
     Integer isPasswordCorrect(String phoneNum, String password);
 
-    PageResult findAllUserByPage(PageRequest pageRequest);
+    PageResponse findAllUserByPage(PageRequest pageRequest);
 
 //    PageInfo<UserResponseVo> getAllUserPageInfo(PageRequest pageRequest);
 
-    PageResult findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key);
+    PageResponse findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key);
 
-    PageResult findCarOwer(PageRequest pageRequest, Integer userType);
+    PageResponse findCarOwer(PageRequest pageRequest, Integer userType);
 
     Integer addUserInfo(AddUserVo addUserVo);
 

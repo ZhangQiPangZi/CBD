@@ -1,4 +1,4 @@
-//package com.black.lei.security.component;
+package com.cbd.cbdcommoninterface.utils.utilsForPlatForm.security.component;//package com.black.lei.security.component;
 //
 //import org.springframework.security.core.AuthenticationException;
 //import org.springframework.security.web.AuthenticationEntryPoint;

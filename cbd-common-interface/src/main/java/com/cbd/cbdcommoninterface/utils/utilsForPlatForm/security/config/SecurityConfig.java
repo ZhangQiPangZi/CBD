@@ -1,4 +1,4 @@
-package com.black.lei.security.config;
+package com.cbd.cbdcommoninterface.utils.utilsForPlatForm.security.config;
 
 
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
