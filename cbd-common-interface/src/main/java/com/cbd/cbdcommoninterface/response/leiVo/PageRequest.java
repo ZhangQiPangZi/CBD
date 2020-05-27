@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author shy_black
  * @date 2020/4/28 23:06
@@ -12,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class PageRequest {
+public class PageRequest implements Serializable {
 
 
     private int pageNum;

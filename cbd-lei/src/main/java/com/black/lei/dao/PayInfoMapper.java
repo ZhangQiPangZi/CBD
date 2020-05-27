@@ -1,7 +1,7 @@
 package com.black.lei.dao;
 
 
-import com.black.lei.beans.PayInfo;
+import com.cbd.cbdcommoninterface.pojo.leipojo.PayInfo;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,10 +1,7 @@
 package com.black.lei.dao;
 
-import com.black.lei.beans.role_power;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import com.cbd.cbdcommoninterface.pojo.leipojo.role_power;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
  * @date 2020/4/21 11:29
  * @Description:
  */
+@Mapper
 public interface role_powerDao {
 
     //保存用户权限（添加公司时保存默认管理员角色）

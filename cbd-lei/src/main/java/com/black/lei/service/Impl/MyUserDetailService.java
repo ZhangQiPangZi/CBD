@@ -1,8 +1,9 @@
 package com.black.lei.service.Impl;
 
-import com.black.lei.beans.user;
 import com.black.lei.dao.userDao;
-import com.black.lei.service.IRoleDefineService;
+
+import com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,9 +1,10 @@
 package com.black.lei.dao;
 
-import com.black.lei.beans.car_info;
-import com.black.lei.vo.CarForTreeVo;
-import com.black.lei.vo.CompanyInfoVo;
-import com.black.lei.vo.LftAndRgtVo;
+
+import com.cbd.cbdcommoninterface.pojo.leipojo.car_info;
+import com.cbd.cbdcommoninterface.response.leiVo.CarForTreeVo;
+import com.cbd.cbdcommoninterface.response.leiVo.CompanyInfoVo;
+import com.cbd.cbdcommoninterface.response.leiVo.LftAndRgtVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public interface car_infoDao {
             "where lft>=#{lft} and rgt<=#{rgt} " +
             "ORDER BY lft ")
     //'lft>'1' and rgt<'6' ORDER BY lft'
-    List<CompanyInfoVo> getCompanyTreeList(@Param("lft") String lft,@Param("rgt") String rgt);
+    List<CompanyInfoVo> getCompanyTreeList(@Param("lft") String lft, @Param("rgt") String rgt);
 
 
 

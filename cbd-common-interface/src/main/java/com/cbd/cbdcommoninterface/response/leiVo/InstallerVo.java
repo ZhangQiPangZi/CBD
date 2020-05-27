@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author shy_black
  * @date 2020/5/25 19:54
@@ -12,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class InstallerVo extends UserResponseVo {
+public class InstallerVo extends UserResponseVo implements Serializable {
 
     private Integer installer_id;
 

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 
 /**
  * @author shy_black
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
 @Getter
 @Setter
 @ToString
-public class findCarVo {
+public class findCarVo implements Serializable {
 
     private String devID;
 

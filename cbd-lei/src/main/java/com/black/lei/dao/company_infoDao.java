@@ -1,6 +1,7 @@
 package com.black.lei.dao;
 
-import com.black.lei.beans.company_info;
+import com.cbd.cbdcommoninterface.pojo.leipojo.company_info;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
  *     private Integer companyType;
  *     private String companyManagerID;
  */
+@Mapper
 public interface company_infoDao {
 
     //获取公司信息

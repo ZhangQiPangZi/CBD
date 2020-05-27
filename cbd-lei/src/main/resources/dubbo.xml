@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--注意：port ，消费者 ，提供者的顺序不要变  123.57.233.24-->
+    <dubbo:registry address="zookeeper://123.57.233.24:2181" timeout="60000"/>
+    <!-- port值-1 表示让dubbo自行找一个可用的port -->
+    <dubbo:protocol port="-1" name="dubbo"/>
+    <!-- 应用名 -->
+    <dubbo:application name="cbd-lei"/>
+
+
+
+    <!--服务提供者-->
+    <!--这两行算是发布了一个服务，如果有多个服务需要发布，挨着往下写即可，消费者同理-->
+    <!--protocol是采用的协议 ref是要发布的bean的引用，
+        interface是要发布的服务的接口，也是在common-interface中定义的-->
+    <dubbo:service protocol="dubbo" ref="carInfoService" interface="com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="carInfoService" class="com.black.lei.service.Impl.carInfoService"/>
+
+    <dubbo:service protocol="dubbo" ref="companyInfoService" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="companyInfoService" class="com.black.lei.service.Impl.companyInfoService"/>
+
+    <dubbo:service protocol="dubbo" ref="loginService" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ILoginService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="updateTimeService" class="com.black.lei.service.Impl.loginService"/>
+
+    <dubbo:service protocol="dubbo" ref="PowerService" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IPowerService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="PowerService" class="com.black.lei.service.Impl.PowerService"/>
+
+    <dubbo:service protocol="dubbo" ref="roleDefineService" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="roleDefineService" class="com.black.lei.service.Impl.roleDefineService"/>
+
+    <dubbo:service protocol="dubbo" ref="TrackLastService" interface="com.cbd.cbdcommoninterface.cbd_interface.tracklast.ITrackLastService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="TrackLastService" class="com.black.lei.service.Impl.TrackLastService"/>
+
+    <dubbo:service protocol="dubbo" ref="userService" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IUserService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="userService" class="com.black.lei.service.Impl.userService"/>
+
+
+</beans>

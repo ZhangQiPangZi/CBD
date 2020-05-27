@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author shy_black
  * @date 2020/4/18 11:05
@@ -12,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class car_user {
+public class car_user  implements Serializable {
     private String carUUID;
 
     private String userID;

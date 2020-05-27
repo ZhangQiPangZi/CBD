@@ -1,4 +1,4 @@
-package com.cbd.cbdcommoninterface.utils.utilsForPlatForm.security.config;
+package com.cbd.cbdcontroller.security.config;
 
 
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

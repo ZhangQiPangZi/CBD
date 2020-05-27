@@ -1,12 +1,13 @@
 package com.black.lei.service.Impl;
 
 
-import com.black.lei.beans.user;
-import com.black.lei.exception.GlobalException;
-import com.black.lei.result.CodeMsg;
-import com.black.lei.service.ILoginService;
-import com.black.lei.vo.InstallerVo;
-import com.black.lei.vo.LoginVo;
+
+import com.cbd.cbdcommoninterface.cbd_interface.user.ILoginService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.user;
+import com.cbd.cbdcommoninterface.response.leiVo.InstallerVo;
+import com.cbd.cbdcommoninterface.response.leiVo.LoginVo;
+import com.cbd.cbdcommoninterface.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.GlobalException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

@@ -1,11 +1,12 @@
 package com.black.lei.dao;
 
 
-import com.black.lei.beans.user;
-import com.black.lei.vo.InstallerVo;
-import com.black.lei.vo.UpdateUserVo;
-import com.black.lei.vo.UserBaseInfoAndPowerInfoVo;
-import com.black.lei.vo.UserResponseVo;
+
+import com.cbd.cbdcommoninterface.pojo.leipojo.user;
+import com.cbd.cbdcommoninterface.response.leiVo.InstallerVo;
+import com.cbd.cbdcommoninterface.response.leiVo.UpdateUserVo;
+import com.cbd.cbdcommoninterface.response.leiVo.UserBaseInfoAndPowerInfoVo;
+import com.cbd.cbdcommoninterface.response.leiVo.UserResponseVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -64,8 +65,8 @@ public interface userDao {
                 "where a.userType=b.typeID and a.`status`=c.statusID and a.companyID = d.companyID and d.lft <= #{lft} and d.rgt >= #{rgt} " +
                 "and ( a.userName like CONCAT(CONCAT('%', #{key}), '%') or a.phoneNum like CONCAT(CONCAT('%', #{key}), '%') )")
      List<UpdateUserVo> findUserByPhoneNumOrByUserName(@Param("lft") String lft,
-                                                             @Param("rgt") String rgt ,
-                                                             @Param("key") String key);
+                                                       @Param("rgt") String rgt ,
+                                                       @Param("key") String key);
 
 
     @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email,b.typeName ,c.statusName , d.companyName , d.companyID  " +
@@ -238,8 +239,7 @@ public interface userDao {
             "from user a,user_status c,company_info d ,user_installer e " +
             "where a.status=c.statusID and a.companyID=d.companyID " +
             "and a.ID = e.installer_id and a.phoneNum= #{phoneNum} and a.password=#{password} ")
-
-    InstallerVo findInstallerByPhone(String phoneNum,String password);
+    InstallerVo findInstallerByPhone(String phoneNum, String password);
 
 
 

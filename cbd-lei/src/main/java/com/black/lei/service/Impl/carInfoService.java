@@ -2,12 +2,13 @@ package com.black.lei.service.Impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.black.lei.beans.car_info;
+
 import com.black.lei.dao.TrackLastDao;
 import com.black.lei.dao.car_infoDao;
 import com.black.lei.dao.userDao;
-import com.black.lei.service.ICarInfoService;
-import com.black.lei.vo.*;
+import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.car_info;
+import com.cbd.cbdcommoninterface.response.leiVo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,8 +1,9 @@
 package com.black.lei.service.Impl;
 
 
-import com.black.lei.beans.TrackLast;
-import com.black.lei.service.ITrackLastService;
+
+import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ITrackLastService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

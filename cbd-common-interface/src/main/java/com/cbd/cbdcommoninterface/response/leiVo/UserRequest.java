@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author shy_black
  * @date 2020/4/28 23:32
@@ -13,7 +15,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserRequest {
+public class UserRequest implements Serializable {
 
     @JsonProperty(value = "ID")
     private Integer ID;

@@ -1,16 +1,15 @@
 package com.black.lei.service.Impl;
 
 
-import com.black.lei.Utils.PageUtils;
-import com.black.lei.beans.role;
-import com.black.lei.beans.user;
-import com.black.lei.dao.car_infoDao;
-import com.black.lei.dao.roleDao;
-import com.black.lei.dao.role_userDao;
-import com.black.lei.exception.GlobalException;
-import com.black.lei.result.CodeMsg;
-import com.black.lei.service.IUserService;
-import com.black.lei.vo.*;
+
+import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.role;
+import com.cbd.cbdcommoninterface.pojo.leipojo.user;
+import com.cbd.cbdcommoninterface.response.PageResponse;
+import com.cbd.cbdcommoninterface.response.leiVo.*;
+import com.cbd.cbdcommoninterface.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.GlobalException;
+import com.cbd.cbdcommoninterface.utils.PageUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -37,13 +36,13 @@ public class userService implements IUserService {
     private com.black.lei.dao.userDao userDao;
 
     @Resource
-    private roleDao roleDao;
+    private com.black.lei.dao.roleDao roleDao;
 
     @Resource
-    private role_userDao role_userDao;
+    private com.black.lei.dao.role_userDao role_userDao;
 
     @Resource
-    private car_infoDao car_infoDao;
+    private com.black.lei.dao.car_infoDao car_infoDao;
 
     /**
      * 获取登录用户角色权限
@@ -205,7 +204,7 @@ public class userService implements IUserService {
 //        return null;
 //    }
     @Override
-    public PageResult findAllUserByPage(PageRequest pageRequest) {
+    public PageResponse findAllUserByPage(PageRequest pageRequest) {
 
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
@@ -224,14 +223,14 @@ public class userService implements IUserService {
         //TODO 根据得到的userList中修改公司名称
         //取出companyID，调用companyInfoDao，根据companyID查询父公司信息，填入公司名称
 
-        return PageUtils.getPageResult(userResponseVoPageInfo);
+        return PageUtils.getPageResponse(userResponseVoPageInfo);
     }
 
 
 
     @Override
-    public PageResult findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key) {
-        return PageUtils.getPageResult(getUserByPhoneOByUserName(pageRequest, key));
+    public PageResponse findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key) {
+        return PageUtils.getPageResponse(getUserByPhoneOByUserName(pageRequest, key));
     }
 
 
@@ -248,8 +247,8 @@ public class userService implements IUserService {
     }
 
     @Override
-    public PageResult findCarOwer(PageRequest pageRequest, Integer userType) {
-        return PageUtils.getPageResult(getCarOwer(pageRequest, userType));
+    public PageResponse findCarOwer(PageRequest pageRequest, Integer userType) {
+        return PageUtils.getPageResponse(getCarOwer(pageRequest, userType));
     }
 
     public PageInfo<user> getCarOwer(PageRequest pageRequest, Integer userType) {

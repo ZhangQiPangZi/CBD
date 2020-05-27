@@ -1,4 +1,4 @@
-package com.cbd.cbdcommoninterface.utils.utilsForPlatForm.security.component;//package com.black.lei.security.component;
+package com.cbd.cbdcontroller.security.component;//package com.black.lei.security.component;
 //
 //import org.springframework.security.core.Authentication;
 //import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

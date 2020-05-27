@@ -1,10 +1,10 @@
 package com.black.lei.service.Impl;
 
-import com.black.lei.beans.power;
 import com.black.lei.dao.powerDao;
-import com.black.lei.exception.GlobalException;
-import com.black.lei.result.CodeMsg;
-import com.black.lei.service.IPowerService;
+import com.cbd.cbdcommoninterface.cbd_interface.user.IPowerService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.power;
+import com.cbd.cbdcommoninterface.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.GlobalException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

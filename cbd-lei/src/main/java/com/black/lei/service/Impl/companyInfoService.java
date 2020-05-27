@@ -1,12 +1,15 @@
 package com.black.lei.service.Impl;
 
 
-import com.black.lei.beans.company_info;
-import com.black.lei.beans.user;
+
 import com.black.lei.dao.car_infoDao;
+import com.black.lei.dao.company_infoDao;
 import com.black.lei.dao.userDao;
-import com.black.lei.service.ICompanyInfoService;
-import com.black.lei.vo.LftAndRgtVo;
+
+import com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.company_info;
+import com.cbd.cbdcommoninterface.pojo.leipojo.user;
+import com.cbd.cbdcommoninterface.response.leiVo.LftAndRgtVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -1,8 +1,9 @@
 package com.black.lei.dao;
 
 
-import com.black.lei.beans.power;
-import com.black.lei.beans.role;
+
+import com.cbd.cbdcommoninterface.pojo.leipojo.power;
+import com.cbd.cbdcommoninterface.pojo.leipojo.role;
 import org.apache.ibatis.annotations.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

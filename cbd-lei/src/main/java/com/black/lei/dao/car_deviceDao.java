@@ -1,6 +1,6 @@
 package com.black.lei.dao;
 
-import com.black.lei.beans.car_device;
+import com.cbd.cbdcommoninterface.pojo.leipojo.car_device;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 @Slf4j
 @RequestMapping("/cbd")
-public class LoginController {
+public class WEBLoginController {
 
     @Autowired
     private IUserService userService;

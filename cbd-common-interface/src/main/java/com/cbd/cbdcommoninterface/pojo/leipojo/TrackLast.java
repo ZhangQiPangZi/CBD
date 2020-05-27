@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author shy_black
  * @date 2020/4/23 18:48
@@ -31,7 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class TrackLast {
+public class TrackLast implements Serializable {
     private Integer nID;
 
     private String devID;

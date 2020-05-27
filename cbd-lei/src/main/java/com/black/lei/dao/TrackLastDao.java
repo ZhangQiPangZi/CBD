@@ -1,6 +1,6 @@
 package com.black.lei.dao;
 
-import com.black.lei.beans.TrackLast;
+import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 

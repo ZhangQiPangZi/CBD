@@ -3,6 +3,7 @@ package com.cbd.cbdcontroller.controller.user;
 
 import com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
+import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.leiVo.AddUserVo;
 import com.cbd.cbdcommoninterface.response.leiVo.PageRequest;
 import com.cbd.cbdcommoninterface.response.leiVo.PageResult;
@@ -48,8 +49,8 @@ public class UserInfoController {
      */
     @ApiOperation(value = "人员管理主页-分页获取",httpMethod = "POST")
     @RequestMapping(value = "/userInfo", method = RequestMethod.POST)
-    public Result<PageResult> showUserList(@RequestBody PageRequest pageRequest) {
-        PageResult userList = userService.findAllUserByPage(pageRequest);
+    public Result<PageResponse> showUserList(@RequestBody PageRequest pageRequest) {
+        PageResponse userList = userService.findAllUserByPage(pageRequest);
         return Result.success(userList);
     }
     /**
@@ -96,7 +97,7 @@ public class UserInfoController {
     @ApiOperation(value = "根据手机或姓名查找员工,请求方法为POST，" +
             "但是需要在网址的url后边加上key，像GET那样",httpMethod = "POST")
     @RequestMapping(value = "/findUser",method = RequestMethod.POST)
-    public Result<PageResult> findUser(@RequestBody PageRequest pageRequest,
+    public Result<PageResponse> findUser(@RequestBody PageRequest pageRequest,
                                        @RequestParam String key) {
         return Result.success(userService.findUserByPhoneNumOrByUserName(pageRequest,key));
 
@@ -104,7 +105,7 @@ public class UserInfoController {
     @ApiOperation(value = "查找当前管理员所在公司下的下属车主（一个按钮，点了以后人员列表就只显示车主）"
                     ,httpMethod = "POST")
     @RequestMapping(value = "/findCarOwer",method = RequestMethod.POST)
-    public Result<PageResult> findCarOwer(@RequestBody PageRequest pageRequest,
+    public Result<PageResponse> findCarOwer(@RequestBody PageRequest pageRequest,
                                           @RequestParam Integer userType) {
         //0为车主
         return Result.success(userService.findCarOwer(pageRequest,userType));

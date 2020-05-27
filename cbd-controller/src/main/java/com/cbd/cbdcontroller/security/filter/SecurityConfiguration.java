@@ -1,4 +1,4 @@
-package com.cbd.cbdcommoninterface.utils.utilsForPlatForm.security.filter;//package com.black.lei.security.filter;
+package com.cbd.cbdcontroller.security.filter;//package com.black.lei.security.filter;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.Bean;

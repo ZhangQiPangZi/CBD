@@ -1,7 +1,8 @@
 package com.black.lei.dao;
 
-import com.black.lei.beans.car_user;
+import com.cbd.cbdcommoninterface.pojo.leipojo.car_user;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author shy_black
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Insert;
  *     private String userID;
  *     private String companyID;
  */
+@Mapper
 public interface car_userDao {
 
     //插入car_user关联数据

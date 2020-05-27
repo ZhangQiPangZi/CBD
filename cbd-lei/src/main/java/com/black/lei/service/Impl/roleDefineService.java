@@ -1,13 +1,14 @@
 package com.black.lei.service.Impl;
 
 
-import com.black.lei.beans.power;
-import com.black.lei.beans.role;
 import com.black.lei.dao.role_powerDao;
 import com.black.lei.dao.role_userDao;
 import com.black.lei.dao.userDao;
-import com.black.lei.service.IRoleDefineService;
-import com.black.lei.vo.RoleResponseVo;
+
+import com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.power;
+import com.cbd.cbdcommoninterface.pojo.leipojo.role;
+import com.cbd.cbdcommoninterface.response.leiVo.RoleResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;

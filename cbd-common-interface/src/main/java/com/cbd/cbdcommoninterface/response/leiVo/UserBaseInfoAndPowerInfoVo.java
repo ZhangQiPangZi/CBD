@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class UserBaseInfoAndPowerInfoVo extends UserResponseVo{
+public class UserBaseInfoAndPowerInfoVo extends UserResponseVo implements Serializable {
 
     private List<role> RoleList;
 
