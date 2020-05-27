@@ -235,11 +235,18 @@ public interface userDao {
      */
     void resetPassword(String strPhone, String strNewPassWord);
 
-    @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email ,c.statusName , d.companyName , d.companyID, e.level , e.longitude , e.latitude" +
-            "from user a,user_status c,company_info d ,user_installer e " +
-            "where a.status=c.statusID and a.companyID=d.companyID " +
-            "and a.ID = e.installer_id and a.phoneNum= #{phoneNum} and a.password=#{password} ")
-    InstallerVo findInstallerByPhone(String phoneNum, String password);
+//    @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email ,c.statusName , d.companyName , d.companyID, e.level , e.longitude , e.latitude" +
+//            "from user a,user_status c,company_info d ,user_installer e " +
+//            "where a.status=c.statusID and a.companyID=d.companyID " +
+//            "and a.ID = e.installer_id and a.phoneNum= #{phoneNum} and a.password=#{password} ")
+
+
+    @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email ,c.statusName , d.companyName , d.companyID, e.level , e.longitude , e.latitude " +
+            "            from user a,user_status c,company_info d ,user_installer e " +
+            "            where a.status=c.statusID and a.companyID=d.companyID " +
+            "            and a.ID = e.installer_id and a.phoneNum= #{phoneNum} and a.password=#{password}")
+    InstallerVo findInstallerByPhone(@Param("phoneNum") String phoneNum,
+                                     @Param("password") String password);
 
 
 

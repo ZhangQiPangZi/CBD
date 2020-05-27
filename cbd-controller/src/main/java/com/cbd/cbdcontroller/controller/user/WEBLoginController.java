@@ -57,17 +57,17 @@ public class WEBLoginController {
             return Result.error(CodeMsg.PHONENUM_MISS_ERROR);
         }
         if(userService.isPasswordCorrect(loginVo.getPhoneNum(),loginVo.getPassword()) == null) {
-            return Result.error(CodeMsg.PASSWORD_ERROR);
+            return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
         }
 
         //获取用户基本信息
         installer = loginService.installerLogin(loginVo);
 
-        //获取用户的角色信息及权限信息
-        if(installer == null) {
-            log.info("获取用户信息失败");
-            return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
-        }
+//        //获取用户的角色信息及权限信息
+//        if(installer == null) {
+//            log.info("获取用户信息失败");
+//            return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
+//        }
 
 
 
@@ -92,7 +92,7 @@ public class WEBLoginController {
             return Result.error(CodeMsg.PHONENUM_MISS_ERROR);
         }
         if(userService.isPasswordCorrect(loginVo.getPhoneNum(),loginVo.getPassword()) == null) {
-            return Result.error(CodeMsg.PASSWORD_ERROR);
+            return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
         }
         //获取用户基本信息
         UserBaseInfoAndPowerInfoVo URV = userService.login(loginVo.getPhoneNum(),loginVo.getPassword());
