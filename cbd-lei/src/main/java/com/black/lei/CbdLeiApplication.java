@@ -16,13 +16,13 @@ import org.springframework.context.annotation.ImportResource;
 @EnableDubboConfiguration
 @ImportResource(locations = {"classpath:dubbo.xml"})
 @SpringBootApplication
-public class App extends SpringBootServletInitializer {
+public class CbdLeiApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
+        SpringApplication.run(CbdLeiApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(App.class);
+        return builder.sources(CbdLeiApplication.class);
     }
 }
