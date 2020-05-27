@@ -20,7 +20,8 @@ public class CodeMsg implements Serializable {
     public static final CodeMsg OUT_OF_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"00", "库存不足");
 
 
-    private CodeMsg(String code, String msg) {
+
+     private CodeMsg(String code, String msg) {
         this.code = code;
         this.msg = msg;
     }
