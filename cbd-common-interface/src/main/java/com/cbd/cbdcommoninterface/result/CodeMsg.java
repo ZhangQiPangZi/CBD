@@ -19,9 +19,26 @@ public class CodeMsg implements Serializable {
     /** 设备异常 **/
     public static final CodeMsg OUT_OF_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"00", "库存不足");
 
+    public static final CodeMsg STAFF_NAME_ERROR = new CodeMsg("1012", "用户名错误！");
+    public static final CodeMsg PASSWORD_ERROR = new CodeMsg("1013", "密码错误！");
+    public static final CodeMsg PHONENUM_DUPLICATE = new CodeMsg("1014", "手机号码不能重复！");
+    public static final CodeMsg ROLE_MSG_GET_ERROR = new CodeMsg("1015", "获取全局角色信息失败，请联系维护人员！");
+    public static final CodeMsg INPUT_ERROR = new CodeMsg("1016", "JSON输入格式不匹配！");
+    public static final CodeMsg NULL_TRACK_MSG_ERROR = new CodeMsg("1017", "该设备该时间段轨迹信息为空！");
+    public static final CodeMsg PHONENUM_PASSWORD_INCORRECT_ERROR = new CodeMsg("1018","用户名与密码不匹配！");
+    public static final CodeMsg PHONENUM_MISS_ERROR = new CodeMsg("1019","未找到该用户！");
 
 
-     private CodeMsg(String code, String msg) {
+
+
+
+
+
+    /**用户及定位异常**/
+//    public static final CodeMsg SERVER_ERROR = new CodeMsg(1001, "服务端异常,请刷新页面");
+
+    private CodeMsg(String code, String msg) {
+
         this.code = code;
         this.msg = msg;
     }

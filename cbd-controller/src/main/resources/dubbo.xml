@@ -7,7 +7,7 @@
     http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-    <!--注意：port ，消费者 ，提供者的顺序不要变-->
+    <!--注意：port ，消费者 ，提供者的顺序不要变123.57.233.24-->
     <dubbo:registry address="zookeeper://123.57.233.24:2181" timeout="60000"/>
     <!-- port值-1 表示让dubbo自行找一个可用的port -->
     <dubbo:protocol port="-1" name="dubbo"/>
@@ -32,6 +32,16 @@
     <dubbo:reference id="completedListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.completed.CompletedListService"/>
     <dubbo:reference id="installOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.InstallOrderService"/>
     <dubbo:reference id="repairOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RepairOrderService"/>
+    
+    <dubbo:reference id="ICarInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService"/>
+    <dubbo:reference id="ICompanyInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService"/>
+    <dubbo:reference id="ILoginService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ILoginService"/>
+    <dubbo:reference id="IPowerService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IPowerService"/>
+    <dubbo:reference id="IRoleDefineService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService"/>
+    <dubbo:reference id="ITrackLastService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.tracklast.ITrackLastService"/>
+    <dubbo:reference id="IUserService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IUserService"/>
+
+
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
 
