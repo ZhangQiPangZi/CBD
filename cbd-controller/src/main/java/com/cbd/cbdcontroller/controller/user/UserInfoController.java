@@ -2,18 +2,22 @@ package com.cbd.cbdcontroller.controller.user;
 
 
 import com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService;
+import com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.role;
 import com.cbd.cbdcommoninterface.response.PageResponse;
-import com.cbd.cbdcommoninterface.response.leiVo.AddUserVo;
-import com.cbd.cbdcommoninterface.response.leiVo.PageRequest;
-import com.cbd.cbdcommoninterface.response.leiVo.PageResult;
-import com.cbd.cbdcommoninterface.response.leiVo.UpdateUserVo;
+import com.cbd.cbdcommoninterface.response.leiVo.*;
 import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author shy_black
@@ -35,6 +39,9 @@ public class UserInfoController {
     private IUserService userService;
 
     @Autowired
+    private IRoleDefineService roleDefineService;
+
+    @Autowired
     private ICompanyInfoService companyInfoService;
 
     /**
@@ -50,7 +57,12 @@ public class UserInfoController {
     @ApiOperation(value = "人员管理主页-分页获取",httpMethod = "POST")
     @RequestMapping(value = "/userInfo", method = RequestMethod.POST)
     public Result<PageResponse> showUserList(@RequestBody PageRequest pageRequest) {
+
+        log.info("请求参数为："+pageRequest.toString());
+
         PageResponse userList = userService.findAllUserByPage(pageRequest);
+
+        log.info("返回参数为："+userList.toString());
         return Result.success(userList);
     }
     /**
@@ -62,14 +74,30 @@ public class UserInfoController {
     @ApiOperation(value = "新增员工信息",httpMethod = "POST")
     @RequestMapping(value = "/userInfo/addUser", method = RequestMethod.POST)
 
-    public Result<String> addUser(@RequestBody AddUserVo addUserVo) {
+    public Result<String> addUser(HttpServletRequest req,
+                                  @RequestBody AddUserVo addUserVo) throws ServletException, IOException {
 
-        Integer success = userService.addUserInfo(addUserVo);
-        if (success == 1) {
+        req.setCharacterEncoding("utf-8");//必须写在第一位，因为采用这种方式去读取数据，否则数据会出错。
+//设置这样方式去读。这样中文就能够读取出来了，但是需要注意。表单的发送方式必须是method='post'
+
+        //非安装工程师
+        // userType=3时,即为安装工程师
+        if(addUserVo.getUserType() != "3") {
+            Integer success = userService.addUserInfo(addUserVo);
+            if (success == 1) {
+                return Result.success(addUserVo.getUserName() + "录入成功");
+            } else {
+                return Result.success(addUserVo.getUserName() + "信息录入失败，请重试");
+            }
+        }
+        //安装工程师
+        Integer success = userService.addInstallerInfo(addUserVo);
+        if(success == 1) {
             return Result.success(addUserVo.getUserName() + "录入成功");
-        } else {
+        }else {
             return Result.success(addUserVo.getUserName() + "信息录入失败，请重试");
         }
+
     }
 
 
@@ -102,13 +130,19 @@ public class UserInfoController {
         return Result.success(userService.findUserByPhoneNumOrByUserName(pageRequest,key));
 
     }
-    @ApiOperation(value = "查找当前管理员所在公司下的下属车主（一个按钮，点了以后人员列表就只显示车主）"
+    @ApiOperation(value = "根据角色类型查找人员"
                     ,httpMethod = "POST")
-    @RequestMapping(value = "/findCarOwer",method = RequestMethod.POST)
+    @RequestMapping(value = "/findUserByUserType",method = RequestMethod.POST)
     public Result<PageResponse> findCarOwer(@RequestBody PageRequest pageRequest,
                                           @RequestParam Integer userType) {
         //0为车主
         return Result.success(userService.findCarOwer(pageRequest,userType));
+    }
+
+    @ApiOperation(value="返回数据库所有角色id-role",httpMethod = "POST")
+    @RequestMapping(value = "/getRoleDefine",method = RequestMethod.POST)
+    public Result<List<RoleResponseVo>> findrole() {
+        return Result.success(roleDefineService.getRoleDefines());
     }
 
 

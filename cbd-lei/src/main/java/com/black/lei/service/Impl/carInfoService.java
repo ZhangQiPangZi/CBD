@@ -71,6 +71,26 @@ public class carInfoService implements ICarInfoService {
             //c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat,MAX(t.nTime) AS nTime
             List<CarForTreeVo> carForTreeVoList = carInfoDao.getUserForCarVo(curCompanyID);
 
+
+
+            //解决数据库err-1055问题，拆分sql，使groupby和Max函数分离
+
+            //得到当前公司下设备的id列表
+            List<String> devIDList = carInfoDao.getDevIDListByCompanyID(curCompanyID);
+
+            //循环取出devID，用devID找到该devID的MAX(nTime)时的经纬度
+            Iterator<String> devIDListIt = devIDList.iterator();
+            while (devIDListIt.hasNext()) {
+                String tmpDevID = devIDListIt.next();
+
+                CarForTreeVo carForTreeVo = new CarForTreeVo();
+                carForTreeVo.setDevID(tmpDevID);
+
+                //根据devID查找max nTime时经纬度
+                //CarForTreeVo;
+
+            }
+
             log.info("查询到的车辆信息为："+carForTreeVoList.toString());
 
             //获得了该公司旗下的车辆及人员信息列表，填入tmpCompanyResponse中

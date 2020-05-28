@@ -57,7 +57,7 @@ public class roleDefineService implements IRoleDefineService {
 
         log.info("获得的角色id和名称为："+roleList.toString());
 
-        List<RoleResponseVo> resList = new ArrayList<RoleResponseVo>();
+        List<RoleResponseVo> resList = new ArrayList<>();
         Iterator<role> it = roleList.iterator();
         while(it.hasNext()){
             //执行过程中会执行数据锁定，性能稍差，若在循环过程中要去掉某个元素只能调用iter.remove()方法。

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author shy_black
@@ -25,11 +26,15 @@ public class UpdateUserVo implements Serializable {
 
     private String sex;
 
-    private String typeName;
+    private Integer userType;
 
-    private String statusName;
+    private List<Integer> roleList;
 
-    private String companyName;
+    private Integer status;
 
-    private String password;
+//    private String companyID;
+
+//    private String companyName;
+
+//    private String password;
 }

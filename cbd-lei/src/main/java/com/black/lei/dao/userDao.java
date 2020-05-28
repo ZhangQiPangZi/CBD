@@ -3,10 +3,7 @@ package com.black.lei.dao;
 
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.user;
-import com.cbd.cbdcommoninterface.response.leiVo.InstallerVo;
-import com.cbd.cbdcommoninterface.response.leiVo.UpdateUserVo;
-import com.cbd.cbdcommoninterface.response.leiVo.UserBaseInfoAndPowerInfoVo;
-import com.cbd.cbdcommoninterface.response.leiVo.UserResponseVo;
+import com.cbd.cbdcommoninterface.response.leiVo.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -56,15 +53,20 @@ public interface userDao {
     @Select("select companyID from company_info where companyName = #{companyName}")
     String getCompanyIDByCompanyName(String companyName);
 
-    @Select("select * from user where userType = #{userType}")
-    List<user> findCarOwerByUserType(Integer userType);
+    @Select("select a.ID,a.userName,a.sex,a.companyID,c.statusName,a.phoneNum,a.email,b.typeName , d.companyName " +
+            "from user a, person_type b,user_status c ,company_info d " +
+            "where a.userType=b.typeID and a.`status`=c.statusID and a.companyID = d.companyID and d.lft >= #{lft} and d.rgt <= #{rgt}" +
+            "and userType = #{userType}")
+    List<UserResponseVo> findCarOwerByUserType(@Param("lft") String lft,
+                                               @Param("rgt") String rgt ,
+                                               @Param("userType") Integer userType);
 
 
-     @Select("select a.ID,a.userName,a.phoneNum,a.email,b.typeName ,c.statusName , d.companyName " +
+     @Select("select a.ID,a.userName,a.sex,a.companyID,c.statusName,a.phoneNum,a.email,b.typeName , d.companyName " +
                 "from user a, person_type b,user_status c ,company_info d " +
-                "where a.userType=b.typeID and a.`status`=c.statusID and a.companyID = d.companyID and d.lft <= #{lft} and d.rgt >= #{rgt} " +
+                "where a.userType=b.typeID and a.`status`=c.statusID and a.companyID = d.companyID and d.lft >= #{lft} and d.rgt <= #{rgt} " +
                 "and ( a.userName like CONCAT(CONCAT('%', #{key}), '%') or a.phoneNum like CONCAT(CONCAT('%', #{key}), '%') )")
-     List<UpdateUserVo> findUserByPhoneNumOrByUserName(@Param("lft") String lft,
+     List<UserResponseVo> findUserByPhoneNumOrByUserName(@Param("lft") String lft,
                                                        @Param("rgt") String rgt ,
                                                        @Param("key") String key);
 
@@ -91,9 +93,13 @@ public interface userDao {
             "where ID = #{ID}")
     void update(user saveUser);
 
+//    @Insert("insert into user (userName,phoneNum,companyID,status,email,userType) " +
+//            "values (#{userName},#{phoneNum},#{companyID},#{status},#{email},#{userType})")
+//    Integer insert(user saveUser);
+
     @Insert("insert into user (userName,phoneNum,companyID,status,email,userType) " +
             "values (#{userName},#{phoneNum},#{companyID},#{status},#{email},#{userType})")
-    Integer insert(user saveUser);
+    Integer insert(AddUserVo saveUser);
 
     /**
      * 创建用户(添加公司时默认创建管理员用户
@@ -127,7 +133,7 @@ public interface userDao {
      * @return
      */
     @Update("update user " +
-            "set ID = #{ID},userName=#{userName},phoneNum=#{phoneNum},password=#{password},companyID=#{companyID},status=#{status} ,email = #{email},userType = #{userType} " +
+            "set ID = #{ID},userName=#{userName},phoneNum=#{phoneNum},status=#{status} ,email = #{email},userType = #{userType} " +
             "where ID = #{ID} ")
     Integer updateUserInfo(user userInfo);
 

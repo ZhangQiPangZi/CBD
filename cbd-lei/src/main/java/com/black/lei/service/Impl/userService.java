@@ -1,7 +1,7 @@
 package com.black.lei.service.Impl;
 
 
-
+import com.black.lei.dao.user_installerDao;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.role;
 import com.cbd.cbdcommoninterface.pojo.leipojo.user;
@@ -10,6 +10,7 @@ import com.cbd.cbdcommoninterface.response.leiVo.*;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.GlobalException;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
+import com.cbd.cbdcommoninterface.utils.RandomInstallerUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -43,6 +44,9 @@ public class userService implements IUserService {
 
     @Resource
     private com.black.lei.dao.car_infoDao car_infoDao;
+
+    @Resource
+    private user_installerDao user_installerDao;
 
     /**
      * 获取登录用户角色权限
@@ -91,10 +95,11 @@ public class userService implements IUserService {
         // 返回为1则有，为null则没有该用户
         return userDao.hasFindByPhone(phoneNum);
     }
+
     @Override
-    public Integer isPasswordCorrect(String phoneNum,String password) {
+    public Integer isPasswordCorrect(String phoneNum, String password) {
         //验证，密码是否正确
-        return userDao.isPasswordCorrect(phoneNum,password);
+        return userDao.isPasswordCorrect(phoneNum, password);
     }
 
     @Override
@@ -139,6 +144,7 @@ public class userService implements IUserService {
      * @return
      * @author wcj
      */
+    @Transactional
     @Override
     public Integer updateUserInfo(UpdateUserVo updateUserVo) {
         log.info("开始执行更新SQL");
@@ -148,17 +154,36 @@ public class userService implements IUserService {
         userInfo.setID(updateUserVo.getID());
         userInfo.setUserName(updateUserVo.getUserName());
         userInfo.setPhoneNum(updateUserVo.getPhoneNum());
-
-        //-----------------------
-        userInfo.setUserType(userDao.getUserTypeID(updateUserVo.getTypeName()));
-        userInfo.setStatus(userDao.getUserStatusID(updateUserVo.getStatusName()));
-        userInfo.setCompanyID(userDao.getCompanyIDByCompanyName(updateUserVo.getCompanyName()));
-
         userInfo.setEmail(updateUserVo.getEmail());
-        userInfo.setPassword(updateUserVo.getPassword());
+        userInfo.setSex(updateUserVo.getSex());
+
+        userInfo.setUserType(updateUserVo.getUserType());
+        userInfo.setStatus(updateUserVo.getStatus());
+
+//        userInfo.setCompanyID(userDao.getCompanyIDByCompanyName(updateUserVo.getCompanyName()));
+
+//        userInfo.setPassword(updateUserVo.getPassword());
+
+        //TODO 添加手机号重复校验
+        //如果Phone不重复，向表中添加数据
+//        if (null != userDao.findByPhone(updateUserVo.getPhoneNum())) {
+//            throw new GlobalException(CodeMsg.PHONENUM_DUPLICATE);
+//        }
+
+
         log.info("2");
-        log.info("userInfo新信息为：" + userInfo.toString());
-        return userDao.updateUserInfo(userInfo);
+//        log.info("userInfo新信息为：" + userInfo.toString());
+        Integer res = userDao.updateUserInfo(userInfo);
+
+        //更新role_user表中的数据，先删除，在新增
+        role_userDao.deleteUserRoles(userInfo.getID());
+
+        for(Integer i : updateUserVo.getRoleList()) {
+            role_userDao.addRole_User(i,userInfo.getID());
+        }
+
+
+        return res;
 
     }
 
@@ -208,7 +233,7 @@ public class userService implements IUserService {
 
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        log.info("pageNum = "+pageNum ,"pageSize = " + pageSize);
+        log.info("pageNum = " + pageNum, "pageSize = " + pageSize);
 
         LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(pageRequest.getCompanyID());
         String lft = lftAndRgtVo.getLft();
@@ -217,7 +242,7 @@ public class userService implements IUserService {
 
         Page page = PageHelper.startPage(pageNum, pageSize);
         List<UserResponseVo> userList = userDao.findAllUserInfoByPage(lft, rgt);
-        PageInfo<UserResponseVo> userResponseVoPageInfo= new PageInfo<>(userList);
+        PageInfo<UserResponseVo> userResponseVoPageInfo = new PageInfo<>(userList);
         userResponseVoPageInfo.setPageNum(page.getPageNum());
         userResponseVoPageInfo.setPageSize(page.getPageSize());
         //TODO 根据得到的userList中修改公司名称
@@ -227,14 +252,13 @@ public class userService implements IUserService {
     }
 
 
-
     @Override
     public PageResponse findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key) {
         return PageUtils.getPageResponse(getUserByPhoneOByUserName(pageRequest, key));
     }
 
 
-    public PageInfo<UpdateUserVo> getUserByPhoneOByUserName(PageRequest pageRequest, String key) {
+    public PageInfo<UserResponseVo> getUserByPhoneOByUserName(PageRequest pageRequest, String key) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
@@ -242,7 +266,8 @@ public class userService implements IUserService {
         String lft = lftAndRgtVo.getLft();
         String rgt = lftAndRgtVo.getRgt();
 
-        List<UpdateUserVo> userList = userDao.findUserByPhoneNumOrByUserName(lft, rgt, key);
+        PageHelper.startPage(pageNum, pageSize);
+        List<UserResponseVo> userList = userDao.findUserByPhoneNumOrByUserName(lft, rgt, key);
         return new PageInfo<>(userList);
     }
 
@@ -251,11 +276,16 @@ public class userService implements IUserService {
         return PageUtils.getPageResponse(getCarOwer(pageRequest, userType));
     }
 
-    public PageInfo<user> getCarOwer(PageRequest pageRequest, Integer userType) {
+    public PageInfo<UserResponseVo> getCarOwer(PageRequest pageRequest, Integer userType) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
+
+        LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(pageRequest.getCompanyID());
+        String lft = lftAndRgtVo.getLft();
+        String rgt = lftAndRgtVo.getRgt();
+
         PageHelper.startPage(pageNum, pageSize);
-        List<user> userList = userDao.findCarOwerByUserType(userType);
+        List<UserResponseVo> userList = userDao.findCarOwerByUserType(lft,rgt,userType);
         return new PageInfo<>(userList);
     }
 
@@ -266,27 +296,26 @@ public class userService implements IUserService {
 
         //userName,phoneNum,companyID,status,email,userType,sex ,roleList
 
-        user userInfo = new user();
+        AddUserVo userInfo = new AddUserVo();
         userInfo.setUserName(addUserVo.getUserName());
         userInfo.setPhoneNum(addUserVo.getPhoneNum());
         //从数据库获得typeName对应的id及statusName对应的id，公司名称对应的公司id存入user中
 
-        userInfo.setUserType(Integer.valueOf(addUserVo.getUserType()));
-        userInfo.setStatus(Integer.valueOf(addUserVo.getStatus()));
+        userInfo.setUserType(addUserVo.getUserType());
+        userInfo.setStatus(addUserVo.getStatus());
         userInfo.setCompanyID(addUserVo.getCompanyID());
         userInfo.setEmail(addUserVo.getEmail());
         userInfo.setSex(addUserVo.getSex());
 
-        userInfo.setEmail(addUserVo.getEmail());
 
 
         //如果Phone不重复，向表中添加数据
         if (null != userDao.findByPhone(addUserVo.getPhoneNum())) {
             throw new GlobalException(CodeMsg.PHONENUM_DUPLICATE);
         }
-        log.info(userInfo.toString());
+        //log.info(userInfo.toString());
 
-        if(userDao.insert(userInfo) == 0) {
+        if (userDao.insert(userInfo) == 0) {
             return 0;
         }
 
@@ -295,9 +324,9 @@ public class userService implements IUserService {
 
         //向数据库role_user添加角色
         int userID = userDao.findIDByPhoneNum(userInfo.getPhoneNum());
-        for(Integer roleID : addUserVo.getRoleList()) {
+        for (Integer roleID : addUserVo.getRoleList()) {
 
-            role_userDao.addRole_User(roleID,userID);
+            role_userDao.addRole_User(roleID, userID);
 
         }
 
@@ -306,6 +335,27 @@ public class userService implements IUserService {
         return 1;
     }
 
+    @Transactional
+    @Override
+    public Integer addInstallerInfo(AddUserVo addUserVo) {
+
+        Integer success1 = addUserInfo(addUserVo);
+        if (success1 == 0) {
+            log.info("添加安装工失败");
+            return success1;
+        }
+        //向user_installer表插数据
+        Integer installer_id = userDao.findIDByPhoneNum(addUserVo.getPhoneNum());
+        RandomInstallerUtil RIU = new RandomInstallerUtil();
+
+        Integer success2 = user_installerDao.
+                addInstallerInfo(installer_id,
+                        RIU.getInstallerVo().getLevel(),
+                        RIU.getInstallerVo().getLongitude(),
+                        RIU.getInstallerVo().getLatitude());
+
+        return success2;
+    }
 
 
 //    public List<user> getUserListByUserType(int type) {return null;}

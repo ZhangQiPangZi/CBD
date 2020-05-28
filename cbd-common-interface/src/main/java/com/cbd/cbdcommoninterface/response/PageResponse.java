@@ -1,11 +1,14 @@
 package com.cbd.cbdcommoninterface.response;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * 分页返回结果
  */
+@ToString
 public class PageResponse implements Serializable {
     /**
      * 当前页码

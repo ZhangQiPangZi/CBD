@@ -36,9 +36,11 @@ public interface IUserService {
 
     PageResponse findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key);
 
-    PageResponse findCarOwer(PageRequest pageRequest, Integer userType);
+    PageResponse findCarOwer(PageRequest pageRequest,Integer userType);
 
     Integer addUserInfo(AddUserVo addUserVo);
+
+    Integer addInstallerInfo(AddUserVo addUserVo);
 
     //InstallerVo findInstallerInfoByPhoneNum(String phoneNum);
 

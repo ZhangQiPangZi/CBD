@@ -24,6 +24,8 @@ public interface role_userDao {
     void deliverRoler(int roleID, String userID);
 
 
+
+
     @Insert("insert into role_user(roleID,userID) " +
             "values(roleID,userID)")
     void addRole_User(int roleID,int userID);
@@ -44,7 +46,7 @@ public interface role_userDao {
      * @param userID
      */
     @Delete("delete from role_user where userID = #{0}")
-    void deleteUserRoles(String userID);
+    void deleteUserRoles(Integer userID);
 
     /**
      * 给员工分配角色时，更新指定角色

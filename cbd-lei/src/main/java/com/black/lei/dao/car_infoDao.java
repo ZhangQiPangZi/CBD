@@ -41,10 +41,20 @@ public interface car_infoDao {
     Integer insert(car_info saveCarInfo);
 
 
-    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat,MAX(t.nTime) AS nTime " +
+    //查询当前公司下的车辆的devID
+
+    @Select("select c.devID " +
             "from car_info c  " +
             "LEFT JOIN track t on c.devID = t.devID where c.companyID = #{companyID} " +
-            "GROUP BY devID ")
+            "GROUP BY c.devID ")
+    List<String> getDevIDListByCompanyID(@Param("companyID") String companyID);
+
+
+
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, MAX(t.nTime) AS nTime " +
+            "            from car_info c  " +
+            "            LEFT JOIN track t on c.devID = t.devID where c.companyID = #{companyID}" +
+            "            GROUP BY c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime ")
     List<CarForTreeVo>  getUserForCarVo(String companyID);
 
     @Select("select lft,rgt from company_info where companyID=#{companyID}")
