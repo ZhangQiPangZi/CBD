@@ -40,6 +40,8 @@
     <dubbo:reference id="IRoleDefineService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService"/>
     <dubbo:reference id="ITrackLastService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.tracklast.ITrackLastService"/>
     <dubbo:reference id="IUserService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IUserService"/>
+    <dubbo:reference id="IAlipayService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.alipay.IAlipayService"/>
+
 
 
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->

@@ -54,24 +54,25 @@ public class UserInfoController {
      * @param
      * @return
      */
-    @ApiOperation(value = "人员管理主页-分页获取",httpMethod = "POST")
+    @ApiOperation(value = "人员管理主页-分页获取", httpMethod = "POST")
     @RequestMapping(value = "/userInfo", method = RequestMethod.POST)
     public Result<PageResponse> showUserList(@RequestBody PageRequest pageRequest) {
 
-        log.info("请求参数为："+pageRequest.toString());
+        log.info("请求参数为：" + pageRequest.toString());
 
         PageResponse userList = userService.findAllUserByPage(pageRequest);
 
-        log.info("返回参数为："+userList.toString());
+        log.info("返回参数为：" + userList.toString());
         return Result.success(userList);
     }
+
     /**
      * 添加员工------角色准入：管理人员
      *
      * @param addUserVo
      * @return
      */
-    @ApiOperation(value = "新增员工信息",httpMethod = "POST")
+    @ApiOperation(value = "新增员工信息", httpMethod = "POST")
     @RequestMapping(value = "/userInfo/addUser", method = RequestMethod.POST)
 
     public Result<String> addUser(HttpServletRequest req,
@@ -81,66 +82,70 @@ public class UserInfoController {
 //设置这样方式去读。这样中文就能够读取出来了，但是需要注意。表单的发送方式必须是method='post'
 
         //非安装工程师
-        // userType=3时,即为安装工程师
-        if(addUserVo.getUserType() != "3") {
+        // userType==3时,即为安装工程师
+        if (addUserVo.getUserType() != 3) {
+            log.info("开始录入员工----非安装工程师信息");
             Integer success = userService.addUserInfo(addUserVo);
             if (success == 1) {
                 return Result.success(addUserVo.getUserName() + "录入成功");
             } else {
                 return Result.success(addUserVo.getUserName() + "信息录入失败，请重试");
             }
-        }
-        //安装工程师
-        Integer success = userService.addInstallerInfo(addUserVo);
-        if(success == 1) {
-            return Result.success(addUserVo.getUserName() + "录入成功");
-        }else {
-            return Result.success(addUserVo.getUserName() + "信息录入失败，请重试");
+        } else {
+            //安装工程师
+            log.info("录入安装工信息");
+            Integer success = userService.addInstallerInfo(addUserVo);
+            if (success == 1) {
+                return Result.success(addUserVo.getUserName() + "录入成功");
+            } else {
+                return Result.success(addUserVo.getUserName() + "信息录入失败，请重试");
+            }
         }
 
     }
-
 
 
     //这里update语句在navicat上跑没问题，但在mybatis上跑就没反应
     //使用JSONObject接受json没有问题，但是用userrequest接受，id为null
     //解决方法，在UserRequest的ID属性上加jsonProperty注解，指定属性名
-    @ApiOperation(value = "根据ID修改员工信息",httpMethod = "POST")
-    @RequestMapping(value = "/userInfo/updateUser",method = RequestMethod.POST)
-    public  Result<String> updateUser(@RequestBody UpdateUserVo updateUserVo) {
+    @ApiOperation(value = "根据ID修改员工信息", httpMethod = "POST")
+    @RequestMapping(value = "/userInfo/updateUser", method = RequestMethod.POST)
+    public Result<String> updateUser(@RequestBody UpdateUserVo updateUserVo) {
         log.info("1");
         //{"ID":1007,"userName":"武磊","phoneNum":"15909118817","password":"1234567",
         // "companyID":"22","status":"1","userType":"0","remark":"null"}
-        log.info("userrequest信息为"+updateUserVo.toString());
+        log.info("userrequest信息为" + updateUserVo.toString());
         Integer success = userService.updateUserInfo(updateUserVo);
-        log.info("执行更新SQL结束,success的值为"+success);
-        if(success == 1) {
+        log.info("执行更新SQL结束,success的值为" + success);
+        if (success == 1) {
             return Result.success("修改员工信息成功");
-        }else {
+        } else {
             log.info("修改员工信息失败，请稍后重试");
             return Result.success("修改员工信息失败，请稍后重试");
         }
 
     }
+
     @ApiOperation(value = "根据手机或姓名查找员工,请求方法为POST，" +
-            "但是需要在网址的url后边加上key，像GET那样",httpMethod = "POST")
-    @RequestMapping(value = "/findUser",method = RequestMethod.POST)
+            "但是需要在网址的url后边加上key，像GET那样", httpMethod = "POST")
+    @RequestMapping(value = "/findUser", method = RequestMethod.POST)
     public Result<PageResponse> findUser(@RequestBody PageRequest pageRequest,
-                                       @RequestParam String key) {
-        return Result.success(userService.findUserByPhoneNumOrByUserName(pageRequest,key));
+                                         @RequestParam String key) {
+        return Result.success(userService.findUserByPhoneNumOrByUserName(pageRequest, key));
 
     }
+
     @ApiOperation(value = "根据角色类型查找人员"
-                    ,httpMethod = "POST")
-    @RequestMapping(value = "/findUserByUserType",method = RequestMethod.POST)
+            , httpMethod = "POST")
+    @RequestMapping(value = "/findUserByUserType", method = RequestMethod.POST)
     public Result<PageResponse> findCarOwer(@RequestBody PageRequest pageRequest,
-                                          @RequestParam Integer userType) {
+                                            @RequestParam Integer userType) {
         //0为车主
-        return Result.success(userService.findCarOwer(pageRequest,userType));
+        return Result.success(userService.findCarOwer(pageRequest, userType));
     }
 
-    @ApiOperation(value="返回数据库所有角色id-role",httpMethod = "POST")
-    @RequestMapping(value = "/getRoleDefine",method = RequestMethod.POST)
+    @ApiOperation(value = "返回数据库所有角色id-role", httpMethod = "POST")
+    @RequestMapping(value = "/getRoleDefine", method = RequestMethod.POST)
     public Result<List<RoleResponseVo>> findrole() {
         return Result.success(roleDefineService.getRoleDefines());
     }
@@ -159,8 +164,6 @@ public class UserInfoController {
 //        return Result.success(installerVo);
 //
 //    }
-
-
 
 
 }

@@ -40,7 +40,7 @@ public class RandomInstallerUtil {
         installerVoList.add(new InstallerVo(1, "108.93", "34.27"));
 
 
-        return installerVoList.get(tmp);
+        return installerVoList.get(installerVoList.indexOf(tmp));
 
     }
 

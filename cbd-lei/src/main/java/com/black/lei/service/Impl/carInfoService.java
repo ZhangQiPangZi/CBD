@@ -44,6 +44,20 @@ public class carInfoService implements ICarInfoService {
         return res;
     }
 
+
+    /**
+     *
+     * @param companyID
+     * @return
+     *
+     * 1.获取公司左右值信息，查找到当前公司及子公司的信息
+     * 2.创建List<CompanyAndCarInfoResponse>，存储公司及车辆信息
+     * 3.外层循环--放入公司信息
+     * 4.   内层循环--放入车辆信息
+     * 5.返回companyAndCarInfoResponseList
+     *
+     */
+
     @Transactional
     @Override
     public List<CompanyAndCarInfoResponse> getCompanyAndCarInfo(String companyID) {
@@ -67,27 +81,31 @@ public class carInfoService implements ICarInfoService {
             //将公司信息填入临时companyResponse
             tmpCompanyAndCarInfoResponse.setCompanyInfoVo(tmpCompany);
             String curCompanyID = tmpCompany.getCompanyID();
+
             //查询公司下属车辆信息--根据公司id查询车辆信息及人员信息
-            //c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat,MAX(t.nTime) AS nTime
-            List<CarForTreeVo> carForTreeVoList = carInfoDao.getUserForCarVo(curCompanyID);
-
-
 
             //解决数据库err-1055问题，拆分sql，使groupby和Max函数分离
 
+            //先获取devID-------------c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat,MAX(t.nTime) AS nTime
+            //List<CarForTreeVo> carForTreeVoList = carInfoDao.getUserForCarVo(curCompanyID);
+
             //得到当前公司下设备的id列表
             List<String> devIDList = carInfoDao.getDevIDListByCompanyID(curCompanyID);
+
+            List<CarForTreeVo> carForTreeVoList = new ArrayList<>();
 
             //循环取出devID，用devID找到该devID的MAX(nTime)时的经纬度
             Iterator<String> devIDListIt = devIDList.iterator();
             while (devIDListIt.hasNext()) {
                 String tmpDevID = devIDListIt.next();
+                //查除nTime的数据
+                CarForTreeVo carForTreeVo = carInfoDao.findTrackLastAndCarInfo(tmpDevID);
 
-                CarForTreeVo carForTreeVo = new CarForTreeVo();
-                carForTreeVo.setDevID(tmpDevID);
+                //查nTime
 
-                //根据devID查找max nTime时经纬度
-                //CarForTreeVo;
+                //根据devID查找max nTime时经纬度,返回carForTreeVo
+
+                carForTreeVoList.add(carForTreeVo);
 
             }
 
@@ -125,10 +143,7 @@ public class carInfoService implements ICarInfoService {
         return userBaseInfo;
     }
 
-    @Override
-    public List<findCarVo> findCarByOwner(String ompanyID, String serarchKey) {
-        return null;
-    }
+
 
     public boolean update(car_info saveCarInfo) {
         carInfoDao.update(saveCarInfo);
@@ -138,6 +153,46 @@ public class carInfoService implements ICarInfoService {
     public List<Map<String, String>> findCarListBystrTEID(String strTEID) {
         return carInfoDao.findCarListBystrTEID(strTEID);
     }
+
+    /**
+     * //根据车辆devID/车主姓名/电话/车牌号
+     * @param companyID
+     * @param searchKey
+     * @return
+     */
+    @Override
+    public List<CarForTreeVo> findCarByOwner(String companyID, String searchKey) {
+
+        //1.查询当前公司的左值与右值
+        LftAndRgtVo lftAndRgt = carInfoDao.getLftAndRgt(companyID);
+        String lft = lftAndRgt.getLft();
+        String rgt = lftAndRgt.getRgt();
+
+        //2.根据模糊key获取相关的车辆dev列表
+        List<String> devIDList = carInfoDao.findLikelyDevID(lft,rgt,searchKey);
+
+        //3.根据devID获取车辆最后定位信息及车辆信息
+
+        List<CarForTreeVo> carForTreeVoList = new ArrayList<>();
+
+        //循环取出devID，用devID找到该devID的MAX(nTime)时的经纬度
+        Iterator<String> devIDListIt = devIDList.iterator();
+        while (devIDListIt.hasNext()) {
+            String tmpDevID = devIDListIt.next();
+
+            //查询车辆最后定位信息及车辆信息
+            CarForTreeVo carForTreeVo = carInfoDao.findTrackLastAndCarInfo(tmpDevID);
+
+            carForTreeVoList.add(carForTreeVo);
+
+        }
+
+
+
+        return carForTreeVoList;
+    }
+
+
 
     public car_info findCarbyOwnerID(String strPersonID) {
         return carInfoDao.findCarbyOwnerID(strPersonID);

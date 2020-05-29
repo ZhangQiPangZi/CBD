@@ -2,6 +2,7 @@ package com.black.lei.dao;
 
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.car_info;
+import com.cbd.cbdcommoninterface.response.leiVo.BaseOrderInfoVo;
 import com.cbd.cbdcommoninterface.response.leiVo.CarForTreeVo;
 import com.cbd.cbdcommoninterface.response.leiVo.CompanyInfoVo;
 import com.cbd.cbdcommoninterface.response.leiVo.LftAndRgtVo;
@@ -41,6 +42,14 @@ public interface car_infoDao {
     Integer insert(car_info saveCarInfo);
 
 
+    @Select("select count(orderID) from car_info where orderID=#{orderID}")
+    Integer isOrderIDRepeated(@Param("orderID") String orderID);
+
+
+    @Insert("insert into car_info (orderID,owerName,companyID,companyName,carPlateNum,phoneNum,status) " +
+            "values (#{orderId},#{carOwnerName},#{companyID},#{companyName},#{licenseNumber},#{phoneNumber},#{status})" )
+    Integer addCarInfo(BaseOrderInfoVo baseOrderInfoVo);
+
     //查询当前公司下的车辆的devID
 
     @Select("select c.devID " +
@@ -49,9 +58,14 @@ public interface car_infoDao {
             "GROUP BY c.devID ")
     List<String> getDevIDListByCompanyID(@Param("companyID") String companyID);
 
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
+            "       from track t,car_info  c " +
+            "       where t.devID = #{devID} " +
+            "       ORDER BY nTime DESC limit 1 ")
+    CarForTreeVo findTrackLastAndCarInfo(@Param("devID") String devID);
 
 
-    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, MAX(t.nTime) AS nTime " +
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, MAX(t.nTime) AS nTime ,carPlateNum " +
             "            from car_info c  " +
             "            LEFT JOIN track t on c.devID = t.devID where c.companyID = #{companyID}" +
             "            GROUP BY c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime ")
@@ -74,6 +88,19 @@ public interface car_infoDao {
     //'lft>'1' and rgt<'6' ORDER BY lft'
     List<CompanyInfoVo> getCompanyTreeList(@Param("lft") String lft, @Param("rgt") String rgt);
 
+
+    // 根据车辆devID/车主姓名/电话/车牌号
+    @Select("select c.devID " +
+            "from car_info  c ,company_info d " +
+            "where d.lft >= #{lft} and d.rgt<= #{rgt}  and c.companyID=d.companyID " +
+            "and ( c.devID like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+            "or c.owerName like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+            "or c.phoneNum like CONCAT(CONCAT('%', #{searchKey}), '%')n" +
+            "or c.carPlateNum like CONCAT(CONCAT('%', #{searchKey}), '%') ) ")
+
+    List<String> findLikelyDevID(@Param("lft") String lft,
+                                 @Param("rgt") String rgt,
+                                 @Param("searchKey") String searchKey);
 
 
     //根据UUID查找车辆全部信息

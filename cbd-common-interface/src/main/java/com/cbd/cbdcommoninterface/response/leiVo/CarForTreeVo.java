@@ -32,4 +32,6 @@ public class CarForTreeVo implements Serializable {
 
     private String dbLat;
 
+    private String carPlateNum;
+
 }

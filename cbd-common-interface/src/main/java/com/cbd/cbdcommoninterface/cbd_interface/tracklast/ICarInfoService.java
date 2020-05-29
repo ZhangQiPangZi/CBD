@@ -2,6 +2,7 @@ package com.cbd.cbdcommoninterface.cbd_interface.tracklast;
 
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.car_info;
+import com.cbd.cbdcommoninterface.response.leiVo.CarForTreeVo;
 import com.cbd.cbdcommoninterface.response.leiVo.CompanyAndCarInfoResponse;
 import com.cbd.cbdcommoninterface.response.leiVo.findCarVo;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,6 @@ public interface ICarInfoService {
 
 
     /**搜索车辆*/
-    List<findCarVo> findCarByOwner(String ompanyID, String serarchKey);
+    List<CarForTreeVo> findCarByOwner(String ompanyID, String searchKey);
 
 }

@@ -48,5 +48,9 @@
     <!--要发布的服务的实现类-->
     <bean id="userService" class="com.black.lei.service.Impl.userService"/>
 
+    <dubbo:service protocol="dubbo" ref="alipayService" interface="com.cbd.cbdcommoninterface.cbd_interface.alipay.IAlipayService" timeout="1200000"/>
+    <!--要发布的服务的实现类-->
+    <bean id="alipayService" class="com.black.lei.service.Impl.alipayService"/>
+
 
 </beans>

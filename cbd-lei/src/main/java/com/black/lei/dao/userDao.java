@@ -124,7 +124,11 @@ public interface userDao {
     List<Map<String,Object>> getUserListByCompanyID(String CompanyID);
 
 
+    @Select("select companyID from user where id=#{userID}")
+    String getCompanyIDByUserID(@Param("userID") Integer userID);
 
+    @Select("select companyName from company_info where companyID=#{companyID} ")
+    String getCompanyNameByCompanyID(@Param("companyID") String companyID);
 
     /**
      * 修改员工信息
@@ -149,6 +153,11 @@ public interface userDao {
     @Select("select * from user " +
             "where phoneNum = #{phoneNum} limit 1")
     user findByPhone(String phoneNum);
+
+    @Select("select count(phoneNum) from user " +
+            "where phoneNum = #{phoneNum} ")
+    Integer findCountByPhone(String phoneNum);
+
 
     /**
      * 根据姓名查询用户是否存在

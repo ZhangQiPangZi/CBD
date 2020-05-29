@@ -166,12 +166,12 @@ public class userService implements IUserService {
 
         //TODO 添加手机号重复校验
         //如果Phone不重复，向表中添加数据
-//        if (null != userDao.findByPhone(updateUserVo.getPhoneNum())) {
-//            throw new GlobalException(CodeMsg.PHONENUM_DUPLICATE);
-//        }
+        if ( userDao.findCountByPhone(updateUserVo.getPhoneNum()) > 1 ) {
+            throw new GlobalException(CodeMsg.PHONENUM_DUPLICATE);
+        }
 
 
-        log.info("2");
+        log.info("手机号不重复，开始修改员工信息");
 //        log.info("userInfo新信息为：" + userInfo.toString());
         Integer res = userDao.updateUserInfo(userInfo);
 

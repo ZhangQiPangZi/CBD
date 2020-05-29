@@ -31,7 +31,7 @@ public class AddUserVo implements Serializable {
     private String email;
 
     //用户类型--用于展示
-    private String userType;
+    private Integer userType;
 
     private String sex;
 

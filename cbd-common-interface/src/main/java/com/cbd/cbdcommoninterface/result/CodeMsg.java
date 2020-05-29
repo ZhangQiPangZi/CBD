@@ -27,6 +27,8 @@ public class CodeMsg implements Serializable {
     public static final CodeMsg NULL_TRACK_MSG_ERROR = new CodeMsg("1017", "该设备该时间段轨迹信息为空！");
     public static final CodeMsg PHONENUM_PASSWORD_INCORRECT_ERROR = new CodeMsg("1018","用户名与密码不匹配！");
     public static final CodeMsg PHONENUM_MISS_ERROR = new CodeMsg("1019","未找到该用户！");
+    public static final CodeMsg PAY_ERROR = new CodeMsg("1020","支付失败！");
+    public static final CodeMsg SIGNVERIFIED_ERROR = new CodeMsg("1020","验证商户失败！");
 
 
 

@@ -4,6 +4,7 @@ package com.cbd.cbdcontroller.controller.tracklast;
 
 import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
+import com.cbd.cbdcommoninterface.response.leiVo.CarForTreeVo;
 import com.cbd.cbdcommoninterface.response.leiVo.CompanyAndCarInfoResponse;
 import com.cbd.cbdcommoninterface.response.leiVo.findCarVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
@@ -92,13 +93,13 @@ public class CarPlatFormController {
      *
      * @author shy_black
      */
-    @ApiOperation(value = "查询车辆信息",httpMethod = "POST")
+    @ApiOperation(value = "模糊查询车辆信息--根据车辆devID/车主姓名/电话/车牌号",httpMethod = "POST")
     @RequestMapping(value = "/findCar")
     @ResponseBody
-    public Result<List<findCarVo>> findCar(@RequestParam("companyID") String companyID,
+    public Result<List<CarForTreeVo>> findCar(@RequestParam("companyID") String companyID,
                                            @RequestParam("searchkey") String searchKey) {
 
-        List<findCarVo> tmpList = carInfoService.findCarByOwner(companyID, searchKey);
+        List<CarForTreeVo> tmpList = carInfoService.findCarByOwner(companyID, searchKey);
 
         return Result.success(tmpList);
     }
