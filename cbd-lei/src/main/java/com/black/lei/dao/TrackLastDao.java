@@ -1,6 +1,7 @@
 package com.black.lei.dao;
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -44,5 +45,13 @@ public interface TrackLastDao {
     @Select("select nID,devID,Max(nTime) as nTime,dbLon,dbLat,direction,speed,mileage " +
             "from track where devID = #{devID};")
    TrackLast getRealTrackByTEID(String devID);
+
+//    @Insert("insert into user (userName,phoneNum,companyID,status,email,userType) " +
+//            "values (#{userName},#{phoneNum},#{companyID},#{status},#{email},#{userType})")
+//    Integer insert(user saveUser);
+
+    @Insert("insert into track (devID,nTime,dbLon,dbLat,direction,speed,mileage) " +
+            "values(#{devID},#{nTime},#{dbLon},#{dbLat},#{direction},#{speed},#{mileage} )")
+    Integer addTrackData(TrackLast trackLast);
 
 }

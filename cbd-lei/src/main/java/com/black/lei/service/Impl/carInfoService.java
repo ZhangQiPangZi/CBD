@@ -5,11 +5,16 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.black.lei.dao.TrackLastDao;
 import com.black.lei.dao.car_infoDao;
+import com.black.lei.dao.orderInfoDao;
 import com.black.lei.dao.userDao;
 import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
+import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
 import com.cbd.cbdcommoninterface.pojo.leipojo.car_info;
 import com.cbd.cbdcommoninterface.response.leiVo.*;
+import com.cbd.cbdcommoninterface.utils.RandomTrackLastUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +40,50 @@ public class carInfoService implements ICarInfoService {
     private TrackLastDao trackLastDao;
 
     @Resource
+    private orderInfoDao orderInfoDao;
+
+    @Resource
     private userDao userInfoDao;
 
+
+    /**
+     * 定时任务：每天每隔1小时执行一次
+     * 1.orderinfo：从orderinfo表中查orderStateTypeCode字段，得到对应的orderID与devID
+     * 2.car_info：根据orderID匹配对应的行，将devID填入，并将status改为1
+     * 3.track：根据devID向track表中插入一条定位数据
+     */
+
+    //
+
+    @Transactional
+    //每秒执行一次------------ 测试用
+    @Scheduled(cron = "* * * * * ? *")
+    //每天每隔1小时执行一次-----生产用
+    //@Scheduled(cron = "0 0 1-23 * * ? ")
+    public void function() {
+        List<OrderScheduledVo> orderIDAndDevIDList = orderInfoDao.findorderIDAndDevID();
+
+        log.info("找到了"+orderIDAndDevIDList.size()+"条待更新的数据");
+        RandomTrackLastUtil randomTrackLastUtil = new RandomTrackLastUtil();
+
+        Iterator<OrderScheduledVo> OSVit = orderIDAndDevIDList.iterator();
+        while (OSVit.hasNext()) {
+
+            OrderScheduledVo tmpOSV = OSVit.next();
+
+            Integer updateNumber = carInfoDao.updateDevIDAndStatusByOrderID(tmpOSV);
+
+            log.info("car_info表成功更新了"+updateNumber+"条数据");
+
+            TrackLast trackLast = randomTrackLastUtil.createTrackLast();
+            trackLast.setDevID(tmpOSV.getDevID());
+
+            Integer addNumber = trackLastDao.addTrackData(trackLast);
+            log.info("向track表中成功添加了"+addNumber+"条数据");
+        }
+
+        return ;
+    }
 
 
     public Integer save(car_info saveCarInfo) {
@@ -46,16 +93,12 @@ public class carInfoService implements ICarInfoService {
 
 
     /**
-     *
      * @param companyID
-     * @return
-     *
-     * 1.获取公司左右值信息，查找到当前公司及子公司的信息
+     * @return 1.获取公司左右值信息，查找到当前公司及子公司的信息
      * 2.创建List<CompanyAndCarInfoResponse>，存储公司及车辆信息
      * 3.外层循环--放入公司信息
      * 4.   内层循环--放入车辆信息
      * 5.返回companyAndCarInfoResponseList
-     *
      */
 
     @Transactional
@@ -66,7 +109,7 @@ public class carInfoService implements ICarInfoService {
         String lft = lftAndRgt.getLft();
         String rgt = lftAndRgt.getRgt();
         //2.查询当前公司及其子公司的信息及层级
-        List<CompanyInfoVo> companyInfoVoList = carInfoDao.getCompanyTreeList(lft,rgt);
+        List<CompanyInfoVo> companyInfoVoList = carInfoDao.getCompanyTreeList(lft, rgt);
 
         //拿到的level信息：如果当前输入的公司ID的level是2，那么level的信息就是2，不会从0开始计算层级
         //log.info("拿到的公司信息为："+JSONObject.toJSON(companyInfoVoList));
@@ -74,7 +117,7 @@ public class carInfoService implements ICarInfoService {
         List<CompanyAndCarInfoResponse> companyAndCarInfoResponseList = new ArrayList<>();
 
         Iterator<CompanyInfoVo> it = companyInfoVoList.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             CompanyInfoVo tmpCompany = it.next();//公司信息
             //新建一个临时的返回的一个公司元素
             CompanyAndCarInfoResponse tmpCompanyAndCarInfoResponse = new CompanyAndCarInfoResponse();
@@ -109,7 +152,7 @@ public class carInfoService implements ICarInfoService {
 
             }
 
-            log.info("查询到的车辆信息为："+carForTreeVoList.toString());
+            log.info("查询到的车辆信息为：" + carForTreeVoList.toString());
 
             //获得了该公司旗下的车辆及人员信息列表，填入tmpCompanyResponse中
             tmpCompanyAndCarInfoResponse.setCarForTreeVo(carForTreeVoList);
@@ -127,22 +170,22 @@ public class carInfoService implements ICarInfoService {
 
         return carInfoDao.findById(strCarUUID);
     }
+
     //1.在car_info里通过devID找到owerID
     //2.在userID中通过owerID找出用户基础信息
     //3.将用户基础信息放入json里，返回
-    public Map<String,Object> findUserInfoByDevID(String devID) {
+    public Map<String, Object> findUserInfoByDevID(String devID) {
         JSONObject json = new JSONObject();
 
         String owerID = carInfoDao.findOwerIDByDevID(devID);
 
-        log.info("owerID = "+ owerID);
+        log.info("owerID = " + owerID);
 
-        Map<String,Object> userBaseInfo = userInfoDao.findUserBaseInfoByOwerID(owerID);
-        userBaseInfo.put("carPlateNum",carInfoDao.getCarPlateNumByOwerID(owerID));
+        Map<String, Object> userBaseInfo = userInfoDao.findUserBaseInfoByOwerID(owerID);
+        userBaseInfo.put("carPlateNum", carInfoDao.getCarPlateNumByOwerID(owerID));
         log.info("baseUserInfo = " + userBaseInfo.toString());
         return userBaseInfo;
     }
-
 
 
     public boolean update(car_info saveCarInfo) {
@@ -156,6 +199,7 @@ public class carInfoService implements ICarInfoService {
 
     /**
      * //根据车辆devID/车主姓名/电话/车牌号
+     *
      * @param companyID
      * @param searchKey
      * @return
@@ -169,7 +213,7 @@ public class carInfoService implements ICarInfoService {
         String rgt = lftAndRgt.getRgt();
 
         //2.根据模糊key获取相关的车辆dev列表
-        List<String> devIDList = carInfoDao.findLikelyDevID(lft,rgt,searchKey);
+        List<String> devIDList = carInfoDao.findLikelyDevID(lft, rgt, searchKey);
 
         //3.根据devID获取车辆最后定位信息及车辆信息
 
@@ -188,10 +232,8 @@ public class carInfoService implements ICarInfoService {
         }
 
 
-
         return carForTreeVoList;
     }
-
 
 
     public car_info findCarbyOwnerID(String strPersonID) {

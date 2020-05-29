@@ -1,9 +1,12 @@
 package com.black.lei.dao;
 
 import com.cbd.cbdcommoninterface.response.leiVo.BaseOrderInfoVo;
+import com.cbd.cbdcommoninterface.response.leiVo.OrderScheduledVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author shy_black
@@ -20,6 +23,9 @@ public interface orderInfoDao {
     BaseOrderInfoVo findOrderInfoByOrderID(@Param("orderId") String orderID);
 
 
+    @Select("select orderId as orderID ,devId as devID " +
+            " from orderinfo where orderStateTypeCode = 1 ")
+    List<OrderScheduledVo>  findorderIDAndDevID();
 
 
 }

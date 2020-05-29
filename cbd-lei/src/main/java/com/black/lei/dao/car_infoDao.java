@@ -2,10 +2,7 @@ package com.black.lei.dao;
 
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.car_info;
-import com.cbd.cbdcommoninterface.response.leiVo.BaseOrderInfoVo;
-import com.cbd.cbdcommoninterface.response.leiVo.CarForTreeVo;
-import com.cbd.cbdcommoninterface.response.leiVo.CompanyInfoVo;
-import com.cbd.cbdcommoninterface.response.leiVo.LftAndRgtVo;
+import com.cbd.cbdcommoninterface.response.leiVo.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -102,6 +99,25 @@ public interface car_infoDao {
                                  @Param("rgt") String rgt,
                                  @Param("searchKey") String searchKey);
 
+    /**
+     * @Update("update car_info " +
+     *             "set " +
+     *             "UUID = #{UUID}," +
+     *             "devID = #{devID}," +
+     *             "owerID = #{owerID}," +
+     *             "owerName = #{owerName}," +
+     *             "companyID = #{companyID}," +
+     * @param
+     * @return
+     */
+
+
+    @Update("update car_info " +
+            "set " +
+            "devID = #{devID}," +
+            "status = 1  " +
+            "where orderID = #{orderID}")
+    Integer updateDevIDAndStatusByOrderID(OrderScheduledVo orderScheduledVo);
 
     //根据UUID查找车辆全部信息
     @Select("select * from car_info " +
