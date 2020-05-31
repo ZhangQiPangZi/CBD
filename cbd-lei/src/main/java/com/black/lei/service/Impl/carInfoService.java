@@ -205,7 +205,7 @@ public class carInfoService implements ICarInfoService {
      * @return
      */
     @Override
-    public List<CarForTreeVo> findCarByOwner(String companyID, String searchKey) {
+    public List<CarForTreeVo> findLikelyCarOwnerBySearchKey(String companyID, String searchKey) {
 
         //1.查询当前公司的左值与右值
         LftAndRgtVo lftAndRgt = carInfoDao.getLftAndRgt(companyID);
@@ -230,7 +230,6 @@ public class carInfoService implements ICarInfoService {
             carForTreeVoList.add(carForTreeVo);
 
         }
-
 
         return carForTreeVoList;
     }

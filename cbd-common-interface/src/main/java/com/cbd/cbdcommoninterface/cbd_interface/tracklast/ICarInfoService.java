@@ -29,6 +29,8 @@ public interface ICarInfoService {
 
 
     /**搜索车辆*/
-    List<CarForTreeVo> findCarByOwner(String ompanyID, String searchKey);
+    List<CarForTreeVo> findLikelyCarOwnerBySearchKey(String companyID, String searchKey);
+
+    void function();
 
 }
