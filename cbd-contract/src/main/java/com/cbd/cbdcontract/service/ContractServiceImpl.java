@@ -17,10 +17,14 @@ import com.cbd.cbdcommoninterface.response.*;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.GlobalException;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
+import com.cbd.cbdcommoninterface.utils.UUIDUtils;
 import com.cbd.cbdcontract.dao.ContractDao;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -28,6 +32,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@Slf4j
 public class ContractServiceImpl implements ContractService {
     @Autowired
     CompanyService companyService;
@@ -66,7 +72,7 @@ public class ContractServiceImpl implements ContractService {
         PageRequest pageRequest = contractConditionRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
 
         /**
          * 封装合同列表,先分页查询contractID，然后获取需要返回的信息
@@ -86,10 +92,14 @@ public class ContractServiceImpl implements ContractService {
 
             temp.setCreateTime(contractInfo.getCreateTime());
 
+            temp.setContractTypeName(contractDao.getContractTypeName(contractInfo.getContractTypeID()));
+
             contractListResponseList.add(temp);
         }
 
         PageInfo<PageContractListResponse> devListResponsePageInfo = new PageInfo<>(contractListResponseList);
+        devListResponsePageInfo.setTotal(page.getTotal());
+        devListResponsePageInfo.setPages(page.getPages());
 
         return PageUtils.getPageResponse(devListResponsePageInfo);
 
@@ -103,8 +113,12 @@ public class ContractServiceImpl implements ContractService {
 
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(contractInfo.getCompanyID());
         contractInfoResponse.setContractCompanyName(companyInfo.getCompanyName());
-        CompanyInfo shopInfo = companyService.findCompanyInfoByCompanyID(contractInfo.getShopID());
-        contractInfoResponse.setShopName(shopInfo.getCompanyName());
+        //存在未派发至4s店的合同
+        String shopID = contractInfo.getShopID();
+        if (shopID!=null && !shopID.isEmpty()){
+            CompanyInfo shopInfo = companyService.findCompanyInfoByCompanyID(shopID);
+            contractInfoResponse.setShopName(shopInfo.getCompanyName());
+        }
 
         String contractTypeName = contractDao.getContractTypeName(contractInfo.getContractTypeID());
         contractInfoResponse.setContractTypeName(contractTypeName);
@@ -154,6 +168,7 @@ public class ContractServiceImpl implements ContractService {
             temp.setDevName(devType.getDevName());
 
             temp.setCreateTime(contractInfo.getCreateTime());
+            temp.setContractTypeName(contractDao.getContractTypeName(contractInfo.getContractTypeID()));
 
             contractListResponseList.add(temp);
         }
@@ -245,7 +260,7 @@ public class ContractServiceImpl implements ContractService {
         conditionDto.setTimeSort(ContractConditionDto.timeSort.DESC.ordinal());
         List<String> IDList = contractDao.findContractListByCondition(conditionDto);
 
-        String contractID = UUID.randomUUID().toString();
+        String contractID = UUIDUtils.getUUID();
         //删除即将合同状态变为过期
         try{
             if (!(IDList == null || IDList.isEmpty())){

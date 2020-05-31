@@ -1,5 +1,7 @@
 package com.cbd.cbdcommoninterface.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -9,10 +11,12 @@ public class PageRequest implements Serializable {
     /**
      * 当前页码
      */
+    @ApiModelProperty(value = "当前页码")
     private int pageNum;
     /**
      * 每页数量
      */
+    @ApiModelProperty(value = "每页数量")
     private int pageSize;
 
     public int getPageNum() {

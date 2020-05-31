@@ -15,10 +15,19 @@ public class Result<T> implements Serializable {
     }
 
     private Result(CodeMsg codeMsg){
-        if (codeMsg == null)
+        if (codeMsg == null) {
             return;
+        }
         this.code = codeMsg.getCode();
         this.msg = codeMsg.getMsg();
+    }
+
+    private Result(CodeMsg codeMsg, Exception e){
+        if (codeMsg == null) {
+            return;
+        }
+        this.code = codeMsg.getCode();
+        this.msg = e.toString();
     }
 
 //    成功时候的调用,只需传入数据即可
@@ -31,6 +40,9 @@ public class Result<T> implements Serializable {
         return new Result(codeMsg);
     }
 
+    public static <T>Result<T> error(CodeMsg codeMsg, Exception e){
+        return new Result(codeMsg,e);
+    }
     public String getCode() {
         return code;
     }

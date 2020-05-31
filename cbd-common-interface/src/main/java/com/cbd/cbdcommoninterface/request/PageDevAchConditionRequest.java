@@ -1,5 +1,7 @@
 package com.cbd.cbdcommoninterface.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 public class PageDevAchConditionRequest implements Serializable {
@@ -7,7 +9,9 @@ public class PageDevAchConditionRequest implements Serializable {
     private String companyID;
     private Integer year;
     private Integer month;
+    @ApiModelProperty(value = "设备类型")
     private String devType;
+    @ApiModelProperty(value = "设备名")
     private String devName;
 
     public PageRequest getPageRequest() {

@@ -1,9 +1,12 @@
 package com.cbd.cbdcommoninterface.response;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class CpyLevelAndLocResponse implements Serializable {
     public enum Companylevel{
         /**
@@ -24,21 +27,5 @@ public class CpyLevelAndLocResponse implements Serializable {
         HEADCPY
     }
     private Integer companyLevel;
-    private Map<String, Map<String, List<String>>> loc;
-
-    public Integer getCompanyLevel() {
-        return companyLevel;
-    }
-
-    public void setCompanyLevel(Integer companyLevel) {
-        this.companyLevel = companyLevel;
-    }
-
-    public Map<String, Map<String, List<String>>> getLoc() {
-        return loc;
-    }
-
-    public void setLoc(Map<String, Map<String, List<String>>> loc) {
-        this.loc = loc;
-    }
+    private List<LocListResponse> locListResponseList;
 }

@@ -1,12 +1,16 @@
 package com.cbd.cbdcommoninterface.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 public class PagePersonAchConditionRequest implements Serializable {
     private PageRequest pageRequest;
+    @ApiModelProperty(value = "员工ID，工号")
     private String salersID;
     private Integer year;
     private Integer month;
+    @ApiModelProperty(value = "合同类型名")
     private String contractTypeName;
 
     public PageRequest getPageRequest() {

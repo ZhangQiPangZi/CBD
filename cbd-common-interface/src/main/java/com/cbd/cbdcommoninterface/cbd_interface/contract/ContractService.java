@@ -10,6 +10,7 @@ import com.cbd.cbdcommoninterface.response.UnpaidContractInfoResponse;
 
 import java.util.List;
 
+
 public interface ContractService {
 
     /**
@@ -54,14 +55,14 @@ public interface ContractService {
     List<Float> getRenewMoneyByContractID(String contractID);
 
     /**
-     *  获取之前未支付的合同信息
+     *  获取之前未支付的合同信息，甲方访问
      * @param companyID
      * @return
      */
     UnpaidContractInfoResponse getUnPaidContractInfoByCompanyID(String companyID);
 
     /**
-     * 新建合同，支付之前做
+     * 新建合同，车佰度平台管理员访问
      * @param addContractRequest
      * @return
      */

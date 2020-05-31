@@ -1,5 +1,7 @@
 package com.cbd.cbdcommoninterface.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 public class PageCpyAchConditionRequest implements Serializable {
@@ -7,6 +9,7 @@ public class PageCpyAchConditionRequest implements Serializable {
     private String companyName;
     private Integer year;
     private Integer month;
+    @ApiModelProperty(value = "合同类型名")
     private String contractTypeName;
 
     public PageRequest getPageRequest() {

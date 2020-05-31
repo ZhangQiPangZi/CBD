@@ -18,6 +18,7 @@ import com.cbd.cbdcommoninterface.response.*;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.GlobalException;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -150,7 +151,7 @@ public class AchievementServiceImpl implements AchievementService {
         PageRequest pageRequest = pageCpyConditionRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
 
         //获取对应的公司业绩统计列表
         List<AchievementCompanyInfo> companyInfoList = achievementDao.findAchCpyInfoByCondition(cpyConditionDto);
@@ -170,6 +171,8 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         PageInfo<PageCompanyListResponse> companyListResponsePageInfo = new PageInfo(companyListResponseList);
+        companyListResponsePageInfo.setTotal(page.getTotal());
+        companyListResponsePageInfo.setPages(page.getPages());
 
         return PageUtils.getPageResponse(companyListResponsePageInfo);
     }
@@ -185,7 +188,7 @@ public class AchievementServiceImpl implements AchievementService {
         PageRequest pageRequest = cpyIDRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
 
         CpyConditionDto cpyConditionDto = new CpyConditionDto();
         cpyConditionDto.setLft(companyInfo.getLft());
@@ -204,6 +207,8 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         PageInfo<PageCpyStaticsResponse> cpyStaticsResponsePageInfo = new PageInfo<>(cpyStaticsResponseList);
+        cpyStaticsResponsePageInfo.setPages(page.getPages());
+        cpyStaticsResponsePageInfo.setTotal(page.getTotal());
 
         return PageUtils.getPageResponse(cpyStaticsResponsePageInfo);
     }
@@ -218,7 +223,7 @@ public class AchievementServiceImpl implements AchievementService {
         PageRequest pageRequest = cpyIDRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
         List<String> salersIDList = achievementDao.findPersonIDByCompanyID(lft, rgt);
 
         List<PagePersonStaticsResponse> personStaticsResponseList = new ArrayList<>();
@@ -241,6 +246,8 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         PageInfo<PagePersonStaticsResponse> personStaticsResponsePageInfo = new PageInfo<>(personStaticsResponseList);
+        personStaticsResponsePageInfo.setTotal(page.getTotal());
+        personStaticsResponsePageInfo.setPages(page.getPages());
 
         return PageUtils.getPageResponse(personStaticsResponsePageInfo);
     }
@@ -268,7 +275,7 @@ public class AchievementServiceImpl implements AchievementService {
     public PageResponse findDevAchievementByCondition(PageDevAchConditionRequest devAchConditionRequest) {
 
         //设置设备业绩的当前月份
-        if(devAchConditionRequest.getYear() == null){
+        if(devAchConditionRequest.getYear().equals("")){
             Calendar cal = Calendar.getInstance();
             int year = cal.get(Calendar.YEAR);
             //因为初始值为0,所以要+1
@@ -292,7 +299,7 @@ public class AchievementServiceImpl implements AchievementService {
         PageRequest pageRequest = devAchConditionRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
 
 
         //获取设备业绩信息列表
@@ -312,6 +319,8 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         PageInfo<PageDevAchListResponse> devAchListResponsePageInfo = new PageInfo<>(devAchListResponseList);
+        devAchListResponsePageInfo.setPages(page.getPages());
+        devAchListResponsePageInfo.setTotal(page.getTotal());
 
         return PageUtils.getPageResponse(devAchListResponsePageInfo);
     }
@@ -328,7 +337,7 @@ public class AchievementServiceImpl implements AchievementService {
         PageRequest pageRequest = achConditionRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
 
         //根据条件获取指定员工的业绩信息
         List<AchievementInfo> achievementInfoList = achievementDao.findPersonAchievementByCondition(personConditionDto);
@@ -353,6 +362,8 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         PageInfo<PagePersonListResponse> personListResponsePageInfo= new PageInfo<>(personListResponseList);
+        personListResponsePageInfo.setTotal(page.getTotal());
+        personListResponsePageInfo.setPages(page.getPages());
 
         return PageUtils.getPageResponse(personListResponsePageInfo);
     }
@@ -396,7 +407,7 @@ public class AchievementServiceImpl implements AchievementService {
         PageRequest pageRequest = cpyAchConditionRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
 
         //根据条件获取指定公司的业绩信息
         List<AchievementInfo> achievementInfoList = achievementDao.findCpyAchievementByCondition(cpyAchConditionDto);
@@ -421,6 +432,8 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         PageInfo<PagePersonListResponse> cpyListResponsePageInfo= new PageInfo<>(cpyListResonse);
+        cpyListResponsePageInfo.setPages(page.getPages());
+        cpyListResponsePageInfo.setTotal(page.getTotal());
 
         return PageUtils.getPageResponse(cpyListResponsePageInfo);
     }

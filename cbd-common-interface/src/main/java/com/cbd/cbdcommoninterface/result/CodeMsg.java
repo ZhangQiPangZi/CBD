@@ -18,7 +18,7 @@ public class CodeMsg implements Serializable {
 
     /** 设备异常 **/
     public static final CodeMsg OUT_OF_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"00", "库存不足");
-
+    public static final CodeMsg OUT_OF_SIM_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"01", "SIM卡库存不足");
 
     private CodeMsg(String code, String msg) {
         this.code = code;

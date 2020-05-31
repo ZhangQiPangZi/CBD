@@ -74,6 +74,13 @@ public interface DeviceService {
     Boolean allocationDeviceByDevIDAndCompanyName(AllocationDevRequest allocationDevRequest);
 
     /**
+     * 判断此设备是否可以调拨，即状态为入库
+     * @param devID
+     * @return
+     */
+    PermitDeviceResponse judgePermitDevice(String devID);
+
+    /**
      * 根据设备名及数量和公司名进行设备批量调拨
      * @param allocationBathDevRequest
      * @return

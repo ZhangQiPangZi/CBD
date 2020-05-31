@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cbd.installerapp.dao.waitingtask.TaskListDao">
+    <select id="getTaskList" parameterType="java.lang.Integer" resultType="com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.OrderInfosDO">
+        SELECT o.id,o.orderTime,o.carOwnerName,o.phoneNumber,o.orderTypeCode
+        FROM orderinfo o
+        LEFT JOIN installertasklist i ON o.id = i.orderId
+        WHERE i.installerId = #{installerId} AND i.orderStateTypeCode = '-1'
+        <if test="null!=orderTypeCode">
+            AND o.orderTypeCode = #{orderTypeCode}
+        </if>
+        ORDER BY o.orderTime ASC
+    </select>
+
+</mapper>

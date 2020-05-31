@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cbd.salesapp.dao.workbench.InputInfoDao">
+    <insert id="confirmInputInfo" useGeneratedKeys="true" keyProperty="id" parameterType="com.cbd.cbdcommoninterface.request.salesapp.workbench.OrderInfoQuery">
+        INSERT INTO orderinfo
+        VALUES(NULL,#{salesID},NULL,#{carOwnerName},#{phoneNumber},#{licenseNumber},#{orderTime},#{orderAddr},#{orderTypeCode},NULL,NULL,NULL );
+    </insert>
+
+</mapper>

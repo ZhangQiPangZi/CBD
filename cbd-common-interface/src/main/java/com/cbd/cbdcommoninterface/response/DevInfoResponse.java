@@ -1,10 +1,12 @@
 package com.cbd.cbdcommoninterface.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class DevInfoResponse implements Serializable {
     private String devID;
     private String SIMID;
@@ -16,76 +18,4 @@ public class DevInfoResponse implements Serializable {
     private Integer devGateWayID;
     private String devCompanyName;
     private String devType;
-
-    public String getDevID() {
-        return devID;
-    }
-
-    public void setDevID(String devID) {
-        this.devID = devID;
-    }
-
-    public String getSIMID() {
-        return SIMID;
-    }
-
-    public void setSIMID(String SIMID) {
-        this.SIMID = SIMID;
-    }
-
-    public String getDevName() {
-        return devName;
-    }
-
-    public void setDevName(String devName) {
-        this.devName = devName;
-    }
-
-    public String getDevStatus() {
-        return devStatus;
-    }
-
-    public void setDevStatus(String devStatus) {
-        this.devStatus = devStatus;
-    }
-
-    public String getDevManagerName() {
-        return devManagerName;
-    }
-
-    public void setDevManagerName(String devManagerName) {
-        this.devManagerName = devManagerName;
-    }
-
-    public Date getDevInputTime() {
-        return devInputTime;
-    }
-
-    public void setDevInputTime(Date devInputTime) {
-        this.devInputTime = devInputTime;
-    }
-
-    public Integer getDevGateWayID() {
-        return devGateWayID;
-    }
-
-    public void setDevGateWayID(Integer devGateWayID) {
-        this.devGateWayID = devGateWayID;
-    }
-
-    public String getDevCompanyName() {
-        return devCompanyName;
-    }
-
-    public void setDevCompanyName(String devCompanyName) {
-        this.devCompanyName = devCompanyName;
-    }
-
-    public String getDevType() {
-        return devType;
-    }
-
-    public void setDevType(String devType) {
-        this.devType = devType;
-    }
 }
