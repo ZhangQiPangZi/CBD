@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class SIMInfo implements Serializable {
     public enum SIMStatus{
         /**
-         * 库中
+         * 库中,已绑定设备
          */
         IN,
         /**
@@ -19,11 +19,16 @@ public class SIMInfo implements Serializable {
         /**
          * 待返厂维修
          */
-        RETURN
+        RETURN,
+        /**
+         * 未配对
+         */
+        UNPAIR
     }
 
     private String SIMID;
     private Integer SIMStatus;
+    private String SIMName;
 
     public String getSIMID() {
         return SIMID;
@@ -39,5 +44,13 @@ public class SIMInfo implements Serializable {
 
     public void setSIMStatus(Integer SIMStatus) {
         this.SIMStatus = SIMStatus;
+    }
+
+    public String getSIMName() {
+        return SIMName;
+    }
+
+    public void setSIMName(String SIMName) {
+        this.SIMName = SIMName;
     }
 }

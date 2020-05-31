@@ -38,6 +38,7 @@ public class CodeMsg implements Serializable {
 
     /**用户及定位异常**/
 //    public static final CodeMsg SERVER_ERROR = new CodeMsg(1001, "服务端异常,请刷新页面");
+    public static final CodeMsg OUT_OF_SIM_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"01", "SIM卡库存不足");
 
     private CodeMsg(String code, String msg) {
 

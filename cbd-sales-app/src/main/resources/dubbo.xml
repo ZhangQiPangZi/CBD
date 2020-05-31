@@ -13,6 +13,7 @@
     <dubbo:protocol port="-1" name="dubbo"/>
     <!-- 应用名 -->
     <dubbo:application name="cbd-sales-app"/>
+    <dubbo:provider timeout="30000"></dubbo:provider>
 
     <!--服务消费者-->
     <!--关闭服务消费方所有服务的启动检查。dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成。-->

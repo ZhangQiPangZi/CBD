@@ -3,14 +3,17 @@ package com.cbd.cbddevice.dao;
 import com.cbd.cbdcommoninterface.dto.AllocationDevDto;
 import com.cbd.cbdcommoninterface.dto.ConfirmMessageDto;
 import com.cbd.cbdcommoninterface.dto.DevConditionDto;
+import com.cbd.cbdcommoninterface.dto.DevFactoryDto;
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
 import com.cbd.cbdcommoninterface.pojo.device.DeviceAllotRecord;
 import com.cbd.cbdcommoninterface.pojo.device.DeviceInfo;
+import com.cbd.cbdcommoninterface.pojo.device.SIMInfo;
 import com.cbd.cbdcommoninterface.pojo.message.DeviceMessageIDMap;
 import com.cbd.cbdcommoninterface.pojo.message.DeviceMessageRecord;
 import com.cbd.cbdcommoninterface.request.PageDevConditionRequest;
 import com.cbd.cbdcommoninterface.response.DevReturnResponse;
 import com.cbd.cbdcommoninterface.response.PageDevListResponse;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -84,7 +87,7 @@ public interface DeviceDao {
 
     void updateDevMessageStatus(ConfirmMessageDto confirmMessageDto);
 
-    void updateDevMessageDevNums(@Param("devNums") int devNums, @Param("mesID") String mesID);
+    void updateDevMessageDevNums(@Param("devNums") Integer devNums, @Param("mesID") String mesID);
 
     List<DeviceMessageRecord> getDevMessageListByManageIDAndMessageStatus(@Param("managerID") String managerID, @Param("mesStatus") Integer mesStatus);
 
@@ -95,4 +98,13 @@ public interface DeviceDao {
     List<String> getSIMIDByStatus(@Param("SIMStatus") Integer SIMStatus);
 
     void insertDevice(DeviceInfo deviceInfo);
+
+    @Insert("insert into deviceFactoryInfo(devFactoryID, devFactoryName, devFactoryPersonName, devFactoryPersonPhone) values(#{devFactoryID}, #{devFactoryName}, #{devFactoryPersonName}, #{devFactoryPersonPhone})")
+    void insertDeviceFactory(DevFactoryDto devFactoryDto);
+
+    @Insert("insert into deviceType(devType, devName, devFactoryID) values(#{devType}, #{devName}, #{devFactoryID})")
+    void insertDeviceType(DevType devTypeDto);
+
+    @Insert("insert into SIMInfo(SIMID, SIMStatus, SIMName) values(#{SIMID}, #{SIMStatus}, #{SIMName})")
+    void insertSIM(SIMInfo simInfo);
 }

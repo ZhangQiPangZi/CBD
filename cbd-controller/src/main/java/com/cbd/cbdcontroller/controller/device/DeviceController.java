@@ -28,10 +28,20 @@ public class DeviceController {
         return Result.success(deviceService.addDeviceInfo(addDeviceRequest));
     }
 
+    @ApiOperation("判断设备类型是否收录")
+    @RequestMapping(value = "/judgeDevType", method = RequestMethod.POST)
+    public Result<Boolean> judgeDevType(@RequestBody DevNameRequest devNameRequest){
+        Boolean flag = false;
+        if (deviceService.findDevTypeByDevName(devNameRequest.getDevName()) != null){
+            flag = true;
+        }
+        return Result.success(flag);
+    }
+
     @ApiOperation("获取当前公司下的设备厂家列表")
     @RequestMapping(value = "/findAllDevFactoryNameByCompanyID", method = RequestMethod.POST)
-    public Result<List<String>> findAllDevFactoryNameByCompanyID(@RequestParam(value = "companyID") String companyID){
-        return Result.success(deviceService.findAllDevFactoryNameByCompanyID(companyID));
+    public Result<List<String>> findAllDevFactoryNameByCompanyID(@RequestBody CompanyIDRequest companyIDRequest){
+        return Result.success(deviceService.findAllDevFactoryNameByCompanyID(companyIDRequest.getCompanyID()));
     }
 
     @ApiOperation("根据指定条件获取对应的设备列表(五条件)")
@@ -42,18 +52,23 @@ public class DeviceController {
 
     @ApiOperation("根据设备ID获取设备详细信息")
     @RequestMapping(value = "/findDevInfoByDevID", method = RequestMethod.POST)
-    public Result<DevInfoResponse> findDevInfoByDevID(@RequestParam(value = "devID") String devID){
-        return Result.success(deviceService.findDevInfoByDevID(devID));
+    public Result<DevInfoResponse> findDevInfoByDevID(@RequestBody DevIDRequest devIDRequest){
+        return Result.success(deviceService.findDevInfoByDevID(devIDRequest.getDevID()));
     }
     @ApiOperation("获取当前公司下设备名列表及对应的数量")
     @RequestMapping(value = "/findDevNameListAndNumsByCompanyID", method = RequestMethod.POST)
-    public Result<List<DevNameNumsResponse>> findDevNameListAndDevNumsByCompanyID(@RequestParam(value = "companyID") String companyID){
-        return Result.success(deviceService.findDevNameListAndDevNumsByCompanyID(companyID));
+    public Result<List<DevNameNumsResponse>> findDevNameListAndDevNumsByCompanyID(@RequestBody CompanyIDRequest companyIDRequest){
+        return Result.success(deviceService.findDevNameListAndDevNumsByCompanyID(companyIDRequest.getCompanyID()));
     }
     @ApiOperation("根据设备ID和公司名进行单个设备调拨")
     @RequestMapping(value = "/allocationDeviceByDevIDAndCompanyName", method = RequestMethod.POST)
     public Result<Boolean> allocationDeviceByDevIDAndCompanyName(@RequestBody AllocationDevRequest allocationDevRequest){
         return Result.success(deviceService.allocationDeviceByDevIDAndCompanyName(allocationDevRequest));
+    }
+    @ApiOperation("判断此设备是否可以调拨，即状态为入库")
+    @RequestMapping(value = "/judgePermitDevice", method = RequestMethod.POST)
+    public Result<PermitDeviceResponse> judgePermitDevice(@RequestBody DevIDRequest devIDRequest){
+        return Result.success(deviceService.judgePermitDevice(devIDRequest.getDevID()));
     }
     @ApiOperation("根据设备名及数量和公司名进行设备批量调拨")
     @RequestMapping(value = "/allocationDevicesByDevNameAndNumsAndCompanyName", method = RequestMethod.POST)
@@ -62,25 +77,25 @@ public class DeviceController {
     }
     @ApiOperation("根据设备ID获得设备调拨记录列表")
     @RequestMapping(value = "/findAllocationRecordByDevID", method = RequestMethod.POST)
-    public Result<List<AllocationRecordResponse>> findAllocationRecordByDevID(@RequestParam(value = "devID") String devID){
-        return Result.success(deviceService.findAllocationRecordByDevID(devID));
+    public Result<List<AllocationRecordResponse>> findAllocationRecordByDevID(@RequestBody DevIDRequest devIDRequest){
+        return Result.success(deviceService.findAllocationRecordByDevID(devIDRequest.getDevID()));
     }
     @ApiOperation("根据设备ID获取生产厂家联系方式")
     @RequestMapping(value = "/findDeviceContactByDevID", method = RequestMethod.POST)
-    public Result<DevReturnResponse> findDeviceContactByDevID(@RequestParam(value = "devID") String devID){
-        return Result.success(deviceService.findDeviceContactByDevID(devID));
+    public Result<DevReturnResponse> findDeviceContactByDevID(@RequestBody DevIDRequest devIDRequest){
+        return Result.success(deviceService.findDeviceContactByDevID(devIDRequest.getDevID()));
     }
 
-    @ApiOperation("根据设备ID确认设备返厂")
+    @ApiOperation("根据消息ID确认消息并进行设备的调拨")
     @RequestMapping(value = "/confirmDeviceMessageByMesID", method = RequestMethod.POST)
-    public Result<Boolean> confirmDeviceMessageByMesID(@RequestParam(value = "mesID") String mesID){
-        return Result.success(deviceService.confirmDeviceMessageByMesID(mesID));
+    public Result<Boolean> confirmDeviceMessageByMesID(@RequestBody MesIDRequest mesIDRequest){
+        return Result.success(deviceService.confirmDeviceMessageByMesID(mesIDRequest.getMesID()));
     }
 
     @ApiOperation("逻辑删除设备记录，确认设备返厂时用")
     @RequestMapping(value = "/delReturnDeviceByDevID", method = RequestMethod.POST)
-    public Result<Boolean> delReturnDeviceByDevID(@RequestParam(value = "devID") String devID){
-        return Result.success(deviceService.delReturnDeviceByDevID(devID));
+    public Result<Boolean> delReturnDeviceByDevID(@RequestBody DevIDRequest devIDRequest){
+        return Result.success(deviceService.delReturnDeviceByDevID(devIDRequest.getDevID()));
     }
 
     @ApiOperation("新增合同设备调拨消息")
@@ -91,8 +106,8 @@ public class DeviceController {
 
     @ApiOperation("判断此消息是否确认")
     @RequestMapping(value = "/judgeConfirmMessage", method = RequestMethod.POST)
-    public Result<Boolean> judgeConfirmMessage(@RequestParam(value = "mesID") String mesID){
-        return Result.success(deviceService.judgeConfirmMessage(mesID));
+    public Result<Boolean> judgeConfirmMessage(@RequestBody MesIDRequest mesIDRequest){
+        return Result.success(deviceService.judgeConfirmMessage(mesIDRequest.getMesID()));
     }
 
     @ApiOperation("获取分类后的消息，mesStatus可以不传，代表查询所有消息")
