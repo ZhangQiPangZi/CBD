@@ -42,7 +42,7 @@ public class AchievementServiceImpl implements AchievementService {
 
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public Boolean addAchievement(String salersID, String contractID, String companyID) {
+    public Boolean addAchievement(Integer salersID, String contractID, String companyID) {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         //因为初始值为0,所以要+1

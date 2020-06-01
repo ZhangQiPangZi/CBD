@@ -14,7 +14,7 @@ public interface AchievementService {
      * @param contractID
      * @return
      */
-    Boolean addAchievement(String salersID, String contractID, String companyID);
+    Boolean addAchievement(Integer salersID, String contractID, String companyID);
 
     /**
      * 根据指定条件获取下级公司销售列表

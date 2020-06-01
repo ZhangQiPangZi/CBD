@@ -133,4 +133,10 @@ public interface DeviceService {
      * @return
      */
     DevType findDevTypeByDevName(String devName);
+
+    /**
+     * 获取所有设备名,车佰度平台管理员访问
+     * @return
+     */
+    List<String> getAllDevName();
 }

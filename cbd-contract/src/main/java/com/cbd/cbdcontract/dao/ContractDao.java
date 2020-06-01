@@ -6,6 +6,7 @@ import com.cbd.cbdcommoninterface.pojo.contract.ContractType;
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -54,4 +55,7 @@ public interface ContractDao {
     Integer getDevTypeID(@Param("devName") String devName);
 
     void addContractInfo(ContractInfo contractInfo);
+
+    @Select("select contractTypeName from contractType")
+    List<String> getAllContractType();
 }

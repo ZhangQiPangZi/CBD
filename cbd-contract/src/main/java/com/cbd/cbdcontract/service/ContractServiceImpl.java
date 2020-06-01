@@ -132,7 +132,7 @@ public class ContractServiceImpl implements ContractService {
         contractInfoResponse.setDellFee(contractInfo.getDellFee());
         contractInfoResponse.setDevNums(contractInfo.getDevNums());
         // TODO 需要调用人事接口
-        contractInfoResponse.setPartyAPersonName(contractInfo.getPartyAPersonID());
+        contractInfoResponse.setPartyAPersonName(contractInfo.getPartyAPersonID().toString());
         contractInfoResponse.setServerFee(contractInfo.getServerFee());
         contractInfoResponse.setServerYears(contractInfo.getServerYears());
 
@@ -248,11 +248,14 @@ public class ContractServiceImpl implements ContractService {
     @Override
     @Transactional(rollbackFor=Exception.class)
     public String addContract(AddContractRequest addContractRequest) {
-        //先删除当前公司之前的未支付合同,即公司只能有一份未支付合同
+        //先获取甲方公司信息
+        CompanyInfo partyACpyInfo = companyService.findCompanyInfoByCompanyName(addContractRequest.getCompanyName());
+
+        //先删除甲方公司之前的未支付合同,即甲方公司只能有一份未支付合同
         //获取未支付合同id
         ContractConditionDto conditionDto = new ContractConditionDto();
         conditionDto.setContractStatus(ContractInfo.ContractStatus.UNPAID.ordinal());
-        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(addContractRequest.getCompanyID());
+        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(partyACpyInfo.getCompanyID());
         Integer lft = cpyInfo.getLft();
         Integer rgt = cpyInfo.getRgt();
         conditionDto.setLft(lft);
@@ -271,15 +274,16 @@ public class ContractServiceImpl implements ContractService {
 
             //新建合同
             ContractInfo contractInfo = new ContractInfo();
-            contractInfo.setCompanyID(addContractRequest.getCompanyID());
+            contractInfo.setCompanyID(partyACpyInfo.getCompanyID());
             contractInfo.setContractID(contractID);
+//          合同状态为未支付
             contractInfo.setContractStatus(ContractInfo.ContractStatus.UNPAID.ordinal());
             contractInfo.setContractTypeID(contractDao.getContractTypeID(addContractRequest.getContractTypeName()));
             contractInfo.setServerFee(addContractRequest.getServerFee());
             contractInfo.setServerYears(addContractRequest.getServerYears());
             contractInfo.setDellFee(addContractRequest.getDellFee());
             contractInfo.setDevNums(addContractRequest.getDevNums());
-            contractInfo.setPartyAPersonID(addContractRequest.getUserID());
+            contractInfo.setPartyAPersonID(partyACpyInfo.getCompanyManagerID());
             contractInfo.setDevTypeID(contractDao.getDevTypeID(addContractRequest.getDevName()));
             contractInfo.setCreateTime(new Date());
 
@@ -289,5 +293,11 @@ public class ContractServiceImpl implements ContractService {
         }
 
         return contractID;
+    }
+
+    @Override
+    public List<String> getAllContractType() {
+        List<String> contractTypeNameList = contractDao.getAllContractType();
+        return contractTypeNameList;
     }
 }

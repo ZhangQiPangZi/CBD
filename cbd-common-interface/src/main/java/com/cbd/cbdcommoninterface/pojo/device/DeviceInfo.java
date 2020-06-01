@@ -1,10 +1,12 @@
 package com.cbd.cbdcommoninterface.pojo.device;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class DeviceInfo implements Serializable {
 
     public enum DevStatus{
@@ -31,7 +33,7 @@ public class DeviceInfo implements Serializable {
     /**
      * 库管人员ID
      */
-    private String devManagerID;
+    private Integer devManagerID;
     /**
      * 设备入库时间
      */
@@ -55,75 +57,5 @@ public class DeviceInfo implements Serializable {
      */
     private String SIMID;
 
-    public String getDevID() {
-        return devID;
-    }
 
-    public void setDevID(String devID) {
-        this.devID = devID;
-    }
-
-    public Integer getDevTypeID() {
-        return devTypeID;
-    }
-
-    public void setDevTypeID(Integer devTypeID) {
-        this.devTypeID = devTypeID;
-    }
-
-    public Integer getDevStatus() {
-        return devStatus;
-    }
-
-    public void setDevStatus(Integer devStatus) {
-        this.devStatus = devStatus;
-    }
-
-    public String getDevManagerID() {
-        return devManagerID;
-    }
-
-    public void setDevManagerID(String devManagerID) {
-        this.devManagerID = devManagerID;
-    }
-
-    public Date getDevInputTime() {
-        return devInputTime;
-    }
-
-    public void setDevInputTime(Date devInputTime) {
-        this.devInputTime = devInputTime;
-    }
-
-    public Integer getDevGateWayID() {
-        return devGateWayID;
-    }
-
-    public void setDevGateWayID(Integer devGateWayID) {
-        this.devGateWayID = devGateWayID;
-    }
-
-    public String getCompanyID() {
-        return companyID;
-    }
-
-    public void setCompanyID(String companyID) {
-        this.companyID = companyID;
-    }
-
-    public String getDevFactoryID() {
-        return devFactoryID;
-    }
-
-    public void setDevFactoryID(String devFactoryID) {
-        this.devFactoryID = devFactoryID;
-    }
-
-    public String getSIMID() {
-        return SIMID;
-    }
-
-    public void setSIMID(String SIMID) {
-        this.SIMID = SIMID;
-    }
 }

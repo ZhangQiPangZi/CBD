@@ -24,7 +24,7 @@ public class AchievementController {
 
     @ApiOperation("(测试用，上线删除)传入销售员id和所完成的这单使用的合同ID来增加销售额")
     @RequestMapping(value = "/addAchievement", method = RequestMethod.POST)
-    public Result<Boolean> addAchievement(@RequestParam(value = "salersID", required = false) String salersID, @RequestParam(value = "contractID", required = false) String contractID, @RequestParam(value = "companyID", required = false) String companyID){
+    public Result<Boolean> addAchievement(@RequestParam(value = "salersID", required = false) Integer salersID, @RequestParam(value = "contractID", required = false) String contractID, @RequestParam(value = "companyID", required = false) String companyID){
         return Result.success(achievementService.addAchievement(salersID, contractID, companyID));
     }
 

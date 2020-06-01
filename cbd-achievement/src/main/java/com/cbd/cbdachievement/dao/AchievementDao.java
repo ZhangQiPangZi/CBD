@@ -32,7 +32,7 @@ public interface AchievementDao {
      * @return
      */
     @Select("select achivement from achievementPersonInfo where salersID = #{salersID} and month = #{month} and year = #{year}")
-    Float findPersonAchievement(@Param("salersID") String salersID, @Param("month") int month, @Param("year") int year);
+    Float findPersonAchievement(@Param("salersID") Integer salersID, @Param("month") int month, @Param("year") int year);
 
     /**
      * 更新或新增员工业绩
@@ -42,7 +42,7 @@ public interface AchievementDao {
      * @param salersID
      * @param companyID
      */
-    void replacePersonAchievement(@Param("month") int month, @Param("year") int year, @Param("curAchievement") Float curAchievement, @Param("salersID") String salersID, @Param("companyID") String companyID);
+    void replacePersonAchievement(@Param("month") int month, @Param("year") int year, @Param("curAchievement") Float curAchievement, @Param("salersID") Integer salersID, @Param("companyID") String companyID);
 
     /**
      * 获取合同指定日期完成数量
@@ -63,7 +63,7 @@ public interface AchievementDao {
      * @param contractID
      * @param curContractCount
      */
-    void replaceContractAchievement(@Param("month") int month, @Param("year") int year, @Param("salersID") String salersID, @Param("companyID") String companyID, @Param("contractID") String contractID, @Param("curContractCount") Integer curContractCount, @Param("contractTypeName") String contractTypeName);
+    void replaceContractAchievement(@Param("month") int month, @Param("year") int year, @Param("salersID") Integer salersID, @Param("companyID") String companyID, @Param("contractID") String contractID, @Param("curContractCount") Integer curContractCount, @Param("contractTypeName") String contractTypeName);
 
     /**
      * 获取指定日期公司业绩

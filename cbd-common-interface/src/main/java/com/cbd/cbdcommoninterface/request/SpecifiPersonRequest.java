@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class SpecifiPersonRequest implements Serializable {
     private String Date;
-    private String salersID;
+    private Integer salersID;
 
     public String getDate() {
         return Date;
@@ -14,11 +14,11 @@ public class SpecifiPersonRequest implements Serializable {
         Date = date;
     }
 
-    public String getSalersID() {
+    public Integer getSalersID() {
         return salersID;
     }
 
-    public void setSalersID(String salersID) {
+    public void setSalersID(Integer salersID) {
         this.salersID = salersID;
     }
 }

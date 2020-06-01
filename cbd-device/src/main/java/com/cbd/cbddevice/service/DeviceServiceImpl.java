@@ -181,7 +181,7 @@ public class DeviceServiceImpl implements DeviceService {
         devInfoResponse.setDevGateWayID(deviceInfo.getDevGateWayID());
         devInfoResponse.setDevInputTime(deviceInfo.getDevInputTime());
         //TODO 这边要调人员接口获取
-        devInfoResponse.setDevManagerName(companyInfo.getCompanyManagerID());
+        devInfoResponse.setDevManagerName(companyInfo.getCompanyManagerID().toString());
 
         DevType devType = deviceDao.getDevTypeByDevID(devID);
         devInfoResponse.setDevName(devType.getDevName());
@@ -384,7 +384,7 @@ public class DeviceServiceImpl implements DeviceService {
             recordResponse.setSrcCompanyName(companyService.findCompanyInfoByCompanyID(allotRecord.getSrcCompanyID()).getCompanyName());
             recordResponse.setDstCompanyName(companyService.findCompanyInfoByCompanyID(allotRecord.getDstCompanyID()).getCompanyName());
             // TODO 要调人员接口
-            recordResponse.setSrcManagerName(allotRecord.getSrcManagerID());
+            recordResponse.setSrcManagerName(allotRecord.getSrcManagerID().toString());
 
             recordResponseList.add(recordResponse);
         }
@@ -420,8 +420,8 @@ public class DeviceServiceImpl implements DeviceService {
         }else if (mesType.equals(DeviceMessageRecord.MessageType.CONTRACT_ALLOCATION.ordinal())){
             AllocationBathDevRequest bathDevRequest = new AllocationBathDevRequest();
             // TODO 要调人员接口
-            bathDevRequest.setCurCompanyID(messageRecord.getSrcManagerID());
-            bathDevRequest.setDstCompanyName(messageRecord.getDstManagerID());
+            bathDevRequest.setCurCompanyID(messageRecord.getSrcManagerID().toString());
+            bathDevRequest.setDstCompanyName(messageRecord.getDstManagerID().toString());
             bathDevRequest.setDevName(messageRecord.getDevName());
             bathDevRequest.setDevNums(messageRecord.getDevNums());
             //进行设备批量调拨
@@ -504,17 +504,17 @@ public class DeviceServiceImpl implements DeviceService {
                     if (messageRecord.getSrcManagerID().equals(managerID)){
                         temp.setMesType(DevMessageResponse.MesType.ALLOCATION.ordinal());
                         //TODO 要调人事接口，获取对应的companyId
-                        companyID = messageRecord.getDstManagerID();
+                        companyID = messageRecord.getDstManagerID().toString();
                     }else {
                         //设备接收消息
                         temp.setMesType(DevMessageResponse.MesType.ACCEPT.ordinal());
                         //TODO 要调人事接口，获取对应的companyId
-                        companyID = messageRecord.getSrcManagerID();
+                        companyID = messageRecord.getSrcManagerID().toString();
                     }
                 }else {
                     temp.setMesType(DevMessageResponse.MesType.CONTRACT_ALLOCATION.ordinal());
                     //TODO 要调人事接口，获取对应的companyId
-                    companyID = messageRecord.getDstManagerID();
+                    companyID = messageRecord.getDstManagerID().toString();
                 }
 
                 temp.setCompanyName(companyService.findCompanyInfoByCompanyID(companyID).getCompanyName());
@@ -537,6 +537,12 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceDao.findDevTypeByDevName(devName);
     }
 
+    @Override
+    public List<String> getAllDevName() {
+        List<String> devNameList = deviceDao.getAllDevName();
+        return devNameList;
+    }
+
     @Transactional(rollbackFor=Exception.class)
     public Boolean doAllocationDevice(String companyName, String devID, String mesID, String devName) {
         /**
@@ -545,10 +551,10 @@ public class DeviceServiceImpl implements DeviceService {
          */
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyName(companyName);
         //TODO 这边要调人员接口获取
-        String dstManagerID = companyInfo.getCompanyManagerID();
+        Integer dstManagerID = companyInfo.getCompanyManagerID();
         String dstCompanyID = companyInfo.getCompanyID();
         DeviceInfo srcDeviceInfo = deviceDao.findDeviceInfoByDevID(devID);
-        String srcManagerID = srcDeviceInfo.getDevManagerID();
+        Integer srcManagerID = srcDeviceInfo.getDevManagerID();
         String srcCompanyID = srcDeviceInfo.getCompanyID();
         /**
          * 更改设备状态为出库
@@ -584,7 +590,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Transactional(rollbackFor=Exception.class)
-    public void insertAllotMessage(int type, String srcManagerID, String dstManagerID, String devID, String mesID, String devName) {
+    public void insertAllotMessage(int type, Integer srcManagerID, Integer dstManagerID, String devID, String mesID, String devName) {
         // 这个if主要是防止批量调拨时消息重复插入
         try{
             if(deviceDao.getDevMessageRecord(mesID) == null){

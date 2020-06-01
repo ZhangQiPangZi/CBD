@@ -32,4 +32,7 @@ public interface CompanyDao {
 
     @Select("select Id from china where Name = #{name} and Pid = #{pid}")
     String getLocValue(@Param("name") String name, @Param("pid") String pid);
+
+    @Select("select companyName from companyInfo where companyID != #{companyID} and companyLevel = 3")
+    List<String> getHeadCpyList(@Param("companyID") String companyID);
 }

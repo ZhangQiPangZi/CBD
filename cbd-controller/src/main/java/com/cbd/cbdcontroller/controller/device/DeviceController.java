@@ -116,4 +116,10 @@ public class DeviceController {
         return Result.success(deviceService.findMessageByManagerIDAndMessageStatus(messageRequest));
     }
 
+    @ApiOperation("获取所有设备名,车佰度平台管理员访问")
+    @RequestMapping(value = "/getAllDevName", method = RequestMethod.POST)
+    public Result<List<String>> getAllDevName(){
+        return Result.success(deviceService.getAllDevName());
+    }
+
 }

@@ -2,6 +2,7 @@ package com.cbd.cbdcompany.service;
 
 import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.pojo.company.CompanyInfo;
+import com.cbd.cbdcommoninterface.response.CompanyListResponse;
 import com.cbd.cbdcommoninterface.response.CpyLevelAndLocResponse;
 import com.cbd.cbdcommoninterface.response.LocListResponse;
 import com.cbd.cbdcompany.dao.CompanyDao;
@@ -9,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -118,6 +116,24 @@ public class CompanyServiceImpl implements CompanyService {
         Integer rgt = cpyInfo.getRgt();
         List<String> parentIDList = companyDao.getUpCompanyIDByCompanyID(lft, rgt);
         return parentIDList;
+    }
+
+    @Override
+    public CompanyListResponse getGradeCompanyList(String companyID) {
+        //先查出所有未分级的子公司列表，按左值排序
+
+
+
+        LinkedList<CompanyInfo> cpyStack = new LinkedList<>();
+
+
+        return null;
+    }
+
+    @Override
+    public List<String> getHeadCpyList(String companyID) {
+        List<String> headCpyList = companyDao.getHeadCpyList(companyID);
+        return headCpyList;
     }
 
     @Override

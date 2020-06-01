@@ -67,4 +67,10 @@ public interface ContractService {
      * @return
      */
     String addContract(AddContractRequest addContractRequest);
+
+    /**
+     * 获取所有合同类型，车佰度平台管理员访问
+     * @return
+     */
+    List<String> getAllContractType();
 }

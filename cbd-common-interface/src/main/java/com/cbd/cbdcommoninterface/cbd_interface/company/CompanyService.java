@@ -1,6 +1,7 @@
 package com.cbd.cbdcommoninterface.cbd_interface.company;
 
 import com.cbd.cbdcommoninterface.pojo.company.CompanyInfo;
+import com.cbd.cbdcommoninterface.response.CompanyListResponse;
 import com.cbd.cbdcommoninterface.response.CpyLevelAndLocResponse;
 
 import java.util.List;
@@ -26,6 +27,20 @@ public interface CompanyService {
      * @return
      */
     List<String> getUpCompanyIDByCompanyID(String companyID);
+
+    /**
+     * 获取分级完成后的子公司名称列表
+     * @param companyID
+     * @return
+     */
+    CompanyListResponse getGradeCompanyList(String companyID);
+
+    /**
+     * 获取所有总公司名称列表，平台管理员访问
+     * @param companyID
+     * @return
+     */
+    List<String> getHeadCpyList(String companyID);
 
     CompanyInfo findCompanyInfoByCompanyID(String companyID);
     CompanyInfo findCompanyInfoByCompanyName(String companyName);

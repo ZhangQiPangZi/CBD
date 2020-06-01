@@ -73,6 +73,12 @@ public class ContractController {
         return Result.success(contractService.addContract(addContractRequest));
     }
 
+    @ApiOperation("获取所有合同类型，车佰度平台管理员访问")
+    @RequestMapping(value = "/getAllContractType", method = RequestMethod.POST)
+    public Result<List<String>> getAllContractType(){
+        return Result.success(contractService.getAllContractType())
+    }
+
 
 
 }
