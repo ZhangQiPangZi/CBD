@@ -51,4 +51,11 @@ public interface MessageListService {
      * @return
      */
     DevIdDO reAssign(Integer id, Integer orderTypeCode);
+
+    /**
+     * 根据id获取uuid
+     * @param id
+     * @return
+     */
+    String getUUID(Integer id);
 }

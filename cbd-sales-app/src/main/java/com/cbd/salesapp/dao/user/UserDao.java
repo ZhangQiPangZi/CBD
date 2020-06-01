@@ -16,9 +16,8 @@ import org.springframework.stereotype.Repository;
 public interface UserDao {
     /**
      * 根据用户电话查询用户基础信息
-     * @param phoneNumber
+     * @param phoneNum
      * @return
      */
-    @Select("select * from salesinfo where phoneNumber=#{phoneNumber}")
-    SalesInfoDO getUserInfo(@Param("phoneNumber") String phoneNumber);
+    SalesInfoDO getUserInfo(@Param("phoneNum") String phoneNum);
 }

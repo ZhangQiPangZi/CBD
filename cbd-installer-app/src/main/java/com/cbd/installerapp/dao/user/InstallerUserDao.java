@@ -14,9 +14,8 @@ import org.apache.ibatis.annotations.Select;
 public interface InstallerUserDao {
     /**
      * 查看工程师的个人信息
-     * @param phoneNumber
+     * @param phoneNum
      * @return
      */
-    @Select("select * from installerinfo where phoneNumber=#{phoneNumber}")
-    InstallerInfosDO getUserInfo(@Param("phoneNumber") String phoneNumber);
+    InstallerInfosDO getUserInfo(@Param("phoneNum") String phoneNum);
 }

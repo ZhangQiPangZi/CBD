@@ -23,4 +23,8 @@ public class DevIdDO implements Serializable {
      * simId
      */
     private String simId;
+    /**
+     * 标识符
+     */
+    private Integer flag;
 }

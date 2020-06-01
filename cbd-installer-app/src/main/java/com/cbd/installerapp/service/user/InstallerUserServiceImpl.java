@@ -14,7 +14,7 @@ public class InstallerUserServiceImpl implements InstallerUserService {
     @Autowired
     private InstallerUserDao installerUserDao;
     @Override
-    public InstallerInfosDO getUserInfo(String phoneNumber){
-        return installerUserDao.getUserInfo(phoneNumber);
+    public InstallerInfosDO getUserInfo(String phoneNum){
+        return installerUserDao.getUserInfo(phoneNum);
     }
 }

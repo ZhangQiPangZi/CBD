@@ -15,7 +15,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public SalesInfoDO getUserInfo(String phoneNumber){
-        return userDao.getUserInfo(phoneNumber);
+    public SalesInfoDO getUserInfo(String phoneNum){
+        return userDao.getUserInfo(phoneNum);
     }
 }

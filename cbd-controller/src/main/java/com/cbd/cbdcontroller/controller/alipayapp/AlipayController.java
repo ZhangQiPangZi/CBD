@@ -10,6 +10,7 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.cbd.cbdcommoninterface.cbd_interface.alipay.IAlipayService;
+import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
 import com.cbd.cbdcommoninterface.response.leiVo.AlipayVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.Result;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.cbd.cbdcommoninterface.utils.AlipayConfig.*;
 
@@ -46,6 +46,9 @@ public class AlipayController {
 
     @Autowired
     private IAlipayService alipayService;
+
+    @Autowired
+    private ICarInfoService carInfoService;
 
     /**
      * 去支付
@@ -180,7 +183,7 @@ public class AlipayController {
      * @throws AlipayApiException
      * @Description: 支付宝同步跳转接口
      */
-    @ApiOperation(value = "支付宝回调页面，同步", httpMethod = "GET")
+    @ApiOperation(value = "支付宝回调页面，同步",  httpMethod = "GET")
     @GetMapping("return")
     private Result<String> alipayReturn(Map<String, String> params, HttpServletRequest request, String out_trade_no, String trade_no, String orderPrice)
             throws AlipayApiException {
@@ -211,6 +214,18 @@ public class AlipayController {
             return Result.error(CodeMsg.SIGNVERIFIED_ERROR);
         }
     }
+    @ApiOperation(value = "前端回调接口",  httpMethod = "POST")
+    @RequestMapping(value = "/check",method = RequestMethod.POST)
+    public Result<String> check(@RequestParam("orderID")  String orderID){
+
+        Integer res = carInfoService.hasOrderID(orderID);
+        if(res == 1) {
+            return Result.success("支付验证成功");
+        }else {
+            return Result.error(CodeMsg.PAY_ERROR);
+        }
+    }
+
 
 
     public AlipayClient newAlipayClient() {

@@ -99,7 +99,7 @@ public class CarPlatFormController {
     public Result<List<CarForTreeVo>> findCar(@RequestParam("companyID") String companyID,
                                            @RequestParam("searchkey") String searchKey) {
 
-        List<CarForTreeVo> tmpList = carInfoService.findCarByOwner(companyID, searchKey);
+        List<CarForTreeVo> tmpList = carInfoService.findLikelyCarOwnerBySearchKey(companyID, searchKey);
 
         return Result.success(tmpList);
     }

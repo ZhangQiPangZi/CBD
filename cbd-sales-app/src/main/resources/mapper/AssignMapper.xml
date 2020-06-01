@@ -6,14 +6,15 @@
 <mapper namespace="com.cbd.salesapp.dao.workbench.AssignDao">
 
     <select id="orderByLevel" parameterType="com.cbd.cbdcommoninterface.request.salesapp.workbench.AssignQuery" resultType="com.cbd.cbdcommoninterface.pojo.salesapp.workbench.InstallerInfoDO">
-        SELECT id,name,level,longitude,latitude
-        FROM installerinfo
+        SELECT u.ID AS id ,u.userName AS name,ui.level,ui.longitude,ui.latitude
+        FROM user u
+        LEFT JOIN user_installer ui ON u.ID = ui.installer_id
         WHERE id NOT IN
         (SELECT installerId FROM installertasklist
-        WHERE orderTime = #{orderTime} AND state = '-1'
-        )
+        WHERE orderTime =#{orderTime}  AND state = '-1'
+        ) AND u.userType='3'
         <if test="null!=key and ''!=key">
-            AND name LIKE '%${key}%'
+            AND u.userName LIKE '%${key}%'
         </if>
         <if test="true==flag">
             ORDER BY level ASC;
@@ -24,11 +25,13 @@
     </select>
 
     <select id="orderByDistance" parameterType="com.cbd.cbdcommoninterface.request.salesapp.workbench.AssignQuery" resultType="com.cbd.cbdcommoninterface.pojo.salesapp.workbench.InstallerInfoDO">
-        SELECT id,name,level,longitude,latitude
-        FROM installerinfo
+        SELECT u.ID AS id ,u.userName AS name,ui.level,ui.longitude,ui.latitude
+        FROM user u
+        LEFT JOIN user_installer ui ON u.ID = ui.installer_id
         WHERE id NOT IN
         (SELECT installerId FROM installertasklist
-        WHERE orderTime = #{orderTime} AND state = '-1');
+        WHERE orderTime =#{orderTime}  AND state = '-1'
+        ) AND u.userType='3'
     </select>
 
 </mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cbd.salesapp.dao.user.UserDao">
+    <select id="getUserInfo" parameterType="java.lang.String" resultType="com.cbd.cbdcommoninterface.pojo.salesapp.user.SalesInfoDO">
+      SELECT u.ID AS id,u.userName AS NAME,u.sex,u.phoneNum AS phoneNumber,u.email AS mail,ci.companyName as company
+      FROM user u
+      LEFT JOIN companyInfo ci ON u.companyID = ci.companyID
+      where phoneNum = #{phoneNum};
+
+    </select>
+
+</mapper>

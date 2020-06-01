@@ -5,17 +5,22 @@ import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService;
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.user.UserService;
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.AssignService;
+import com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.GenerateService;
 import com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.InputInfoService;
+import com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.PayService;
+import com.cbd.cbdcommoninterface.pojo.device.DeviceInfo;
 import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.DevIdDO;
 import com.cbd.cbdcommoninterface.pojo.salesapp.user.SalesInfoDO;
 import com.cbd.cbdcommoninterface.request.PageRequest;
 import com.cbd.cbdcommoninterface.request.salesapp.workbench.AssignQuery;
 import com.cbd.cbdcommoninterface.request.salesapp.workbench.OrderInfoQuery;
+import com.cbd.cbdcommoninterface.request.salesapp.workbench.PayLogQuery;
 import com.cbd.cbdcommoninterface.response.ContractInfoResponse;
 import com.cbd.cbdcommoninterface.response.DevInfoResponse;
 import com.cbd.cbdcommoninterface.response.PageContractListResponse;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO;
+import com.cbd.cbdcommoninterface.response.salesapp.workbench.GenerateVO;
 import com.cbd.cbdcommoninterface.response.salesapp.workbench.InstallerInfoVO;
 import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
@@ -49,6 +54,10 @@ public class SalesappController {
     private DeviceService deviceService;
     @Autowired
     private InputInfoService inputInfoService;
+    @Autowired
+    private GenerateService generateService;
+    @Autowired
+    private PayService payService;
 
     @RequestMapping(value = "/get-list",method = RequestMethod.POST)
     @ApiOperation("获取订单列表")
@@ -88,8 +97,8 @@ public class SalesappController {
     @RequestMapping(value = "/user-info",method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation("用户信息")
-    public SalesInfoDO getUserInfo(@RequestParam String phoneNumber){
-        return userService.getUserInfo(phoneNumber);
+    public SalesInfoDO getUserInfo(@RequestParam String phoneNum){
+        return userService.getUserInfo(phoneNum);
     }
 
     /**
@@ -173,6 +182,18 @@ public class SalesappController {
     }
 
     /**
+     * 选择设备后设备的状态变为出库
+     * @param devId
+     * @return
+     */
+    @RequestMapping(value = "update-dev-status",method = RequestMethod.GET)
+    @ApiOperation("改变设备状态")
+    @ResponseBody
+    public Boolean updateDevStatus(@RequestParam String devId){
+        return deviceService.updateDevStatusByDevIDAndDevStatus(devId, DeviceInfo.DevStatus.OUT.ordinal());
+    }
+
+    /**
      * 录入信息后 将生成的订单id返回给前端 后期指派工程师会用到
      * @param query
      * @return
@@ -182,6 +203,40 @@ public class SalesappController {
     @ResponseBody
     public int confirmInputInfo(@RequestBody OrderInfoQuery query){
         return inputInfoService.confirmInputInfo(query);
+    }
+
+    /**
+     * 生成保单
+     * @return
+     */
+    @RequestMapping(value = "generate",method = RequestMethod.GET)
+    @ApiOperation(value = "生成保单")
+    @ResponseBody
+    public GenerateVO generateContract(){
+        return generateService.generateContract();
+    }
+
+    /**
+     * 支付成功后 将支付信息存入数据库
+     * @return
+     */
+    @RequestMapping(value = "pay-log",method = RequestMethod.POST)
+    @ApiOperation(value = "支付信息录入")
+    @ResponseBody
+    public int payLog(@RequestBody PayLogQuery query){
+        return payService.payLog(query);
+    }
+
+    /**
+     * 根据订单id获取数据库的orderId
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "get-uuid",method = RequestMethod.GET)
+    @ApiOperation(value = "获取uuid")
+    @ResponseBody
+    public String getUUID(@RequestParam Integer id){
+        return messageListService.getUUID(id);
     }
 
 

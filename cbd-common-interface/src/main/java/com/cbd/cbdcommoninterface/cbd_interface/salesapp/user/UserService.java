@@ -10,8 +10,8 @@ import com.cbd.cbdcommoninterface.pojo.salesapp.user.SalesInfoDO;
 public interface UserService {
     /**
      * 根据用户的电话号码查询用户的详细信息
-     * @param phoneNumber
+     * @param phoneNum
      * @return
      */
-    SalesInfoDO getUserInfo(String phoneNumber);
+    SalesInfoDO getUserInfo(String phoneNum);
 }
