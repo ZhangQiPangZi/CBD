@@ -36,5 +36,7 @@ public interface IPowerService {
          */
     void setupPowerForRole(int nPowerID, int nRoleID, String strCompanyID, String method);
 
+    List<power> getPowerListByUserID(Integer userID);
+
 
 }

@@ -61,5 +61,10 @@ public class PowerService implements IPowerService {
         return;
     }
 
+    public List<power> getPowerListByUserID(Integer userID){
+        return powerDao.getPowerListByUserID(userID);
+    }
+
+
 
 }

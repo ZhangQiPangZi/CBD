@@ -48,4 +48,20 @@ public interface powerDao {
     @Select("select * from power " +
             "where systemID = #{0} and nParentPowerID > 0 ")
     List<power> getPowerListByCompanyType(int nRoleID);
+
+    //SELECT * FROM s_permission sp " +
+    //            " LEFT JOIN s_role_permission srp ON sp.id = srp.fk_permission_id " +
+    //            " LEFT JOIN s_role sr ON srp.fk_role_id = sr.id " +
+
+    //            " LEFT JOIN s_user_role sur ON sr.id = sur.fk_role_id " +
+    //            " LEFT JOIN s_user su ON sur.fk_user_id = su.id " +
+    //            " WHERE su.id = #{sUserId}
+
+    @Select("select power.* from power p " +
+            "left join role_power rp ON p.powerID = rp.powerID " +
+            "left join role r ON rp.roleID = r.roleID " +
+            "left join role_user ru ON r.roleID = ru.roleID " +
+            "left join user u On ru.userID = u.ID " +
+            "where u.ID = #{userID}")
+    List<power> getPowerListByUserID(@Param("userID") int userID);
 }

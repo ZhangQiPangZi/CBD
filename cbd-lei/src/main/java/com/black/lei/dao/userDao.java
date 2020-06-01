@@ -152,7 +152,7 @@ public interface userDao {
      */
     @Select("select * from user " +
             "where phoneNum = #{phoneNum} limit 1")
-    user findByPhone(String phoneNum);
+    user findByPhone(@Param("phoneNum") String phoneNum);
 
     @Select("select count(phoneNum) from user " +
             "where phoneNum = #{phoneNum} ")

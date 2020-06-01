@@ -27,7 +27,7 @@ public interface IRoleDefineService {
      * 获取当前用户的角色
      * @return
      */
-    List<SimpleGrantedAuthority> getUserRoleByID(Integer ID);
+    List<role> getUserRoleByID(Integer ID);
 
 
     /**

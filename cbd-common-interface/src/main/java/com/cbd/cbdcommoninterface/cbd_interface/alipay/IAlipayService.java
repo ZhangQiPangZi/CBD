@@ -8,6 +8,7 @@ package com.cbd.cbdcommoninterface.cbd_interface.alipay;
 public interface IAlipayService {
 
     //支付信息校验成功后执行，向car_info中添加车辆信息
+    //向payrecord中添加信息
     Integer handleOrderMsg(String orderID);
 
 }

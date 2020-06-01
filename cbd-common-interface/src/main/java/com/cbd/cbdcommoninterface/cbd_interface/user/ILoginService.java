@@ -16,4 +16,6 @@ public interface ILoginService {
 
     InstallerVo installerLogin(LoginVo loginVo);
 
+    user findUserByPhoneNum(String phoneNum);
+
 }

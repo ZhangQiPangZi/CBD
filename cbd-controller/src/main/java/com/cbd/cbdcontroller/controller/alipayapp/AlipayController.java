@@ -164,8 +164,6 @@ public class AlipayController {
 
             Integer success = alipayService.handleOrderMsg(out_trade_no);
 
-
-
             return ("success");
         } else {
             logger.info("验证失败,不去更新状态");

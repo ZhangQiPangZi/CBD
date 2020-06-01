@@ -84,19 +84,14 @@ public class roleDefineService implements IRoleDefineService {
 
     @Override
     @Transactional
-    public List<SimpleGrantedAuthority> getUserRoleByID(Integer ID) {
-        List<Integer> roleID = role_userDao.getRolesByUserID(ID);
-        if(roleID == null) {
+    public List<role> getUserRoleByID(Integer ID) {
+        List<role> roleList = role_userDao.getRolesByUserID(ID);
+        if(roleList == null) {
             log.info("该用户未拥有任何角色");
             return null;
         }
-        //List<String> tmp = new ArrayList<>();
-        List<SimpleGrantedAuthority> sga = new ArrayList<>();
-        for(Integer i : roleID) {
-            sga.add(roleDao.getRoleNameByRoleID(i));
-        }
 
-        return sga;
+        return roleList;
 
     }
 

@@ -47,6 +47,10 @@ public class loginService implements ILoginService {
         return userInfo;
     }
 
+    public user findUserByPhoneNum(String phoneNum) {
+        return userDao.findByPhone(phoneNum);
+
+    }
 
 
 
