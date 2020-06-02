@@ -14,5 +14,5 @@ public class CompanyListResponse implements Serializable {
     private String label;
 
     //子list
-    private List<LocListResponse> children;
+    private List<CompanyListResponse> children;
 }

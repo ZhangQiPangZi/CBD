@@ -19,6 +19,9 @@ public class CodeMsg implements Serializable {
     /** 设备异常 **/
     public static final CodeMsg OUT_OF_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"00", "库存不足");
 
+    /** 公司异常 **/
+    public static final CodeMsg CPY_LEVEL_ERROR = new CodeMsg(ExpPrefixUtil.CpyExpPrefix+"00", "公司级别错误");
+
     public static final CodeMsg STAFF_NAME_ERROR = new CodeMsg("1012", "用户名错误！");
     public static final CodeMsg PASSWORD_ERROR = new CodeMsg("1013", "密码错误！");
     public static final CodeMsg PHONENUM_DUPLICATE = new CodeMsg("1014", "手机号码不能重复！");

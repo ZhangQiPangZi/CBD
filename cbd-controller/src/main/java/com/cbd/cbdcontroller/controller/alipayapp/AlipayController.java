@@ -182,7 +182,7 @@ public class AlipayController {
      */
     @ApiOperation(value = "支付宝回调页面，同步", httpMethod = "GET")
     @GetMapping("return")
-    private Result<String> alipayReturn(Map<String, String> params, HttpServletRequest request, String out_trade_no, String trade_no, String orderPrice)
+    private Result<String> alipayReturn(HttpServletRequest request, String out_trade_no, String trade_no, String orderPrice)
             throws AlipayApiException {
         Map<String, String> map = new HashMap<String, String>();
         Map<String, String[]> requestParams = request.getParameterMap();
