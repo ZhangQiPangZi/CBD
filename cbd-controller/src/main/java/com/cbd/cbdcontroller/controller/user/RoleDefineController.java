@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,9 +94,19 @@ public class RoleDefineController {
     @RequestMapping("/addRole")
     public Result<String> addRole(@RequestParam("roleName") String roleName,
                                   @RequestParam("remark") String remark,
-                                  @RequestParam("powerList") List<Integer> powerID) {
+                                  @RequestParam("powerList") String powerID) {
+        //1,2,3
+        //{1,2,3}
         Integer res = 0;
-        res = roleDefineService.addRole(roleName, remark, powerID);
+
+        String[] tmpList = powerID.split(",");
+        List<Integer> powerIDList = new ArrayList<>();
+        for(String i : tmpList) {
+            Integer cur = Integer.valueOf(i);
+            powerIDList.add(cur);
+        }
+
+        res = roleDefineService.addRole(roleName, remark, powerIDList);
         if (res == 1) {
             return Result.success("添加角色成功");
         } else {

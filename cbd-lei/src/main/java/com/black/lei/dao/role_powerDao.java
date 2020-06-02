@@ -25,7 +25,7 @@ public interface role_powerDao {
 
     //给角色新增权限
     @Insert("insert into role_power (roleID,powerID,status) " +
-            "values (#{roleID},#{powerID},#{status}")
+            "values (#{roleID},#{powerID},#{status})")
     Integer addPowerByRoleID(@Param("roleID") int roleID,
                              @Param("powerID")int powerID,
                              @Param("status")int status);
