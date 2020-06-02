@@ -51,9 +51,10 @@ public interface roleDao {
      * 添加角色
      */
     @Insert("insert into role " +
-            "(roleID, roleName, companyID,remark)" +
-            "values(#{roleID}, #{roleName}, #{companyID},#{remark})")
-    void createRole(role addRole);
+            "( roleName,remark)" +
+            "values(#{roleName},#{remark})")
+    Integer createRole(@Param("roleName") String roleName,
+                    @Param("remark") String remark);
 
     /**
      * 修改角色
@@ -71,5 +72,21 @@ public interface roleDao {
      */
     @Delete("delete from role where roleID = #{roleID}")
     void deleteRole(int roleID);
+
+    @Select("")
+    List<role> getRoleListByPowerUrl(String url);
+
+    //SELECT sr.* FROM s_role sr " +
+    //					" LEFT JOIN s_role_permission srp ON sr.id = srp.fk_role_id " +
+    //					" LEFT JOIN s_permission sp ON srp.fk_permission_id = sp.id " +
+    //					" WHERE sp.url = #{sPermissionUrl}
+
+    @Select("select r.* from role r " +
+            "left join role_power rp ON r.roleID = rp.roleID " +
+            "left join power p ON rp.powerID = p.powerID " +
+            "where p.url = #{url}")
+    List<role> findSRoleListBySPermissionUrl(@Param("url") String url);
+
+    List<role> getRoleInfoByUserID(Integer userID);
 
 }

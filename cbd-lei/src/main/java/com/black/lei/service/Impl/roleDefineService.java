@@ -38,9 +38,6 @@ public class roleDefineService implements IRoleDefineService {
     private role_userDao role_userDao;
 
     @Resource
-    private userDao userDao;
-
-    @Resource
     private com.black.lei.dao.powerDao powerDao;
 
     @Resource
@@ -97,20 +94,20 @@ public class roleDefineService implements IRoleDefineService {
 
     //添加角色
     //@Transactional(rollbackOn = { Exception.class })
-    public boolean createRole(role addroleDefine) {
-        boolean success = false;
+    public Integer addRole(String roleName ,String remark) {
+        Integer success = 0;
 
         try {
             //将新增角色存入数据库
-            roleDao.createRole(addroleDefine);
-            success = true;
+
+            success = roleDao.createRole(roleName,remark);
         } catch (Exception e) {
             System.out.println("Exception e = " + e);
+
             //TODO
             //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//事务回滚
-            success = false;
-        }
 
+        }
         return success;
     }
 

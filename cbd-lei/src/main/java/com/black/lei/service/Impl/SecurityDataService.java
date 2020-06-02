@@ -35,7 +35,7 @@ public class SecurityDataService {
         return userDao.findByPhone(phoneNum);
     }
     public List<role> findSRoleListBySPermissionUrl(String url) {
-        return roleDao.getRoleListByPowerUrl();
+        return roleDao.getRoleListByPowerUrl(url);
     }
 
     public  List<power> findSPermissionListBySPermissionUrl(String url) {

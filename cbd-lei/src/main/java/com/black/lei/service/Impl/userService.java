@@ -113,13 +113,15 @@ public class userService implements IUserService {
             return URV;
         }
         Integer ID = URV.getID();
-        List<Integer> RolesID = role_userDao.getRolesByUserID(ID);
+        //List<Integer> RolesID = role_userDao.getRolesByUserID(ID);
+        List<role> RolesID = role_userDao.getRolesByUserID(ID);
+
 
         List<role> roleList = new ArrayList<>();
 
-        for (Integer i : RolesID) {
-            roleList.add(roleDao.getRoleInfoByRoleID(i));
-        }
+//        for (Integer i : RolesID) {
+//            roleList.add(roleDao.getRoleInfoByRoleID(i));
+//        }
 
         //TODO 根据角色查询权限
 

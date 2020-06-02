@@ -57,11 +57,15 @@ public interface powerDao {
     //            " LEFT JOIN s_user su ON sur.fk_user_id = su.id " +
     //            " WHERE su.id = #{sUserId}
 
-    @Select("select power.* from power p " +
+    @Select("select p.* from power p " +
             "left join role_power rp ON p.powerID = rp.powerID " +
             "left join role r ON rp.roleID = r.roleID " +
             "left join role_user ru ON r.roleID = ru.roleID " +
             "left join user u On ru.userID = u.ID " +
-            "where u.ID = #{userID}")
+            "where u.ID = #{userID} ")
     List<power> getPowerListByUserID(@Param("userID") int userID);
+
+    //	@Select(value=" SELECT * FROM s_permission sp WHERE sp.url = #{sUserId} ")
+    @Select("select * from power where url = #{url}")
+    List<power> findSPermissionListBySPermissionUrl(@Param("url") String url);
 }

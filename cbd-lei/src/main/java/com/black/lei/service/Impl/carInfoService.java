@@ -55,10 +55,9 @@ public class carInfoService implements ICarInfoService {
 
     //
 
-
     @Transactional
     //每秒执行一次------------ 测试用
-   // @Scheduled(cron = "1-59 * * * * ? ")
+    //@Scheduled(cron = "* * * * * ? *")
     //每天每隔1小时执行一次-----生产用
     @Scheduled(cron = "0 0 1-23 * * ? ")
     public void function() {

@@ -6,9 +6,11 @@ import com.cbd.cbdcommoninterface.pojo.leipojo.role;
 import com.cbd.cbdcommoninterface.pojo.leipojo.user;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,12 +34,11 @@ public class VUserDetails extends user implements UserDetails {
     private List<power> powerList = null;
 
     public VUserDetails(user user ,List<role> roleList,List<power> powerList) {
-        //super(user);
+        super(user);
         this.roleList = roleList;
         this.powerList = powerList;
 
     }
-
 
     /**
      * 获取用户权限列表方法
@@ -80,7 +81,7 @@ public class VUserDetails extends user implements UserDetails {
 
     @Override
     public String getUsername() {
-        return super.getUsername();
+        return super.getPhoneNum();
     }
 
     @Override

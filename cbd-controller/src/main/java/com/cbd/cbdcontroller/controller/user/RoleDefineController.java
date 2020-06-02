@@ -94,9 +94,10 @@ public class RoleDefineController {
 
     @ApiOperation(value = "新增角色",httpMethod = "POST")
     @RequestMapping("/addRole")
-    public Result<String> addRole(@RequestBody role role) {
+    public Result<String> addRole(@RequestParam("roleName") String roleName,
+                                  @RequestParam("remark") String remark) {
         Integer res = 0;
-        //res = roleDefineService.addRole();
+        res = roleDefineService.addRole(roleName,remark);
         if (res == 1) {
             return Result.success("添加角色成功");
         } else if (res == 0) {
@@ -164,7 +165,6 @@ public class RoleDefineController {
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
     }
-
 
 
 }

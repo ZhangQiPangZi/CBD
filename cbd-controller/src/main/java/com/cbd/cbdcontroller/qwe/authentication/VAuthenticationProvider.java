@@ -3,11 +3,13 @@ package com.cbd.cbdcontroller.qwe.authentication;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Component;
 
 /**
  * @author shy_black
@@ -22,6 +24,7 @@ import org.springframework.security.core.AuthenticationException;
  *  象（这里边我们用的是UsernamePasswordAuthenticationToken），交给系统框架，后期可以随时取用
  */
 @Slf4j
+@Component
 public class VAuthenticationProvider implements AuthenticationProvider {
 
     Gson gson = new Gson();
@@ -61,4 +64,12 @@ public class VAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> aClass) {
         return true;
     }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        AuthenticationProvider authenticationProvider = new VAuthenticationProvider();
+        return authenticationProvider;
+    }
+
+
 }

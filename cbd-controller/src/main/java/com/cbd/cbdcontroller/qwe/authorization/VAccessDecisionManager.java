@@ -1,11 +1,14 @@
 package com.cbd.cbdcontroller.qwe.authorization;
 
+import com.cbd.cbdcommoninterface.result.CodeMsg;
+import com.cbd.cbdcommoninterface.result.GlobalException;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
@@ -19,6 +22,7 @@ import java.util.Collection;
  *
  * 权限管理判断器|校验用户是否有权限访问请求资源
  */
+@Component
 public class VAccessDecisionManager implements AccessDecisionManager {
 
     @Override
@@ -40,6 +44,8 @@ public class VAccessDecisionManager implements AccessDecisionManager {
         }
         //执行到这里说明没有匹配到应有权限
         throw new AccessDeniedException("权限不足!");
+
+
     }
 
     @Override

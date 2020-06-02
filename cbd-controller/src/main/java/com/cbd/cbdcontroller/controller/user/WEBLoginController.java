@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +55,7 @@ public class WEBLoginController {
         log.info("开始身份验证");
 
         if(userService.hasFindbyPhone(loginVo.getPhoneNum()) == null)  {
-            return Result.error(CodeMsg.PHONENUM_MISS_ERROR);
+            return Result.error(CodeMsg.USER_NOT_EXIT_ERROR);
         }
         if(userService.isPasswordCorrect(loginVo.getPhoneNum(),loginVo.getPassword()) == null) {
             return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
@@ -88,12 +89,12 @@ public class WEBLoginController {
                                                     @RequestBody LoginVo loginVo) {
         log.info("开始身份验证");
 
-        if(userService.hasFindbyPhone(loginVo.getPhoneNum()) == null)  {
-            return Result.error(CodeMsg.PHONENUM_MISS_ERROR);
-        }
-        if(userService.isPasswordCorrect(loginVo.getPhoneNum(),loginVo.getPassword()) == null) {
-            return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
-        }
+//        if(userService.hasFindbyPhone(loginVo.getPhoneNum()) == null)  {
+//            return Result.error(CodeMsg.USER_NOT_EXIT_ERROR);
+//        }
+//        if(userService.isPasswordCorrect(loginVo.getPhoneNum(),loginVo.getPassword()) == null) {
+//            return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
+//        }
         //获取用户基本信息
         UserBaseInfoAndPowerInfoVo URV = userService.login(loginVo.getPhoneNum(),loginVo.getPassword());
 

@@ -7,6 +7,8 @@ import org.springframework.security.access.intercept.AbstractSecurityInterceptor
 import org.springframework.security.access.intercept.InterceptorStatusToken;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
+import com.cbd.cbdcontroller.qwe.authorization.VFilterInvocationSecurityMetadataSource;
+
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -22,7 +24,7 @@ import java.io.IOException;
  * 这就是个鉴权过滤器，
  *
  * 访问鉴权过滤器
- *  该过滤器的作用就是，用户请求时，
+ *  该过滤器的作用就是，用户请求时
  *  提供权限资源管理器和权限判断器工作的场所，实现鉴权操作
  *
  */

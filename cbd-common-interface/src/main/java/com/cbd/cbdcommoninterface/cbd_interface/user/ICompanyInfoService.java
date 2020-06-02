@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @author shy_black
  * @date 2020/4/22 10:11
- * @Description: 500行
+ * @Description:
  */
 @Component
 public interface ICompanyInfoService {

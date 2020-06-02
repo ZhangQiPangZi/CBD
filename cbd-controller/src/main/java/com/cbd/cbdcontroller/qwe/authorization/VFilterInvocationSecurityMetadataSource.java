@@ -1,16 +1,19 @@
 package com.cbd.cbdcontroller.qwe.authorization;
 
 
+import com.cbd.cbdcommoninterface.cbd_interface.user.ILoginService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.power;
 import com.cbd.cbdcommoninterface.pojo.leipojo.role;
-import com.cbd.cbdcontroller.qwe.test.SecurityDataService;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,19 +26,24 @@ import java.util.List;
  * 权限资源管理器，它的工作是通过用户的请求地址，来获取访问这个地址所需的权限
  */
 @Slf4j
+@Component
 public class VFilterInvocationSecurityMetadataSource  implements FilterInvocationSecurityMetadataSource {
 
     Gson gson = new Gson();
 
     @Autowired
-    SecurityDataService securityDataService;
+    ILoginService loginService;
+
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         //获取请求起源路径
         String requestUrl = ((FilterInvocation) object).getRequestUrl();
 
-        log.info("VFilterInvocationSecurityMetadataSource getAttributes [requestUrl={}]", requestUrl);
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+        logger.info("当前请求资源路径：[requestUrl={}]", requestUrl);
         //登录页面就不需要权限
         if ("/login".equals(requestUrl)) {
             return null;
@@ -45,15 +53,15 @@ public class VFilterInvocationSecurityMetadataSource  implements FilterInvocatio
         List<String> tmpPowerList = new ArrayList<String>();
 
         //获取角色列表
-        List<role> roleList = securityDataService.findSRoleListBySPermissionUrl(requestUrl);
-        log.info("VFilterInvocationSecurityMetadataSource getAttributes [sRoleList={}]", gson.toJson(roleList));
+        List<role> roleList = loginService.findSRoleListBySPermissionUrl(requestUrl);
+        logger.info("访问资源需要角色：[sRoleList={}]", gson.toJson(roleList));
 
         for(role role : roleList) {
             tmpPowerList.add(role.getRoleName());
         }
         //获取资源权限列表
-        List<power> powerList = securityDataService.findSPermissionListBySPermissionUrl(requestUrl);
-        log.info("VFilterInvocationSecurityMetadataSource getAttributes [sPermissionList={}]", gson.toJson(powerList));
+        List<power> powerList = loginService.findSPermissionListBySPermissionUrl(requestUrl);
+        logger.info("访问资源需要权限 ：[sPermissionList={}]", gson.toJson(powerList));
 
         for(power power : powerList) {
             tmpPowerList.add(power.getPowerName());
@@ -65,8 +73,7 @@ public class VFilterInvocationSecurityMetadataSource  implements FilterInvocatio
         }
 
         String[] powerArray = tmpPowerList.toArray(new String[0]);
-        log.info("VFilterInvocationSecurityMetadataSource getAttributes [permissionArray={}]", gson.toJson(powerArray));
-
+        logger.info("所需权限列表 getAttributes [permissionArray={}]", gson.toJson(powerArray));
 
         return SecurityConfig.createList(powerArray);
     }

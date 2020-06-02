@@ -33,10 +33,10 @@ public interface IRoleDefineService {
     /**
      * 添加角色
      * @author wcj
-     * @param addroleDefine
+     * @param
      * @return
      */
-    boolean createRole(role addroleDefine);
+    Integer addRole(String roleName ,String remark);
 
     /**
      * 更新角色
