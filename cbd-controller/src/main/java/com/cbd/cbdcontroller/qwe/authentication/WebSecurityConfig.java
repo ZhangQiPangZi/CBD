@@ -23,7 +23,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 /**
  * Security 主配置文件
  *
- * @author Veiking
+ * @author shy_black
  */
 @Configuration
 @EnableWebSecurity //开启Spring Security的功能

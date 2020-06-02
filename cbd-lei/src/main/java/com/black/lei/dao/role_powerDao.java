@@ -24,9 +24,11 @@ public interface role_powerDao {
     List<Integer> getRolerOfPower(int roleID, String companyID);
 
     //给角色新增权限
-    @Insert("insert into role_power (roleID,powerID) " +
-            "values (#{roleID},#{powerID}")
-    Integer addPowerByRoleID(int roleID, int powerID,int status);
+    @Insert("insert into role_power (roleID,powerID,status) " +
+            "values (#{roleID},#{powerID},#{status}")
+    Integer addPowerByRoleID(@Param("roleID") int roleID,
+                             @Param("powerID")int powerID,
+                             @Param("status")int status);
 
     //删除角色指定权限
     @Delete("delete from role_power where " +
@@ -38,5 +40,11 @@ public interface role_powerDao {
             "status=#{status} " +
             "where roleID=#{roleID} and powerID=#{powerID}")
     Integer updateRolePowerStatus(int roleID,int powerID,int status);
+
+    @Update("update role_power " +
+            "set " +
+            "status = 0 " +
+            "where powerID = #{curPowerID} ")
+    Integer updateRolePowerWithPowerTableByPowerID(@Param("curPowerID") Integer curPowerID);
 
 }

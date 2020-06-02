@@ -1,6 +1,7 @@
 package com.black.lei.service.Impl;
 
 import com.black.lei.dao.powerDao;
+import com.black.lei.dao.role_powerDao;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IPowerService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.power;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
@@ -20,6 +21,9 @@ public class PowerService implements IPowerService {
 
     @Resource
     private powerDao powerDao;
+
+    @Resource
+    private role_powerDao role_powerDao;
 
     public List<Integer> getRolerOfPower(int i, String j) {
         return null;
@@ -46,6 +50,15 @@ public class PowerService implements IPowerService {
     }
     @Override
     public Integer updatePower(power power) {
+        //当修改权限表时，角色——权限表的状态也需要改变
+        //update为开启->关闭时，全部关闭
+        //关闭->开启时，无须改变角色-权限表的状态
+        Integer curPowerID = power.getPowerID();
+        if(power.getStatus() == 0) {
+            //改角色-权限的状态
+            role_powerDao.updateRolePowerWithPowerTableByPowerID(curPowerID);
+        }
+        //更新权限信息
         return powerDao.updatePower(power);
 
     }

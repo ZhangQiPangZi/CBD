@@ -36,7 +36,7 @@ public interface IRoleDefineService {
      * @param
      * @return
      */
-    Integer addRole(String roleName ,String remark);
+    Integer addRole(String roleName ,String remark,List<Integer> powerID);
 
     /**
      * 更新角色
@@ -59,5 +59,13 @@ public interface IRoleDefineService {
      * @return
      */
     List<power> getPowerListByCompanyType(int companyType);
+
+    /**
+     * 添加角色中的权限
+     * @param roleID
+     * @param powerID
+     * @return
+     */
+    Integer addRolePower(Integer roleID,Integer powerID);
 
 }

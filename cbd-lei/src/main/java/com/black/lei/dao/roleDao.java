@@ -89,4 +89,8 @@ public interface roleDao {
 
     List<role> getRoleInfoByUserID(Integer userID);
 
+
+    @Select("select roleID from role where roleName=#{roleName} ")
+    Integer getRoleIDByRoleName(@Param("roleName") String roleName);
+
 }
