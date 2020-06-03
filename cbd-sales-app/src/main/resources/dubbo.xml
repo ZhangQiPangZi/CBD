@@ -13,6 +13,7 @@
     <dubbo:protocol port="-1" name="dubbo"/>
     <!-- 应用名 -->
     <dubbo:application name="cbd-sales-app"/>
+    <dubbo:provider timeout="30000"></dubbo:provider>
 
     <!--服务消费者-->
     <!--关闭服务消费方所有服务的启动检查。dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成。-->
@@ -21,6 +22,7 @@
     <!-- id名字取成具体的服务名就行，check为false，
         interface是你要调用的那个具体服务的接口，也就是你在common-interface中定义的接口 -->
     <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
+    <dubbo:reference id="achievementService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.salesapp.service"/>
 
@@ -40,5 +42,11 @@
 
     <dubbo:service protocol="dubbo" ref="messageListService" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService" timeout="1200000"/>
     <bean id="messageListService" class="com.cbd.salesapp.service.messagelist.MessageListServiceImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="GenerateService" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.GenerateService" timeout="1200000"/>
+    <bean id="GenerateService" class="com.cbd.salesapp.service.workbench.GenerateServiceImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="PayService" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.PayService" timeout="1200000"/>
+    <bean id="PayService" class="com.cbd.salesapp.service.workbench.PayServiceImpl"/>
 
 </beans>

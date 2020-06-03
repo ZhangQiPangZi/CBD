@@ -206,6 +206,7 @@ public interface car_infoDao {
     String getCarPlateNumByOwerID(String owerID);
 
 
+
     @Select("select count(devID) from car_info where devID = #{devID} ")
     Integer hasDevID(@Param("devID") String devID);
 
@@ -215,4 +216,8 @@ public interface car_infoDao {
             "                   where t.devID = #{devID} " +
             "                   ORDER BY nTime DESC limit 1 ")
     CarForTreeVo findCarListByDevID(@Param("devID") String devID);
+
+    @Select("select count(orderID) from car_info where orderID=#{orderID}")
+    Integer hasOrderID(@Param("orderID") String orderID);
+
 }

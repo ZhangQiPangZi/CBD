@@ -38,4 +38,9 @@ public class InstallOrderServiceImpl implements InstallOrderService {
         return installOrderDao.complete(orderId);
 
     }
+
+    @Override
+    public int inputPicture(String url, Integer id) {
+        return installOrderDao.inputPicture(url,id);
+    }
 }

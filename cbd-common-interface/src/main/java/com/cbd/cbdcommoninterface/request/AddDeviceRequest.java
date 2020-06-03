@@ -1,56 +1,31 @@
 package com.cbd.cbdcommoninterface.request;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 
+@Data
 public class AddDeviceRequest implements Serializable {
 
     private String devName;
     @ApiModelProperty(value = "设备数量")
     private Integer devNums;
-    private String managerID;
+    private Integer managerID;
     private String companyID;
+    private String SIMName;
+    private Integer SIMNums;
     @ApiModelProperty(value = "网关id")
     private Integer gateWayID;
+    @ApiModelProperty(value = "设备类型")
+    private String devType;
+    @ApiModelProperty(value = "设备厂家公司名")
+    private String devFactoryName;
+    @ApiModelProperty(value = "设备厂家联系人名")
+    private String devFactoryPersonName;
+    @ApiModelProperty(value = "设备厂家联系人方式")
+    private String devFactoryPersonPhone;
 
-    public String getDevName() {
-        return devName;
-    }
 
-    public void setDevName(String devName) {
-        this.devName = devName;
-    }
 
-    public Integer getDevNums() {
-        return devNums;
-    }
-
-    public void setDevNums(Integer devNums) {
-        this.devNums = devNums;
-    }
-
-    public String getManagerID() {
-        return managerID;
-    }
-
-    public void setManagerID(String managerID) {
-        this.managerID = managerID;
-    }
-
-    public String getCompanyID() {
-        return companyID;
-    }
-
-    public void setCompanyID(String companyID) {
-        this.companyID = companyID;
-    }
-
-    public Integer getGateWayID() {
-        return gateWayID;
-    }
-
-    public void setGateWayID(Integer gateWayID) {
-        this.gateWayID = gateWayID;
-    }
 }

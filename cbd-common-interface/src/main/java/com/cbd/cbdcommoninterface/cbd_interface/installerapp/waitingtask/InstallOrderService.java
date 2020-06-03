@@ -13,4 +13,12 @@ public interface InstallOrderService {
      * @return
      */
     int installOrderComplete(Integer installerId,Integer orderId);
+
+    /**
+     * 安装工上传设备安装完成后的照片
+     * @param url
+     * @param id
+     * @return
+     */
+    int inputPicture(String url,Integer id);
 }

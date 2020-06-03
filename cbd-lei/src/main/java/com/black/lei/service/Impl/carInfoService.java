@@ -53,7 +53,7 @@ public class carInfoService implements ICarInfoService {
      * 3.track：根据devID向track表中插入一条定位数据
      */
 
-    //
+
 
     //定时执行，当安装工安装好devID时，从orderInfo中取devID
     //给car_info中添加devID 且 给track中添加一条初始定位
@@ -66,6 +66,18 @@ public class carInfoService implements ICarInfoService {
     //@Scheduled(cron = "0 0 1-23 * * ? ")
     @Transactional
     @Override
+
+    public Integer hasOrderID(String orderID) {
+        return carInfoDao.hasOrderID(orderID);
+    }
+
+    @Override
+    @Transactional
+    //每秒执行一次------------ 测试用
+    //@Scheduled(cron = "*  * * * ? *")
+    //每天每隔1小时执行一次-----生产用
+    @Scheduled(cron = "0 0 1-23 * * ? ")
+
     public void function() {
 
         List<OrderScheduledVo> orderIDAndDevIDList = orderInfoDao.findorderIDAndDevID();
@@ -128,6 +140,7 @@ public class carInfoService implements ICarInfoService {
     }
 
 
+    @Override
     public Integer save(car_info saveCarInfo) {
         Integer res = carInfoDao.insert(saveCarInfo);
         return res;
@@ -208,6 +221,7 @@ public class carInfoService implements ICarInfoService {
     }
 
 
+    @Override
     public car_info findById(String strCarUUID) {
 
         return carInfoDao.findById(strCarUUID);
@@ -216,6 +230,7 @@ public class carInfoService implements ICarInfoService {
     //1.在car_info里通过devID找到owerID
     //2.在userID中通过owerID找出用户基础信息
     //3.将用户基础信息放入json里，返回
+    @Override
     public Map<String, Object> findUserInfoByDevID(String devID) {
         JSONObject json = new JSONObject();
 
@@ -230,6 +245,7 @@ public class carInfoService implements ICarInfoService {
     }
 
 
+    @Override
     public boolean update(car_info saveCarInfo) {
         carInfoDao.update(saveCarInfo);
         return true;

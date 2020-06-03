@@ -13,6 +13,7 @@
     <dubbo:protocol port="-1" name="dubbo"/>
     <!-- 应用名 -->
     <dubbo:application name="cbd-redis"/>
+    <dubbo:provider timeout="30000"></dubbo:provider>
 
     <!--服务提供者-->
     <dubbo:service protocol="dubbo" ref="redisService" interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>

@@ -5,10 +5,10 @@
 
 <mapper namespace="com.cbd.salesapp.dao.messagelist.MessageListDao">
     <select id="getList" parameterType="java.lang.Integer" resultType="com.cbd.cbdcommoninterface.pojo.salesapp.messagelist.OrderInfoDO">
-        SELECT o.id,o.orderTime,i.name,o.orderTypeCode,o.orderStateTypeCode
+        SELECT o.id,o.orderTime,u.userName as name ,o.orderTypeCode,o.orderStateTypeCode
         FROM orderinfo o
-        LEFT JOIN installerinfo i
-        ON o.installerId = i.id
+        LEFT JOIN user u
+        ON o.installerId = u.ID
         <if test="null!=orderTypeCode">
             WHERE o.orderTypeCode=#{orderTypeCode}
         </if>
@@ -16,9 +16,9 @@
     </select>
 
     <select id="getOrderInfo" parameterType="java.lang.Integer" resultType="com.cbd.cbdcommoninterface.response.salesapp.messagelist.OrderInfoVO">
-        SELECT o.id,o.orderTime,o.orderAddr,o.carOwnerName,o.phoneNumber AS carOwnerNumber,i.name,i.phoneNumber,o.orderTypeCode,o.orderStateTypeCode
+        SELECT o.id,o.orderTime,o.orderAddr,o.carOwnerName,o.phoneNumber AS carOwnerNumber,u.userName as name ,u.phoneNum as phoneNumber,o.orderTypeCode,o.orderStateTypeCode
         FROM orderinfo o
-        LEFT JOIN installerinfo i ON o.installerId = i.id
+        LEFT JOIN user u ON o.installerId = u.ID
         WHERE o.id =#{id};
     </select>
 

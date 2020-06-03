@@ -42,4 +42,11 @@
         from companyInfo
         where lft &lt;= #{lft} and rgt &gt;= {rgt}
     </select>
+
+    <select id="getGradeCompanyList" resultMap="cpyMap">
+        select *
+        from companyInfo
+        where lft BETWEEN #{lft} and #{rgt}
+        order by lft ASC
+    </select>
 </mapper>

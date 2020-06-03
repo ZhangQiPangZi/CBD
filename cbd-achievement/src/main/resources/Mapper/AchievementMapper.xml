@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbd.cbdachievement.dao.AchievementDao">
+    <resultMap id="achCpyMap" type="com.cbd.cbdcommoninterface.pojo.achievement.AchievementCompanyInfo">
+        <result property="companyID" column="companyID"/>
+        <result property="salersCount" column="salersCount"/>
+        <result property="contractCount" column="contractCount"/>
+        <result property="achievementCount" column="achievementCount"/>
+    </resultMap>
+
+    <resultMap id="achDevMap" type="com.cbd.cbdcommoninterface.pojo.achievement.AchievementDeviceInfo">
+        <result property="devTypeID" column="devTypeID"/>
+        <result property="companyID" column="companyID"/>
+        <result property="month" column="month"/>
+        <result property="year" column="year"/>
+        <result property="salesNums" column="salesNums"/>
+    </resultMap>
+
+    <resultMap id="achPerMap" type="com.cbd.cbdcommoninterface.pojo.achievement.AchievementInfo">
+        <result property="achievement" column="achievement"/>
+        <result property="contractCount" column="contractCount"/>
+        <result property="month" column="month"/>
+        <result property="year" column="year"/>
+        <result property="contractTypeName" column="contractTypeName"/>
+    </resultMap>
+
+    <select id="findAchCpyInfoByCondition" parameterType="com.cbd.cbdcommoninterface.dto.ContractConditionDto" resultMap="achCpyMap">
+        select companyID, salersCount, contractCount, achievementCount
+        from achievementStatisticsInfo
+        where companyID in (
+        select companyID
+        from companyInfo cpy
+        where lft BETWEEN #{lft} and #{rgt}
+        <if test="companylevel != null">and cpy.companylevel = #{companylevel}</if>
+        <if test="companyProvince != null and companyProvince != ''">and cpy.companyProvince = #{companyProvince}</if>
+        <if test="companyCity != null and companyCity != ''">and cpy.companyCity = #{companyCity}</if>
+        <if test="companyDistrict != null and companyDistrict != ''">and cpy.companyDistrict = #{companyDistrict}</if>
+        )
+        <if test="sortMoney != null">
+            order by salersCount
+            <if test="sortMoney == 0">desc </if>
+            <if test="sortMoney == 1">asc </if>
+        </if>
+        <if test="sortContract != null">
+            order by contractCount
+            <if test="sortContract == 0">desc </if>
+            <if test="sortContract == 1">asc </if>
+        </if>
+    </select>
+
+    <insert id="replacePersonAchievement">
+      replace into achievementPersonInfo(month, year, achievement, salersID, companyID)
+      values (#{month}, #{year}, #{curAchievement}, #{salersID}, #{companyID})
+    </insert>
+
+    <insert id="replaceContractAchievement">
+      replace into achievementContractInfo(month, year, salersID, companyID, contractID, curContractCount, contractTypeName)
+      values (#{month}, #{year}, #{salersID}, #{companyID}, #{contractID}, #{curContractCount}, #{contractTypeName})
+    </insert>
+
+    <insert id="replaceCompanyAchievement">
+      replace into achievementCompanyInfo(month, year, achievement, companyID)
+      values (#{month}, #{year}, #{curCompanyAchievement}, #{parentCpyID})
+    </insert>
+
+    <insert id="replaceCompanyStatistics">
+        replace into achievementStatisticsInfo(companyID, achievementCount, salersCount, contractCount)
+        values (#{parentCpyID}, #{curAchievementCount}, #{salersCount}, #{contractCount})
+    </insert>
+
+    <insert id="replaceDeviceAchievement">
+        replace into achievementDeviceInfo(devTypeID, companyID, salesNums, month, year)
+        values (#{devTypeID}, #{parentCpyID}, #{curSalesNums}, #{month}, #{year})
+    </insert>
+
+    <select id="findPersonIDByCompanyID" resultType="java.lang.String">
+        select distinct salersID
+        from achievementPersonInfo
+        where companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt} and cpy.companylevel = 0
+        )
+    </select>
+
+    <select id="getPersonAchievementByPersonID" resultType="java.lang.Integer">
+        select sum(achivement)
+        from achievementPersonInfo
+        where salersID = #{salersID}
+    </select>
+    
+    <select id="getPersonContractCountByPersonID" resultType="java.lang.Integer">
+        select sum(contractCount)
+        from achievementContractInfo
+        where salersID = #{salersID}
+    </select>
+
+    <select id="getDevNameByCompanyID" resultType="java.lang.String">
+        select distinct devTypeID
+        from achievementDeviceInfo
+        where companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+        )
+    </select>
+
+    <select id="findDevNameByID" resultType="java.lang.String">
+        select devName
+        from deviceType
+        where devTypeID = #{devTypeID}
+    </select>
+
+    <select id="findDevAchievementByCondition" parameterType="com.cbd.cbdcommoninterface.dto.DevAchConditionDto" resultMap="achDevMap">
+        select devTypeID, companyID, month, year, salesNums
+        from achievementDeviceInfo
+        where companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+        )
+        <if test="devTypeID != null">
+            and devTypeID = #{devTypeID}
+        </if>
+        <if test="month != null">
+            and month = #{month}
+        </if>
+        <if test="year != null">
+            and year = #{year}
+        </if>
+        order by year desc
+    </select>
+
+    <select id="findPersonAchievementByCondition" parameterType="com.cbd.cbdcommoninterface.dto.PersonConditionDto" resultMap="achPerMap">
+        select achievement, contractCount, month, year, contractTypeName
+        from achievementPersonInfo a1 join achievementContractInfo a2 on a1.salersID = a2.salersID
+        where a1.salersID = #{salersID}
+        <if test="month != null">
+            and a1.month = #{month}
+        </if>
+        <if test="year != null">
+            and a1.year = #{year}
+        </if>
+        <if test="contractTypeName != null">
+            and contractTypeName = #{contractTypeName}
+        </if>
+    </select>
+
+    <select id="findCpyAchievementByCondition" parameterType="com.cbd.cbdcommoninterface.dto.PersonConditionDto" resultMap="achPerMap">
+        select achievement, contractCount, month, year, contractTypeName
+        from achievementCompanyInfo a1 join achievementContractInfo a2 on a1.companyID = a2.companyID
+        where a1.companyID = #{companyID}
+        <if test="month != null">
+            and a1.month = #{month}
+        </if>
+        <if test="year != null">
+            and a1.year = #{year}
+        </if>
+        <if test="contractTypeName != null">
+            and contractTypeName = #{contractTypeName}
+        </if>
+    </select>
+</mapper>

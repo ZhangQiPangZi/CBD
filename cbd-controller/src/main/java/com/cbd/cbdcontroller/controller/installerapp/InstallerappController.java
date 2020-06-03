@@ -17,6 +17,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author: Monster
@@ -25,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/installer-app")
-@Api("安装工接口")
+@Api("工程师APP")
 @Slf4j
 @CrossOrigin
 public class InstallerappController {
@@ -61,10 +67,16 @@ public class InstallerappController {
     @RequestMapping(value = "/installer-user-info",method = RequestMethod.GET)
     @ApiOperation("用户信息")
     @ResponseBody
-    public InstallerInfosDO getUserInfo(@RequestParam String phoneNumber){
-        return installerUserService.getUserInfo(phoneNumber);
+    public InstallerInfosDO getUserInfo(@RequestParam String phoneNum){
+        return installerUserService.getUserInfo(phoneNum);
     }
 
+    @RequestMapping(value = "/input-picture",method = RequestMethod.GET)
+    @ApiOperation("图片存入本地数据库")
+    @ResponseBody
+    public int inputPicture(@RequestParam String url,@RequestParam Integer id){
+        return installOrderService.inputPicture(url,id);
+    }
     @RequestMapping(value = "/install-complete",method = RequestMethod.GET)
     @ApiOperation("安装订单完成")
     @ResponseBody
@@ -106,4 +118,39 @@ public class InstallerappController {
     public Result<PageResponse> getTaskList(@RequestParam Integer installerId, @RequestParam(required = false) Integer orderTypeCode,@RequestBody PageRequest pageRequest){
         return Result.success(taskListService.getTaskList(installerId,orderTypeCode,pageRequest));
     }
+
+    @RequestMapping(value = "/addImage",method = RequestMethod.POST)
+    @ApiOperation("上传图片")
+    @ResponseBody
+    public Boolean addImage(@RequestParam(name = "image_data", required = false) MultipartFile file, @RequestParam Integer id) {
+
+        //文件上传
+        if (!file.isEmpty()) {
+            try {
+                //图片命名
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String newCompanyImageName = sdf.format(date);
+                String newCompanyImagepath = "D:\\test\\"+newCompanyImageName+"-"+ UUID.randomUUID().toString().substring(0,5);
+                inputPicture(newCompanyImagepath,3);
+                File newFile = new File(newCompanyImagepath);
+                if (!newFile.exists()) {
+                    newFile.createNewFile();
+                }
+                BufferedOutputStream out = new BufferedOutputStream(
+                        new FileOutputStream(newFile));
+                out.write(file.getBytes());
+                out.flush();
+                out.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

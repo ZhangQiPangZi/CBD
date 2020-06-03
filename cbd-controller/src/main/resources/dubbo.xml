@@ -13,6 +13,7 @@
     <dubbo:protocol port="-1" name="dubbo"/>
     <!-- 应用名 -->
     <dubbo:application name="cbd-controller"/>
+    <dubbo:provider timeout="30000"></dubbo:provider>
 
     <!--服务消费者-->
     <!--关闭服务消费方所有服务的启动检查。dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成。-->
@@ -24,6 +25,7 @@
     <dubbo:reference id="userService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.user.UserService"/>
     <dubbo:reference id="assignService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.AssignService"/>
     <dubbo:reference id="inputInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.InputInfoService"/>
+    <dubbo:reference id="GenerateService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.GenerateService"/>
     <dubbo:reference id="messageListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.messagelist.MessageListService"/>
     <dubbo:reference id="installerUserService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.user.InstallerUserService"/>
     <dubbo:reference id="taskListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.TaskListService"/>
@@ -32,6 +34,12 @@
     <dubbo:reference id="completedListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.completed.CompletedListService"/>
     <dubbo:reference id="installOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.InstallOrderService"/>
     <dubbo:reference id="repairOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RepairOrderService"/>
+
+
+    <dubbo:reference id="PayService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.PayService"/>
+    <dubbo:reference id="AchievementService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
+
+
 
     <dubbo:reference id="ICarInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService"/>
     <dubbo:reference id="ICompanyInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService"/>

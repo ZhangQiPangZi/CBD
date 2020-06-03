@@ -3,21 +3,23 @@ package com.cbd.cbdcontract.service;
 import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService;
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
+import com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService;
 import com.cbd.cbdcommoninterface.dto.ContractConditionDto;
 import com.cbd.cbdcommoninterface.dto.DevConditionDto;
+import com.cbd.cbdcommoninterface.keys.OrderTypeKey;
+import com.cbd.cbdcommoninterface.keys.RenewKey;
 import com.cbd.cbdcommoninterface.pojo.company.CompanyInfo;
 import com.cbd.cbdcommoninterface.pojo.contract.ContractInfo;
 import com.cbd.cbdcommoninterface.pojo.contract.ContractType;
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
-import com.cbd.cbdcommoninterface.request.AddContractRequest;
-import com.cbd.cbdcommoninterface.request.DistributeContractRequest;
-import com.cbd.cbdcommoninterface.request.PageContractConditionRequest;
-import com.cbd.cbdcommoninterface.request.PageRequest;
+import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.GlobalException;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
+import com.cbd.cbdcommoninterface.utils.UUIDUtils;
 import com.cbd.cbdcontract.dao.ContractDao;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,8 @@ public class ContractServiceImpl implements ContractService {
     ContractDao contractDao;
     @Autowired
     DeviceService deviceService;
+    @Autowired
+    RedisService redisService;
 
     @Override
     public List<String> findContractTypeNameByCompanyID(String companyID) {
@@ -70,7 +74,7 @@ public class ContractServiceImpl implements ContractService {
         PageRequest pageRequest = contractConditionRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
 
         /**
          * 封装合同列表,先分页查询contractID，然后获取需要返回的信息
@@ -90,10 +94,14 @@ public class ContractServiceImpl implements ContractService {
 
             temp.setCreateTime(contractInfo.getCreateTime());
 
+            temp.setContractTypeName(contractDao.getContractTypeName(contractInfo.getContractTypeID()));
+
             contractListResponseList.add(temp);
         }
 
         PageInfo<PageContractListResponse> devListResponsePageInfo = new PageInfo<>(contractListResponseList);
+        devListResponsePageInfo.setTotal(page.getTotal());
+        devListResponsePageInfo.setPages(page.getPages());
 
         return PageUtils.getPageResponse(devListResponsePageInfo);
 
@@ -126,7 +134,7 @@ public class ContractServiceImpl implements ContractService {
         contractInfoResponse.setDellFee(contractInfo.getDellFee());
         contractInfoResponse.setDevNums(contractInfo.getDevNums());
         // TODO 需要调用人事接口
-        contractInfoResponse.setPartyAPersonName(contractInfo.getPartyAPersonID());
+        contractInfoResponse.setPartyAPersonName(contractInfo.getPartyAPersonID().toString());
         contractInfoResponse.setServerFee(contractInfo.getServerFee());
         contractInfoResponse.setServerYears(contractInfo.getServerYears());
 
@@ -162,6 +170,7 @@ public class ContractServiceImpl implements ContractService {
             temp.setDevName(devType.getDevName());
 
             temp.setCreateTime(contractInfo.getCreateTime());
+            temp.setContractTypeName(contractDao.getContractTypeName(contractInfo.getContractTypeID()));
 
             contractListResponseList.add(temp);
         }
@@ -241,11 +250,14 @@ public class ContractServiceImpl implements ContractService {
     @Override
     @Transactional(rollbackFor=Exception.class)
     public String addContract(AddContractRequest addContractRequest) {
-        //先删除当前公司之前的未支付合同,即公司只能有一份未支付合同
+        //先获取甲方公司信息
+        CompanyInfo partyACpyInfo = companyService.findCompanyInfoByCompanyName(addContractRequest.getCompanyName());
+
+        //先删除甲方公司之前的未支付合同,即甲方公司只能有一份未支付合同
         //获取未支付合同id
         ContractConditionDto conditionDto = new ContractConditionDto();
         conditionDto.setContractStatus(ContractInfo.ContractStatus.UNPAID.ordinal());
-        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(addContractRequest.getCompanyID());
+        CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(partyACpyInfo.getCompanyID());
         Integer lft = cpyInfo.getLft();
         Integer rgt = cpyInfo.getRgt();
         conditionDto.setLft(lft);
@@ -253,7 +265,7 @@ public class ContractServiceImpl implements ContractService {
         conditionDto.setTimeSort(ContractConditionDto.timeSort.DESC.ordinal());
         List<String> IDList = contractDao.findContractListByCondition(conditionDto);
 
-        String contractID = UUID.randomUUID().toString();
+        String contractID = UUIDUtils.getUUID();
         //删除即将合同状态变为过期
         try{
             if (!(IDList == null || IDList.isEmpty())){
@@ -264,15 +276,16 @@ public class ContractServiceImpl implements ContractService {
 
             //新建合同
             ContractInfo contractInfo = new ContractInfo();
-            contractInfo.setCompanyID(addContractRequest.getCompanyID());
+            contractInfo.setCompanyID(partyACpyInfo.getCompanyID());
             contractInfo.setContractID(contractID);
+//          合同状态为未支付
             contractInfo.setContractStatus(ContractInfo.ContractStatus.UNPAID.ordinal());
             contractInfo.setContractTypeID(contractDao.getContractTypeID(addContractRequest.getContractTypeName()));
             contractInfo.setServerFee(addContractRequest.getServerFee());
             contractInfo.setServerYears(addContractRequest.getServerYears());
             contractInfo.setDellFee(addContractRequest.getDellFee());
             contractInfo.setDevNums(addContractRequest.getDevNums());
-            contractInfo.setPartyAPersonID(addContractRequest.getUserID());
+            contractInfo.setPartyAPersonID(partyACpyInfo.getCompanyManagerID());
             contractInfo.setDevTypeID(contractDao.getDevTypeID(addContractRequest.getDevName()));
             contractInfo.setCreateTime(new Date());
 
@@ -282,5 +295,56 @@ public class ContractServiceImpl implements ContractService {
         }
 
         return contractID;
+    }
+
+    @Override
+    public List<String> getAllContractType() {
+        List<String> contractTypeNameList = contractDao.getAllContractType();
+        return contractTypeNameList;
+    }
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public void addOrder(String contractID) {
+        //先增加order记录
+        String contractOrderID = UUIDUtils.getUUID();
+        ContractInfo contractInfo = contractDao.findContractInfoByContractID(contractID);
+        Float serverFee = contractInfo.getServerFee();
+        Date createTime = new Date();
+        contractDao.insertOrder(contractOrderID, contractID, serverFee, createTime);
+
+        //记录设备批量调拨信息
+        AddContractDevMesRequest addContractDevMesRequest = new AddContractDevMesRequest();
+        addContractDevMesRequest.setCompanyID(contractInfo.getCompanyID());
+        addContractDevMesRequest.setDevName(contractDao.getDevType(contractInfo.getDevTypeID()).getDevName());
+        addContractDevMesRequest.setDevNums(contractInfo.getDevNums());
+        deviceService.addContractDeviceMessage(addContractDevMesRequest);
+
+        //更改合同状态
+        Integer contractStatus = ContractInfo.ContractStatus.PAID.ordinal();
+        contractDao.updateContractStatus(contractID, contractStatus);
+
+        //推送信息
+
+    }
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public void renewContract(String contractID) {
+        //先增加order记录
+        String contractOrderID = UUIDUtils.getUUID();
+        ContractInfo contractInfo = contractDao.findContractInfoByContractID(contractID);
+        Float serverFee = contractInfo.getServerFee();
+        Date createTime = new Date();
+        contractDao.insertOrder(contractOrderID, contractID, serverFee, createTime);
+
+        //更新合同过期记录
+        Float years = redisService.get(OrderTypeKey.ORDER_TYPE, contractID, Float.class);
+        contractDao.updateContractServerYears(contractID, years, createTime);
+
+        redisService.delete(RenewKey.RENEW_TIME, contractID);
+
+        //推送信息
+
     }
 }

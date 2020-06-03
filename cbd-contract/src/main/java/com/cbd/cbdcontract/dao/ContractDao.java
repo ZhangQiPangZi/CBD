@@ -4,10 +4,10 @@ import com.cbd.cbdcommoninterface.dto.ContractConditionDto;
 import com.cbd.cbdcommoninterface.pojo.contract.ContractInfo;
 import com.cbd.cbdcommoninterface.pojo.contract.ContractType;
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -54,4 +54,14 @@ public interface ContractDao {
     Integer getDevTypeID(@Param("devName") String devName);
 
     void addContractInfo(ContractInfo contractInfo);
+
+    @Select("select contractTypeName from contractType")
+    List<String> getAllContractType();
+
+    @Insert("insert into contractOrderPayRecord(contractOrderID, contractID, serverFee, createTime)" +
+            "values (#{contractOrderID}, #{contractID}, #{serverFee}, #{createTime})")
+    void insertOrder(@Param("contractOrderID") String contractOrderID, @Param("contractID") String contractID, @Param("serverFee") Float serverFee, @Param("createTime") Date createTime);
+
+    @Update("update contractInfo set serverYears = #{serverYears}, createTime = #{createTime} where contractID = #{contractID}")
+    void updateContractServerYears(@Param("contractID") String contractID, @Param("serverYears") Float years, @Param("createTime") Date createTime);
 }

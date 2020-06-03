@@ -34,4 +34,7 @@ public class OrderInfoQuery implements Serializable {
 
     @ApiModelProperty(value = "订单类型字典值",example = "1",required = true)
     private Integer orderTypeCode;
+
+    @ApiModelProperty(value = "订单号")
+    private String orderId;
 }

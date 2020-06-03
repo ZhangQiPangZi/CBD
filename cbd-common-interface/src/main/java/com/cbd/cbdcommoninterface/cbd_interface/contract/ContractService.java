@@ -55,16 +55,34 @@ public interface ContractService {
     List<Float> getRenewMoneyByContractID(String contractID);
 
     /**
-     *  获取之前未支付的合同信息
+     *  获取之前未支付的合同信息，甲方访问
      * @param companyID
      * @return
      */
     UnpaidContractInfoResponse getUnPaidContractInfoByCompanyID(String companyID);
 
     /**
-     * 新建合同，支付之前做
+     * 新建合同，车佰度平台管理员访问
      * @param addContractRequest
      * @return
      */
     String addContract(AddContractRequest addContractRequest);
+
+    /**
+     * 获取所有合同类型，车佰度平台管理员访问
+     * @return
+     */
+    List<String> getAllContractType();
+
+    /**
+     * 添加合同，并完成设备批量调拨信息推送
+     * @param contractID
+     */
+    void addOrder(String contractID);
+
+    /**
+     * 续费合同，车佰度平台管理员访问
+     * @param contractID
+     */
+    void renewContract(String contractID);
 }

@@ -51,14 +51,22 @@ public class MessageListServiceImpl implements MessageListService {
 
     @Override
     public DevIdDO reAssign(Integer id, Integer orderTypeCode){
-        DevIdDO devIdDO = null;
+        DevIdDO devIdDO = new DevIdDO();
+        devIdDO.setFlag(-1);
 
         if(orderTypeCode!=3){
             devIdDO = messageListDao.getDevId(id);
+            devIdDO.setFlag(1);
             messageListDao.deleteDevId(id);
         }
         messageListDao.reAssign(id);
         messageListDao.removeFromTaskList(id);
+
         return devIdDO;
+    }
+
+    @Override
+    public String getUUID(Integer id) {
+        return messageListDao.getUUID(id);
     }
 }

@@ -1,42 +1,16 @@
 package com.cbd.cbdcommoninterface.response;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class PageDevListResponse implements Serializable {
     private String devID;
     private String devName;
     private String devType;
     private String companyName;
-
-    public String getDevID() {
-        return devID;
-    }
-
-    public void setDevID(String devID) {
-        this.devID = devID;
-    }
-
-    public String getDevName() {
-        return devName;
-    }
-
-    public void setDevName(String devName) {
-        this.devName = devName;
-    }
-
-    public String getDevType() {
-        return devType;
-    }
-
-    public void setDevType(String devType) {
-        this.devType = devType;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
+    @ApiModelProperty(value = "设备状态", example = "0 库中 1 出库 2 使用中 3 待返厂维修")
+    private Integer devStatus;
 }

@@ -1,5 +1,6 @@
 package com.cbd.cbdcommoninterface.cbd_interface.device;
 
+import com.cbd.cbdcommoninterface.pojo.device.DevType;
 import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 
@@ -73,6 +74,13 @@ public interface DeviceService {
     Boolean allocationDeviceByDevIDAndCompanyName(AllocationDevRequest allocationDevRequest);
 
     /**
+     * 判断此设备是否可以调拨，即状态为入库
+     * @param devID
+     * @return
+     */
+    PermitDeviceResponse judgePermitDevice(String devID);
+
+    /**
      * 根据设备名及数量和公司名进行设备批量调拨
      * @param allocationBathDevRequest
      * @return
@@ -101,7 +109,7 @@ public interface DeviceService {
     Boolean confirmDeviceMessageByMesID(String mesID) ;
 
     /**
-     * 新增合同设备调拨消息
+     * 新增合同设备调拨消息,支付成功后调用
      */
     Boolean addContractDeviceMessage(AddContractDevMesRequest contractDevMesRequest);
 
@@ -118,6 +126,19 @@ public interface DeviceService {
      * @return
      */
     PageResponse findMessageByManagerIDAndMessageStatus(GetMessageRequest messageRequest);
+
+    /**
+     * 根据设备名获取设备类别信息
+     * @param devName
+     * @return
+     */
+    DevType findDevTypeByDevName(String devName);
+
+    /**
+     * 获取所有设备名,车佰度平台管理员访问
+     * @return
+     */
+    List<String> getAllDevName();
 
 
 }

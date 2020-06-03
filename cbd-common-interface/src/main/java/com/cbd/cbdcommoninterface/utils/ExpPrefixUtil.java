@@ -13,5 +13,8 @@ public class ExpPrefixUtil {
     /** Device模块异常码前缀 */
     public static final String DevExpPrefix = "20";
 
+    /** company模块异常码前缀*/
+    public static final String CpyExpPrefix = "30";
+
 
 }
