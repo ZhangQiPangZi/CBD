@@ -35,6 +35,8 @@ public class CodeMsg implements Serializable {
     public static final CodeMsg SESSION_OUT_OF_TIME_ERROR = new CodeMsg("1023","用户会话过期！");
 
     public static final CodeMsg EMPTY_DEVID_ERROR = new CodeMsg("1024","设备未找到！");
+    public static final CodeMsg EMPTY_COMPANY_ERROR = new CodeMsg("1025","未找到该公司！");
+    public static final CodeMsg EMPTY_CAR_ERROR = new CodeMsg("1026","该公司下未找到车辆！");
 
 
 

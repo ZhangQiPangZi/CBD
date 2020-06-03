@@ -1,6 +1,7 @@
 package com.black.lei.dao;
 
 
+import com.alipay.api.domain.Car;
 import com.cbd.cbdcommoninterface.pojo.leipojo.car_info;
 import com.cbd.cbdcommoninterface.response.leiVo.*;
 import org.apache.ibatis.annotations.*;
@@ -182,21 +183,6 @@ public interface car_infoDao {
             "where c.devID=#{devID} AND c.company = #{companyID}")
     Map<String,Object> getCarAndGPSInfo(String devID, String companyID);
 
-    //根据设备号获取车辆信息
-    //TODO
-    @Select("select * from car_info where devID=#{0}")
-    Map<String,Object> getCarInfoByTEID(String devID);
-
-    //根据车主名字模糊查询车辆以及车主信息
-    //TODO
-    @Select("select")
-    List<Map<String, Object>> findCarInfo(String strCompanyID, String strName);
-
-    //根据手机号查询车辆设备ID
-    //TODO  1.在user中找到userID，即ID，2.在car_user中根据userID找出carUUID，3.在car_info中找到devID
-    @Select("select a.devID from car_info as a ,car_user as b where ")
-    List<Map<String,Object>> findListBystrPhone(String phoneNum);
-
     //获取公司所有的车辆信息
     @Select("select a.userName,a.phoneNum,b.modelName,b.carPlateNum,b.devID,c.dbLon,c.dbLat,c.Max(nTime)" +
             "from user as a,car_info as b ,track as c" +
@@ -222,4 +208,11 @@ public interface car_infoDao {
 
     @Select("select count(devID) from car_info where devID = #{devID} ")
     Integer hasDevID(@Param("devID") String devID);
+
+
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
+            "                   from track t LEFT JOIN car_info  c ON c.devID = t.devID " +
+            "                   where t.devID = #{devID} " +
+            "                   ORDER BY nTime DESC limit 1 ")
+    CarForTreeVo findCarListByDevID(@Param("devID") String devID);
 }

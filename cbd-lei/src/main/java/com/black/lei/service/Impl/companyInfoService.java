@@ -34,6 +34,11 @@ public class companyInfoService implements ICompanyInfoService {
     @Resource
     private car_infoDao car_infoDao;
 
+    @Override
+    public Integer hasCompanyID(String companyID) {
+        return company_infoDao.hasCompanyID(companyID);
+    }
+
     public company_info findById(String companyID) {
         company_info findCompany = company_infoDao.findById(companyID);
         return findCompany;

@@ -3,9 +3,11 @@ package com.cbd.cbdcontroller.controller.tracklast;
 
 
 import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
+import com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
 import com.cbd.cbdcommoninterface.response.leiVo.CarForTreeVo;
 import com.cbd.cbdcommoninterface.response.leiVo.CompanyAndCarInfoResponse;
+import com.cbd.cbdcommoninterface.response.leiVo.RealTrackVo;
 import com.cbd.cbdcommoninterface.response.leiVo.findCarVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.GlobalException;
@@ -67,27 +69,56 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/CarPlatfrom")
 public class CarPlatFormController {
+
     @Autowired
     private ICarInfoService carInfoService;
-
 
     @Autowired
     private IUserService userService;
 
-    @ApiOperation(value = "公司树获取公司树结构及车辆信息及定位" ,httpMethod = "POST")
-    @RequestMapping(value = "/getCarListInfo")
+    @Autowired
+    private ICompanyInfoService companyInfoService;
+
+    @ApiOperation(value = "根据公司id获取其旗下的车辆", httpMethod = "POST")
+    @RequestMapping(value = "/getCarListByCompanyID")
     @ResponseBody
-    public Result<List<CompanyAndCarInfoResponse>> getCarInfo(@RequestParam String companyID) {
-        log.info("开始获取车辆信息！！");
-        List<CompanyAndCarInfoResponse> companyAndCarInfoResponse = new ArrayList<>();
-        companyAndCarInfoResponse = carInfoService.getCompanyAndCarInfo(companyID);
+    public Result<List<CarForTreeVo>> getCarList(@RequestParam("companyID") String companyID) {
 
-        if(companyAndCarInfoResponse == null) {
-            throw new GlobalException(CodeMsg.SERVER_ERROR);
+        List<CarForTreeVo> realTrackVoList = new ArrayList<>();
+
+        if(companyInfoService.hasCompanyID(companyID) == 0) {
+            //判断是否有该公司ID
+            return Result.error(CodeMsg.EMPTY_COMPANY_ERROR);//
         }
-        return Result.success(companyAndCarInfoResponse);
+        realTrackVoList = carInfoService.findCarListByCompanyID(companyID);
 
+        if(realTrackVoList.size() == 0) {
+            return Result.error(CodeMsg.EMPTY_CAR_ERROR);//1026
+        }
+
+        return Result.success(realTrackVoList);
     }
+
+
+
+
+
+
+
+
+
+
+//    public Result<List<CompanyAndCarInfoResponse>> getCarInfo(@RequestParam String companyID) {
+//        log.info("开始获取车辆信息！！");
+//        List<CompanyAndCarInfoResponse> companyAndCarInfoResponse = new ArrayList<>();
+//        companyAndCarInfoResponse = carInfoService.getCompanyAndCarInfo(companyID);
+//
+//        if(companyAndCarInfoResponse == null) {
+//            throw new GlobalException(CodeMsg.SERVER_ERROR);
+//        }
+//        return Result.success(companyAndCarInfoResponse);
+//
+//    }
     /**
      * 车辆搜索
      *

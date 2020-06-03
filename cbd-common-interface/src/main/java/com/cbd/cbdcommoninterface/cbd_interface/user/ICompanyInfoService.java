@@ -14,6 +14,8 @@ import java.util.Map;
 @Component
 public interface ICompanyInfoService {
 
+    Integer hasCompanyID(String companyID);
+
      company_info findById(String companyID);
 
      int getCompanyTypeByID(String companyID);

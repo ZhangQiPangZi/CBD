@@ -35,4 +35,6 @@ public interface ICarInfoService {
 
     Integer hasDevID(String devID);
 
+    List<CarForTreeVo> findCarListByCompanyID(String companyID);
+
 }
