@@ -449,8 +449,8 @@ public class DeviceServiceImpl implements DeviceService {
             deviceMessageRecord.setMesID(mesID);
             deviceMessageRecord.setMesType(DeviceMessageRecord.MessageType.CONTRACT_ALLOCATION.ordinal());
             // TODO 要调人事接口
-            //srcComapny为车百度总公司
-            String srcCompanyName = "车佰度总公司";
+            //srcComapny为车百度平台
+            String srcCompanyName = "车佰度平台";
             deviceMessageRecord.setSrcManagerID(companyService.findCompanyInfoByCompanyName(srcCompanyName).getCompanyManagerID());
             // TODO 要调人事接口
             deviceMessageRecord.setDstManagerID(companyService.findCompanyInfoByCompanyID(contractDevMesRequest.getCompanyID()).getCompanyManagerID());

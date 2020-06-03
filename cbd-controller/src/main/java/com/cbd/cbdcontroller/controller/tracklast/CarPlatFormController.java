@@ -93,16 +93,16 @@ public class CarPlatFormController {
      *
      * @author shy_black
      */
-//    @ApiOperation(value = "模糊查询车辆信息--根据车辆devID/车主姓名/电话/车牌号",httpMethod = "POST")
-//    @RequestMapping(value = "/findCar")
-//    @ResponseBody
-//    public Result<List<CarForTreeVo>> findCar(@RequestParam("companyID") String companyID,
-//                                           @RequestParam("searchkey") String searchKey) {
-//
-//        List<CarForTreeVo> tmpList = carInfoService.findCarByOwner(companyID, searchKey);
-//
-//        return Result.success(tmpList);
-//    }
+    @ApiOperation(value = "模糊查询车辆信息--根据车辆devID/车主姓名/电话/车牌号",httpMethod = "POST")
+    @RequestMapping(value = "/findCar")
+    @ResponseBody
+    public Result<List<CarForTreeVo>> findCar(@RequestParam("companyID") String companyID,
+                                           @RequestParam("searchkey") String searchKey) {
+
+        List<CarForTreeVo> tmpList = carInfoService.findLikelyCarOwnerBySearchKey(companyID, searchKey);
+
+        return Result.success(tmpList);
+    }
 
 
 }

@@ -10,6 +10,12 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.cbd.cbdcommoninterface.cbd_interface.alipay.IAlipayService;
+import com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService;
+import com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService;
+import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
+import com.cbd.cbdcommoninterface.enums.OrderTypeEnum;
+import com.cbd.cbdcommoninterface.keys.OrderTypeKey;
+import com.cbd.cbdcommoninterface.keys.RenewKey;
 import com.cbd.cbdcommoninterface.response.leiVo.AlipayVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.Result;
@@ -27,7 +33,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.cbd.cbdcommoninterface.utils.AlipayConfig.*;
 
@@ -47,35 +52,100 @@ public class AlipayController {
     @Autowired
     private IAlipayService alipayService;
 
-    /**
-     * 去支付
-     * <p>
-     * 支付宝返回一个form表单，并自动提交，跳转到支付宝页面
-     *
-     * @param response
-     * @throws Exception
-     */
-    @ApiOperation(value = "支付调用页面", httpMethod = "POST")
+    @Autowired
+    private ICarInfoService carInfoService;
+
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired
+    private ContractService contractService;
+
+    @ApiOperation(value = "app支付调用页面", httpMethod = "POST")
     @RequestMapping("/wappay")
-    public void gotoPayPage(@RequestParam(value = "orderID", required = true) String orderID,
+    public void webAppPay(@RequestParam(value = "orderID", required = true) String orderID,
                             @RequestParam(value = "orderName", required = true) String orderSubject,
                             @RequestParam(value = "orderPrice", required = true) String orderPrice,
+                            @RequestParam(value = "orderType", required = true) Integer orderType,
                             HttpServletResponse response) throws AlipayApiException, IOException {
+        String form = gotopayPage(orderID, orderSubject, orderPrice, orderType, "QUICK_MSECURITY_PAY");
+        response.setContentType("text/html;charset=" + charset);
+        response.getWriter().write(form);
+        response.getWriter().flush();
+        response.getWriter().close();
+
+
+    }
+
+    @ApiOperation(value = "web支付调用页面,orderID为合同ID", httpMethod = "POST")
+    @RequestMapping("/webAddPay")
+    public void webAddPay(@RequestParam(value = "orderID", required = true) String orderID,
+                            @RequestParam(value = "orderName", required = true) String orderSubject,
+                            @RequestParam(value = "orderPrice", required = true) String orderPrice,
+                            @RequestParam(value = "orderType", required = true) Integer orderType,
+                            HttpServletResponse response) throws AlipayApiException, IOException {
+        String form = gotopayPage(orderID, orderSubject, orderPrice, orderType, "FAST_INSTANT_TRADE_PAY");
+        response.setContentType("text/html;charset=" + charset);
+        response.getWriter().write(form);
+        response.getWriter().flush();
+        response.getWriter().close();
+
+    }
+
+    @ApiOperation(value = "web支付调用页面,orderID为合同ID", httpMethod = "POST")
+    @RequestMapping("/webRenewPay")
+    public void webRenewPay(@RequestParam(value = "orderID", required = true) String orderID,
+                       @RequestParam(value = "orderName", required = true) String orderSubject,
+                       @RequestParam(value = "orderPrice", required = true) String orderPrice,
+                       @RequestParam(value = "orderType", required = true) Integer orderType,
+                       @RequestParam(value = "renewYears", required = true) Float renewYears,
+                       HttpServletResponse response) throws AlipayApiException, IOException {
+        //将续费年限放入缓存
+        redisService.set(RenewKey.RENEW_TIME, orderID, renewYears);
+        String form = gotopayPage(orderID, orderSubject, orderPrice, orderType, "FAST_INSTANT_TRADE_PAY");
+        response.setContentType("text/html;charset=" + charset);
+        response.getWriter().write(form);
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    /**
+     * 支付宝返回一个form表单，并自动提交，跳转到支付宝页面
+     * @param orderID
+     * @param orderSubject
+     * @param orderPrice
+     * @param orderType
+     * @return
+     * @throws AlipayApiException
+     * @throws IOException
+     */
+    private String gotopayPage(String orderID, String orderSubject, String orderPrice, Integer orderType, String productCode) throws AlipayApiException, IOException {
         // 订单模型
-        String productCode = "QUICK_MSECURITY_PAY";
         AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
-        //model.setOutTradeNo(UUID.randomUUID().toString());
 
-        model.setOutTradeNo(orderID);//订单ID
+        //订单ID
+        model.setOutTradeNo(orderID);
 
-        log.info(model.getOutTradeNo());
+        //将此订单类型放入Redis
+        redisService.set(OrderTypeKey.ORDER_TYPE, orderID, orderType);
+        String realType = "";
+        if (orderType.equals(OrderTypeEnum.APPTYPE.ordinal())){
+            realType = "app";
+        }else if (orderType.equals(OrderTypeEnum.WEBADDTYPE.ordinal())){
+            realType = "AddContract";
+        }else {
+            realType = "renewContract";
+        }
 
-        model.setSubject(orderSubject);//订单信息--标题
-        model.setTotalAmount(orderPrice);//订单金额
+        log.info("OrderID:{}, OrderType:{}", orderID, realType);
 
-        //model.setBody("支付测试，共0.01元");//暂时不用
+        //订单信息--标题
+        model.setSubject(orderSubject);
+        //订单金额
+        model.setTotalAmount(orderPrice);
 
-        model.setTimeoutExpress("5m");//支付最长等待时间
+        //支付最长等待时间
+        model.setTimeoutExpress("5m");
         model.setProductCode(productCode);
 
         AlipayTradeWapPayRequest wapPayRequest = new AlipayTradeWapPayRequest();
@@ -87,44 +157,11 @@ public class AlipayController {
         AlipayClient alipayClient = newAlipayClient();
         String form = alipayClient.pageExecute(wapPayRequest).getBody();
         System.out.println(form);
-        response.setContentType("text/html;charset=" + charset);
-        response.getWriter().write(form);
-        response.getWriter().flush();
-        response.getWriter().close();
 
-
+        return form;
     }
 
 
-//    @ApiOperation(value = "测试支付信息", httpMethod = "POST")
-//    @GetMapping("pay")
-//    private String alipayFastPay(@RequestParam(value = "orderID", required = true) String orderID,
-//                                 @RequestParam(value = "orderName", required = true) String orderName,
-//                                 @RequestParam(value = "orderPrice", required = true) String orderPrice) throws AlipayApiException {
-//        //这个应该是从前端端传过来的，这里为了测试就从后台写死了
-//        AlipayVo vo = new AlipayVo();
-//        vo.setOut_trade_no(orderID);//订单id
-//        vo.setSubject(orderName);//商品名
-//        vo.setTotal_amount(orderPrice);//订单价格
-//        vo.setTimeout_express("5m");//订单最迟交易时间
-//        vo.setProduct_code("FAST_INSTANT_TRADE_PAY"); //这个是固定的
-//        String json = JSON.toJSONString(vo);
-//        logger.info("发起支付传参：" + json);
-//        AlipayClient alipayClient = newAlipayClient();
-//        // 设置请求参数
-//        AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
-//        alipayRequest.setReturnUrl(return_url);
-//        alipayRequest.setNotifyUrl(notify_url);
-//        alipayRequest.setBizContent(json);
-//        String result = null;
-//        try {
-//            result = alipayClient.pageExecute(alipayRequest).getBody();
-//        } catch (Exception e) {
-//            logger.info("payerror" + result);
-//        }
-//        //这里生成一个表单，会自动提交
-//        return result;
-//    }
 
     /**
      * @param out_trade_no 商户订单号
@@ -159,13 +196,21 @@ public class AlipayController {
         }
         if (signVerified) {
             //处理你的业务逻辑，更新订单状态等
-
             log.info("验签成功，开始执行业务代码");
 
-            Integer success = alipayService.handleOrderMsg(out_trade_no);
+            //获取订单类型，根据订单类型处理不同业务
+            Integer orderType = redisService.get(OrderTypeKey.ORDER_TYPE, out_trade_no, Integer.class);
 
-
-
+            if (orderType.equals(OrderTypeEnum.APPTYPE.ordinal())){
+                Integer success = alipayService.handleOrderMsg(out_trade_no);
+            }else if (orderType.equals(OrderTypeEnum.WEBADDTYPE.ordinal())){
+                //out_trade_no就是ContractID
+                contractService.addOrder(out_trade_no);
+            }else {
+                contractService.renewContract(out_trade_no);
+            }
+            //清除redis的orderType
+            redisService.delete(OrderTypeKey.ORDER_TYPE, out_trade_no);
             return ("success");
         } else {
             logger.info("验证失败,不去更新状态");
@@ -180,7 +225,7 @@ public class AlipayController {
      * @throws AlipayApiException
      * @Description: 支付宝同步跳转接口
      */
-    @ApiOperation(value = "支付宝回调页面，同步", httpMethod = "GET")
+    @ApiOperation(value = "支付宝回调页面，同步",  httpMethod = "GET")
     @GetMapping("return")
     private Result<String> alipayReturn(HttpServletRequest request, String out_trade_no, String trade_no, String orderPrice)
             throws AlipayApiException {
@@ -203,7 +248,6 @@ public class AlipayController {
             logger.info("支付宝回调异常", e);
             // 验签发生异常,则直接返回失败
             return Result.error(CodeMsg.PAY_ERROR);
-            //return ("fail");
         }
         if (signVerified) {
             return Result.success("支付成功，即将调回主页面");
@@ -211,6 +255,18 @@ public class AlipayController {
             return Result.error(CodeMsg.SIGNVERIFIED_ERROR);
         }
     }
+    @ApiOperation(value = "前端回调接口",  httpMethod = "POST")
+    @RequestMapping(value = "/check",method = RequestMethod.POST)
+    public Result<String> check(@RequestParam("orderID")  String orderID){
+
+        Integer res = carInfoService.hasOrderID(orderID);
+        if(res == 1) {
+            return Result.success("支付验证成功");
+        }else {
+            return Result.error(CodeMsg.PAY_ERROR);
+        }
+    }
+
 
 
     public AlipayClient newAlipayClient() {

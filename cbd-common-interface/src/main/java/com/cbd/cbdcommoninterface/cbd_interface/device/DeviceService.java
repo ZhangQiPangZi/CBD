@@ -109,7 +109,7 @@ public interface DeviceService {
     Boolean confirmDeviceMessageByMesID(String mesID) ;
 
     /**
-     * 新增合同设备调拨消息
+     * 新增合同设备调拨消息,支付成功后调用
      */
     Boolean addContractDeviceMessage(AddContractDevMesRequest contractDevMesRequest);
 
@@ -139,4 +139,6 @@ public interface DeviceService {
      * @return
      */
     List<String> getAllDevName();
+
+
 }

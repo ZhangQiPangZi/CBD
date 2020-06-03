@@ -210,4 +210,7 @@ public interface car_infoDao {
 
     @Select("select carPlateNum from car_info where owerID=#{owerID}")
     String getCarPlateNumByOwerID(String owerID);
+
+    @Select("select count(orderID) from car_info where orderID=#{orderID}")
+    Integer hasOrderID(@Param("orderID") String orderID);
 }

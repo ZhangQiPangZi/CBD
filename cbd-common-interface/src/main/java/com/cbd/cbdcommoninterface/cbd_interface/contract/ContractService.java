@@ -73,4 +73,16 @@ public interface ContractService {
      * @return
      */
     List<String> getAllContractType();
+
+    /**
+     * 添加合同，并完成设备批量调拨信息推送
+     * @param contractID
+     */
+    void addOrder(String contractID);
+
+    /**
+     * 续费合同，车佰度平台管理员访问
+     * @param contractID
+     */
+    void renewContract(String contractID);
 }

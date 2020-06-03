@@ -98,12 +98,6 @@ public class DeviceController {
         return Result.success(deviceService.delReturnDeviceByDevID(devIDRequest.getDevID()));
     }
 
-    @ApiOperation("新增合同设备调拨消息")
-    @RequestMapping(value = "/addContractDeviceMessage", method = RequestMethod.POST)
-    public Result<Boolean> addContractDeviceMessage(@RequestBody AddContractDevMesRequest contractDevMesRequest){
-        return Result.success(deviceService.addContractDeviceMessage(contractDevMesRequest));
-    }
-
     @ApiOperation("判断此消息是否确认")
     @RequestMapping(value = "/judgeConfirmMessage", method = RequestMethod.POST)
     public Result<Boolean> judgeConfirmMessage(@RequestBody MesIDRequest mesIDRequest){

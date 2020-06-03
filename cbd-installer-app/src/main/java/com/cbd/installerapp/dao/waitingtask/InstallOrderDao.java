@@ -1,6 +1,7 @@
 package com.cbd.installerapp.dao.waitingtask;
 
 import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.DevIdDO;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
@@ -48,4 +49,13 @@ public interface InstallOrderDao {
      */
     @Update("UPDATE installerhasdev SET isInstall='1' WHERE id = #{id};")
     int updateState(@Param("id") Integer id);
+
+    /**
+     * 设备安装完成后，安装工将照片上传
+     * @param url
+     * @param id
+     * @return
+     */
+    @Update("update orderinfo set pictureUrl = #{url} where id = #{id}")
+    int inputPicture(@Param("url") String url,@Param("id") Integer id);
 }

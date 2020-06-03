@@ -27,6 +27,7 @@ public interface ICarInfoService {
 
     Map<String,Object> findUserInfoByDevID(String devID);
 
+    Integer hasOrderID(String orderID);
 
     /**搜索车辆*/
     List<CarForTreeVo> findLikelyCarOwnerBySearchKey(String companyID, String searchKey);

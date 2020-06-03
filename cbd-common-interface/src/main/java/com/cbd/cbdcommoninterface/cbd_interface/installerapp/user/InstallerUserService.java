@@ -14,5 +14,5 @@ public interface InstallerUserService {
      * @param phoneNumber
      * @return
      */
-    InstallerInfosDO getUserInfo(String phoneNumber);
+    InstallerInfosDO getUserInfo(String phoneNum);
 }

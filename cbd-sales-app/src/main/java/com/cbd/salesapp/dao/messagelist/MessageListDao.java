@@ -68,4 +68,7 @@ public interface MessageListDao {
      */
     @Delete("DELETE FROM installertasklist WHERE orderId=#{orderId};")
     int removeFromTaskList(@Param("orderId") Integer orderId);
+
+    @Select("select orderId from orderinfo where id = #{id}")
+    String getUUID(@Param("id") Integer id);
 }
