@@ -173,6 +173,20 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<CompanyListResponse> getAllGradeCompanyList(String companyID) {
+        //先取出所有根公司
+        List<String> headCpyNameList = getHeadCpyList(companyID);
+        List<CompanyListResponse> companyListResponseList = new ArrayList<>();
+        //再填充每一个公司树
+        for (String rootCpyName : headCpyNameList){
+            CompanyListResponse rootCpyList = getGradeCompanyList(findCompanyInfoByCompanyName(rootCpyName).getCompanyID());
+            companyListResponseList.add(rootCpyList);
+        }
+
+        return companyListResponseList;
+    }
+
+    @Override
     public List<String> getHeadCpyList(String companyID) {
         List<String> headCpyList = companyDao.getHeadCpyList(companyID);
         return headCpyList;

@@ -43,6 +43,12 @@ public class CompanyController {
         return Result.success(companyService.getGradeCompanyList(companyIDRequest.getCompanyID()));
     }
 
+    @ApiOperation("获取分级完成后的所有公司名称列表，平台管理员访问，此处的companyID为平台ID，既管理员的companyID")
+    @RequestMapping(value = "/getAllGradeCompanyList", method = RequestMethod.POST)
+    public Result<List<CompanyListResponse>> getAllGradeCompanyList(@RequestBody CompanyIDRequest companyIDRequest){
+        return Result.success(companyService.getAllGradeCompanyList(companyIDRequest.getCompanyID()));
+    }
+
     @ApiOperation("获取所有总公司名称列表，平台管理员访问")
     @RequestMapping(value = "/getHeadCpyList", method = RequestMethod.POST)
     public Result<List<String>> getHeadCpyList(@RequestBody CompanyIDRequest companyIDRequest){

@@ -37,6 +37,12 @@ public interface CompanyService {
     CompanyListResponse getGradeCompanyList(String companyID);
 
     /**
+     * 获取分级完成后的所有公司名称列表，平台管理员访问，此处的companyID为平台ID，既管理员的companyID
+     * @return
+     */
+    List<CompanyListResponse> getAllGradeCompanyList(String companyID);
+
+    /**
      * 获取所有总公司名称列表，平台管理员访问
      * @param companyID
      * @return
