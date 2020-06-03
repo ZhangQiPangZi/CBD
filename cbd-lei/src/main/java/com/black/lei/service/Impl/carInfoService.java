@@ -55,34 +55,51 @@ public class carInfoService implements ICarInfoService {
 
     //
 
+    //定时执行，当安装工安装好devID时，从orderInfo中取devID
+    //给car_info中添加devID 且 给track中添加一条初始定位
     @Transactional
     //每秒执行一次------------ 测试用
     //@Scheduled(cron = "* * * * * ? *")
+    //每10秒执行一次-----------测试用
+//    @Scheduled(cron = "0/10 * * * * ? ")
     //每天每隔1小时执行一次-----生产用
-    @Scheduled(cron = "0 0 1-23 * * ? ")
+    //@Scheduled(cron = "0 0 1-23 * * ? ")
+    @Override
     public void function() {
+
         List<OrderScheduledVo> orderIDAndDevIDList = orderInfoDao.findorderIDAndDevID();
 
         log.info("找到了"+orderIDAndDevIDList.size()+"条待更新的数据");
         RandomTrackLastUtil randomTrackLastUtil = new RandomTrackLastUtil();
 
         Iterator<OrderScheduledVo> OSVit = orderIDAndDevIDList.iterator();
+
+        Integer countCarInfo = 0;
+        Integer countTrackInfo = 0;
         while (OSVit.hasNext()) {
 
             OrderScheduledVo tmpOSV = OSVit.next();
 
-            Integer updateNumber = carInfoDao.updateDevIDAndStatusByOrderID(tmpOSV);
-
-            log.info("car_info表成功更新了"+updateNumber+"条数据");
+            //向carInfo中添加devID
+            countCarInfo += carInfoDao.updateDevIDAndStatusByOrderID(tmpOSV);
 
             TrackLast trackLast = randomTrackLastUtil.createTrackLast();
             trackLast.setDevID(tmpOSV.getDevID());
 
-            Integer addNumber = trackLastDao.addTrackData(trackLast);
-            log.info("向track表中成功添加了"+addNumber+"条数据");
+            if(trackLast.getDevID() != null) {
+                //向track中添加初始数据
+                countTrackInfo += trackLastDao.addTrackData(trackLast);
+            }
         }
+        log.info("car_info表成功更新了"+countCarInfo+"条数据");
+        log.info("向track表中成功添加了" + countTrackInfo + "条数据");
 
         return ;
+    }
+
+    @Override
+    public Integer hasDevID(String devID) {
+        return carInfoDao.hasDevID(devID);
     }
 
 

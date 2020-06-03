@@ -71,7 +71,7 @@ public interface roleDao {
      * @param roleID
      */
     @Delete("delete from role where roleID = #{roleID}")
-    void deleteRole(int roleID);
+    Integer deleteRole(int roleID);
 
     @Select("")
     List<role> getRoleListByPowerUrl(String url);
@@ -92,5 +92,10 @@ public interface roleDao {
 
     @Select("select roleID from role where roleName=#{roleName} ")
     Integer getRoleIDByRoleName(@Param("roleName") String roleName);
+
+    @Update("update role " +
+            "set roleName = #{roleName} " +
+            "where roleID = #{roleID} ")
+    Integer updateRoleByRoleID(Integer roleID,String roleName);
 
 }

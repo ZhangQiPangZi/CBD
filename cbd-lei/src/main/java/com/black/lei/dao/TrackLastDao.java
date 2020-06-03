@@ -1,8 +1,11 @@
 package com.black.lei.dao;
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
+import com.cbd.cbdcommoninterface.response.leiVo.RealTrackVo;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -16,8 +19,9 @@ import java.util.List;
 public interface TrackLastDao {
     /**
      * 查询最后轨迹表(车辆平台初始化)
-     * @author
+     *
      * @return
+     * @author
      */
     @Select("select * from TrackLast")
     List<TrackLast> getTrackLastInfo();
@@ -32,19 +36,29 @@ public interface TrackLastDao {
 
     /**
      * 根据设备号查询轨迹信息
-     * @author
+     *
      * @param
      * @return
+     * @author
      */
-    @Select("select * from track " +
-            "where devID = #{devID} and nTime >= #{startTime} and nTime <= #{endTime} ")
-    List<TrackLast> getTrackInfoByTEID(String devID,int startTime,int endTime);
+    ////根据最近时间戳与devID/手机号查找实时定位
+    //    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
+    //            "       from track t LEFT JOIN car_info  c ON c.devID = t.devID  " +
+    //            "       where t.devID = #{key} or c.phoneNum = #{key}" +
+    //            "       ORDER BY nTime DESC limit 1 ")
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
+            " from track t LEFT JOIN car_info  c ON c.devID = t.devID " +
+            "where c.devID = #{devID} and nTime >= #{startTime} and nTime <= #{endTime} ")
+    List<RealTrackVo> getTrackInfoByTEID(@Param("devID") String devID,
+                                         @Param("startTime") long startTime,
+                                         @Param("endTime") long endTime);
 
-
-    //根据最近时间戳与devID查找实时定位
-    @Select("select nID,devID,Max(nTime) as nTime,dbLon,dbLat,direction,speed,mileage " +
-            "from track where devID = #{devID};")
-   TrackLast getRealTrackByTEID(String devID);
+    //根据最近时间戳与devID/手机号查找实时定位
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
+            "       from track t LEFT JOIN car_info  c ON c.devID = t.devID  " +
+            "       where t.devID = #{key} or c.phoneNum = #{key}" +
+            "       ORDER BY nTime DESC limit 1 ")
+    RealTrackVo getRealTrackByTEID(String key);
 
 //    @Insert("insert into user (userName,phoneNum,companyID,status,email,userType) " +
 //            "values (#{userName},#{phoneNum},#{companyID},#{status},#{email},#{userType})")

@@ -30,34 +30,15 @@ public interface IRoleDefineService {
     List<role> getUserRoleByID(Integer ID);
 
 
-    /**
-     * 添加角色
-     * @author wcj
-     * @param
-     * @return
-     */
     Integer addRole(String roleName ,String remark,List<Integer> powerID);
 
-    /**
-     * 更新角色
-     * @author wcj
-     * @param
-     */
+
     Integer updateRole(int roleID, int powerID, int status);
 
-    /**
-     * 删除指定角色
-     * @author wcj
-     * @param nRoleID
-     */
-    void deleteRole(int nRoleID);
 
-    /**
-     * 获取该公司类别所有权限
-     * @author wcj
-     * @param companyType
-     * @return
-     */
+    Integer deleteRole(Integer roleID);
+
+
     List<power> getPowerListByCompanyType(int companyType);
 
     /**
@@ -67,5 +48,7 @@ public interface IRoleDefineService {
      * @return
      */
     Integer addRolePower(Integer roleID,Integer powerID);
+
+    Integer updateRole(Integer roleID,String roleName);
 
 }

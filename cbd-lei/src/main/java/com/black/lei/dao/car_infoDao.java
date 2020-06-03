@@ -86,18 +86,26 @@ public interface car_infoDao {
     List<CompanyInfoVo> getCompanyTreeList(@Param("lft") String lft, @Param("rgt") String rgt);
 
 
-    // 根据车辆devID/车主姓名/电话/车牌号
-    @Select("select c.devID " +
-            "from car_info  c ,company_info d " +
-            "where d.lft >= #{lft} and d.rgt<= #{rgt}  and c.companyID=d.companyID " +
-            "and ( c.devID like CONCAT(CONCAT('%', #{searchKey}), '%') " +
-            "or c.owerName like CONCAT(CONCAT('%', #{searchKey}), '%') " +
-            "or c.phoneNum like CONCAT(CONCAT('%', #{searchKey}), '%')n" +
-            "or c.carPlateNum like CONCAT(CONCAT('%', #{searchKey}), '%') ) ")
 
+
+    @Select("select c.")
     List<String> findLikelyDevID(@Param("lft") String lft,
                                  @Param("rgt") String rgt,
                                  @Param("searchKey") String searchKey);
+
+
+    // 根据车辆devID/车主姓名/电话/车牌号
+//    @Select("select c.devID " +
+//            "from car_info  c ,company_info d " +
+//            "where d.lft >= #{lft} and d.rgt<= #{rgt}  and c.companyID=d.companyID " +
+//            "and ( c.devID like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+//            "or c.owerName like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+//            "or c.phoneNum like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+//            "or c.carPlateNum like CONCAT(CONCAT('%', #{searchKey}), '%') ) ")
+//
+//    List<String> findLikelyDevID(@Param("lft") String lft,
+//                                 @Param("rgt") String rgt,
+//                                 @Param("searchKey") String searchKey);
 
     /**
      * @Update("update car_info " +
@@ -210,4 +218,8 @@ public interface car_infoDao {
 
     @Select("select carPlateNum from car_info where owerID=#{owerID}")
     String getCarPlateNumByOwerID(String owerID);
+
+
+    @Select("select count(devID) from car_info where devID = #{devID} ")
+    Integer hasDevID(@Param("devID") String devID);
 }

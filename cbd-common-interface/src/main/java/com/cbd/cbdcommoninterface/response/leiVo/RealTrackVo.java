@@ -17,12 +17,22 @@ import java.io.Serializable;
 @ToString
 public class RealTrackVo implements Serializable {
 
-    private String userName;
+    private String devID;
+
+    private String owerName;
 
     private String phoneNum;
 
     private String carPlateNum;
 
-    private TrackLast trackLast;
+    private long nTime;
+
+    private String dbLon;
+
+    private String dbLat;
+
+
+
+//    private TrackLast trackLast;
 
 }

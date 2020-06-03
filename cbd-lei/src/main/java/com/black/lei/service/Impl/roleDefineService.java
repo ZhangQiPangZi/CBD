@@ -133,9 +133,13 @@ public class roleDefineService implements IRoleDefineService {
     }
 
     //删除指定角色
+    @Transactional
     @Override
-    public void deleteRole(int nRoleID) {
-        roleDao.deleteRole(nRoleID);
+    public Integer deleteRole(Integer roleID) {
+        //删除角色-权限表中roleID = 当前角色的数据
+        role_powerDao.deleteRolePowerByRoleID(roleID);
+
+        return roleDao.deleteRole(roleID);
     }
 
     //获取该公司类别所有权限
@@ -149,5 +153,11 @@ public class roleDefineService implements IRoleDefineService {
     public Integer addRolePower(Integer roleID, Integer powerID) {
 
         return role_powerDao.addPowerByRoleID(roleID, powerID, 1);
+    }
+
+    @Override
+    public Integer updateRole(Integer roleID, String roleName) {
+        Integer res =  roleDao.updateRoleByRoleID(roleID,roleName);
+        return res ;
     }
 }

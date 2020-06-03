@@ -114,6 +114,30 @@ public class RoleDefineController {
         }
     }
 
+    @ApiOperation(value = "修改角色名", httpMethod = "POST")
+    @RequestMapping("/updateRole")
+    public Result<String> updateRole(@RequestParam("roleID") Integer roleID,
+                                     @RequestParam("roleName") String roleName) {
+
+        Integer res = roleDefineService.updateRole(roleID,roleName);
+        if (res == 0) {
+            return Result.error(CodeMsg.SERVER_ERROR);
+        } else {
+            return Result.success("修改成功！");
+        }
+    }
+
+    @ApiOperation(value = "删除角色", httpMethod = "POST")
+    @RequestMapping("/deleteRole")
+    public Result<String> deleteRole(@RequestParam("roleID") Integer roleID) {
+
+        Integer res = roleDefineService.deleteRole(roleID);
+        if (res == 0) {
+            return Result.error(CodeMsg.SERVER_ERROR);
+        } else {
+            return Result.success("删除成功！");
+        }
+    }
     /**
      * 需要管理员权限可见--
      *

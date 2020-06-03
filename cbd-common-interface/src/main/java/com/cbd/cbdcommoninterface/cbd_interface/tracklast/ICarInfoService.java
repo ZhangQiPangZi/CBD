@@ -33,4 +33,6 @@ public interface ICarInfoService {
 
     void function();
 
+    Integer hasDevID(String devID);
+
 }

@@ -47,4 +47,11 @@ public interface role_powerDao {
             "where powerID = #{curPowerID} ")
     Integer updateRolePowerWithPowerTableByPowerID(@Param("curPowerID") Integer curPowerID);
 
+//@Delete("delete from role_power where " +
+//            "roleID = #{roleID} and powerID = #{powerID}")
+
+    @Delete("delete from role_power where " +
+            "roleID = #{roleID} ")
+    Integer deleteRolePowerByRoleID(@Param("roleID") Integer roleID);
+
 }
