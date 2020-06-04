@@ -3,6 +3,8 @@ package com.cbd.cbdcontroller.qwe.handler;
 import com.alibaba.fastjson.JSON;
 import com.cbd.cbdcommoninterface.cbd_interface.user.ILoginService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
+import com.cbd.cbdcommoninterface.response.leiVo.UserBaseInfoAndPowerInfoVo;
+import com.cbd.cbdcommoninterface.response.leiVo.UserResponseVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.Result;
 import com.cbd.cbdcontroller.qwe.authentication.VUserDetails;
@@ -60,6 +62,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         String type = httpServletRequest.getParameter("type");
 
 
+
         VUserDetails userDetail = (VUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         log.info("type = "+type);
@@ -74,14 +77,26 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
             flag = true;
         }else if(2 == userDetail.getUserType() && (!"s" .equals(type))) {
             flag = false;
-        }else if((0 == userDetail.getUserType() ) && ("p".equals(type))) {
+        }else {
             flag = true;
-        }else if(0 == userDetail.getUserType() && (!"p".equals(type))) {
-            flag = false;
         }
 
+        //else if((0 == userDetail.getUserType() ) && ("p".equals(type))) {
+        //            flag = true;
+        //        }else if(0 == userDetail.getUserType() && (!"p".equals(type))) {
+        //            flag = false;
+        //        }
+
         if(flag == true) {
-            Result<String> res = Result.success("登录成功！");
+
+            //获取用户详细信息
+            UserBaseInfoAndPowerInfoVo userBaseInfoAndPowerInfoVo = userService.login(userDetail.getPhoneNum());
+
+
+            Result<UserResponseVo> res = Result.success(userBaseInfoAndPowerInfoVo);
+
+            log.info("登录人员详细信息："+ JSON.toJSONString(res) );
+
             //处理编码方式，防止中文乱码的情况
             httpServletResponse.setContentType("text/json;charset=utf-8");
             //塞到HttpServletResponse中返回给前台

@@ -6,15 +6,13 @@ import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
 import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ITrackLastService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
 import com.cbd.cbdcommoninterface.response.leiVo.RealTrackVo;
+import com.cbd.cbdcommoninterface.response.leiVo.StartToEndTrackVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -51,20 +49,18 @@ public class TrackLastController {
      */
     @ApiOperation(value = "查询设备在指定时间段的历史轨迹",httpMethod = "POST")
     @RequestMapping(value = "/TrackLast", method = RequestMethod.POST)
-    public Result<List<RealTrackVo>> getGPSInfoByTEID(@RequestParam(value = "devID",required = true) String devID,
-                                                    @RequestParam(value = "startTime",required = false,defaultValue = "0") long startTime,
-                                                    @RequestParam(value = "endTime",required = false,defaultValue = "0") long endTime) {
+    public Result<List<RealTrackVo>> getGPSInfoByTEID(@RequestBody StartToEndTrackVo s) {
 
-        log.info("开始获取历史轨迹数据，时间段为"+startTime,"---到---"+endTime);
+        log.info("开始获取历史轨迹数据，时间段为"+s.getStartTime(),"---到---"+s.getEndTime());
         boolean success = false;
         //获取选定设备号
-        if(carInfoService.hasDevID(devID) == 0) {
-            log.info("-----无该设备号---");
+        if(carInfoService.hasDevID(s.getKey()) == 0) {
+            log.info("-----无该设备---");
             return Result.error(CodeMsg.EMPTY_DEVID_ERROR);//1024
         }
 
-        log.info("开始获取设备定位：", devID);
-        List<RealTrackVo> trackInfo = TrackLastService.getTrackInfoByTEID(devID,startTime,endTime);
+        log.info("开始获取设备定位：", s.getKey());
+        List<RealTrackVo> trackInfo = TrackLastService.getTrackInfoByTEID(s.getKey(),s.getStartTime(),s.getEndTime());
         if(trackInfo == null) {
             log.info("-----轨迹信息为空---");
 

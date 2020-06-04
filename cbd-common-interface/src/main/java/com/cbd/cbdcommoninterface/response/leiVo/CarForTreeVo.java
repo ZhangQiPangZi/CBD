@@ -34,4 +34,10 @@ public class CarForTreeVo implements Serializable {
 
     private String carPlateNum;
 
+    private Integer speed;
+
+    private String companyID;
+
+    private String companyName;
+
 }

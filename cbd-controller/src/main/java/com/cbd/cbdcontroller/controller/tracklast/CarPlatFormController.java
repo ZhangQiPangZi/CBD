@@ -80,17 +80,17 @@ public class CarPlatFormController {
     private ICompanyInfoService companyInfoService;
 
     @ApiOperation(value = "根据公司id获取其旗下的车辆", httpMethod = "POST")
-    @RequestMapping(value = "/getCarListByCompanyID")
+    @RequestMapping(value = "/getCarListByCompanyIDList")
     @ResponseBody
-    public Result<List<CarForTreeVo>> getCarList(@RequestParam("companyID") String companyID) {
+    public Result<List<CarForTreeVo>> getCarList(@RequestParam("companyIDList") String companyIDList) {
 
         List<CarForTreeVo> realTrackVoList = new ArrayList<>();
 
-        if(companyInfoService.hasCompanyID(companyID) == 0) {
+        if(companyInfoService.equals("")) {
             //判断是否有该公司ID
             return Result.error(CodeMsg.EMPTY_COMPANY_ERROR);//
         }
-        realTrackVoList = carInfoService.findCarListByCompanyID(companyID);
+        realTrackVoList = carInfoService.findCarListByCompanyID(companyIDList);
 
         if(realTrackVoList.size() == 0) {
             return Result.error(CodeMsg.EMPTY_CAR_ERROR);//1026

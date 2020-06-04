@@ -62,7 +62,8 @@ public interface powerDao {
             "left join role r ON rp.roleID = r.roleID " +
             "left join role_user ru ON r.roleID = ru.roleID " +
             "left join user u On ru.userID = u.ID " +
-            "where u.ID = #{userID} ")
+            "where u.ID = #{userID}  and p.status = 1 " +
+            "GROUP BY p.powerID ")
     List<power> getPowerListByUserID(@Param("userID") int userID);
 
     //	@Select(value=" SELECT * FROM s_permission sp WHERE sp.url = #{sUserId} ")

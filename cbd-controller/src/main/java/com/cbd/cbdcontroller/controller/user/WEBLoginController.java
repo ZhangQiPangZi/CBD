@@ -96,7 +96,8 @@ public class WEBLoginController {
 //            return Result.error(CodeMsg.PHONENUM_PASSWORD_INCORRECT_ERROR);
 //        }
         //获取用户基本信息
-        UserBaseInfoAndPowerInfoVo URV = userService.login(loginVo.getPhoneNum(),loginVo.getPassword());
+        //UserBaseInfoAndPowerInfoVo URV = userService.login(loginVo.getPhoneNum(),loginVo.getPassword());
+        UserBaseInfoAndPowerInfoVo URV = userService.login(loginVo.getPhoneNum());
 
         //获取用户的角色信息及权限信息
         if(URV == null) {

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author shy_black
@@ -35,5 +36,5 @@ public class UserResponseVo implements Serializable {
 
     private String companyName;
 
-    private String parentCompanyList;
+    private List<String> parentCompanyList;
 }

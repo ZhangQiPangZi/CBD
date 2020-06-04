@@ -2,6 +2,8 @@ package com.black.lei.service.Impl;
 
 
 import com.black.lei.dao.user_installerDao;
+import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
+import com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.role;
 import com.cbd.cbdcommoninterface.pojo.leipojo.user;
@@ -15,14 +17,12 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author shy_black
@@ -47,6 +47,9 @@ public class userService implements IUserService {
 
     @Resource
     private user_installerDao user_installerDao;
+
+    @Autowired
+    private ICompanyInfoService companyInfoService;
 
     /**
      * 获取登录用户角色权限
@@ -103,13 +106,14 @@ public class userService implements IUserService {
     }
 
     @Override
-    public UserBaseInfoAndPowerInfoVo login(String phoneNum, String password) {
+    public UserBaseInfoAndPowerInfoVo login(String phoneNum) {
 
         //获取基本信息
-        UserBaseInfoAndPowerInfoVo URV = userDao.login(phoneNum, password);
+        UserBaseInfoAndPowerInfoVo URV = userDao.login(phoneNum);
 
         //获取角色信息
         if (URV == null) {
+            log.info("未找到员工详细信息！");
             return URV;
         }
         Integer ID = URV.getID();
@@ -180,6 +184,9 @@ public class userService implements IUserService {
         //更新role_user表中的数据，先删除，在新增
         role_userDao.deleteUserRoles(userInfo.getID());
 
+        log.info("新的角色列表为："+updateUserVo.getRoleList());
+
+
         for(Integer i : updateUserVo.getRoleList()) {
             role_userDao.addRole_User(i,userInfo.getID());
         }
@@ -243,12 +250,34 @@ public class userService implements IUserService {
 
 
         Page page = PageHelper.startPage(pageNum, pageSize);
+
         List<UserResponseVo> userList = userDao.findAllUserInfoByPage(lft, rgt);
+
         PageInfo<UserResponseVo> userResponseVoPageInfo = new PageInfo<>(userList);
+
+
+        //循环添加parentCompanyList属性
+        //获取当前员工所属公司及所属公司的父公司
+        Iterator<UserResponseVo> it = userList.iterator();
+        while (it.hasNext()) {
+            UserResponseVo curUser = it.next();
+            String curCompanyID = curUser.getCompanyID();
+
+            LftAndRgtVo curLftAndRgtVo = car_infoDao.getLftAndRgt(curCompanyID);
+            Integer curLft = Integer.valueOf(lftAndRgtVo.getLft());
+            Integer curRgt = Integer.valueOf(lftAndRgtVo.getRgt());
+
+            //获取到了当前员工的所有上级公司名称列表
+            List<String> curCompanyNameList = companyInfoService.getUpCompanyNameListByCompanyID(curLft,curRgt);
+
+            curUser.setParentCompanyList(curCompanyNameList);
+
+
+        }
+
         userResponseVoPageInfo.setPageNum(page.getPageNum());
         userResponseVoPageInfo.setPageSize(page.getPageSize());
-        //TODO 根据得到的userList中修改公司名称
-        //取出companyID，调用companyInfoDao，根据companyID查询父公司信息，填入公司名称
+
 
         return PageUtils.getPageResponse(userResponseVoPageInfo);
     }

@@ -53,12 +53,12 @@ public class VUserDetailsService implements UserDetailsService {
         //获取用户详情
         user userInfo = loginService.findUserByPhoneNum(username);
         try {
-            //角色列表
+            //角色列表，获取该用户所有角色
              roleList = roleDefineService.getUserRoleByID(userInfo.getID());
             if (roleList.size() > 0) {
                 log.info("角色列表：roleList ：" + roleList.toString());
             }
-            //权限列表
+            //权限列表，获取role_power中status为1的数据 且power中status为1的数据
              powerList = powerService.getPowerListByUserID(userInfo.getID());
 
             if (powerList.size() > 0) {

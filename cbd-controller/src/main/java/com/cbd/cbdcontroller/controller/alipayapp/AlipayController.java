@@ -198,15 +198,15 @@ public class AlipayController {
             //处理你的业务逻辑，更新订单状态等
             log.info("验签成功，开始执行业务代码");
 
-<<<<<<< HEAD
+
             Integer success = alipayService.handleOrderMsg(out_trade_no);
 
-=======
+
             //获取订单类型，根据订单类型处理不同业务
             Integer orderType = redisService.get(OrderTypeKey.ORDER_TYPE, out_trade_no, Integer.class);
 
             if (orderType.equals(OrderTypeEnum.APPTYPE.ordinal())){
-                Integer success = alipayService.handleOrderMsg(out_trade_no);
+                 success = alipayService.handleOrderMsg(out_trade_no);
             }else if (orderType.equals(OrderTypeEnum.WEBADDTYPE.ordinal())){
                 //out_trade_no就是ContractID
                 contractService.addOrder(out_trade_no);
@@ -215,7 +215,7 @@ public class AlipayController {
             }
             //清除redis的orderType
             redisService.delete(OrderTypeKey.ORDER_TYPE, out_trade_no);
->>>>>>> master
+
             return ("success");
         } else {
             logger.info("验证失败,不去更新状态");

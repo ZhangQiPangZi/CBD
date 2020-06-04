@@ -31,6 +31,8 @@ public class RealTrackVo implements Serializable {
 
     private String dbLat;
 
+    private Integer speed;
+
 
 
 //    private TrackLast trackLast;

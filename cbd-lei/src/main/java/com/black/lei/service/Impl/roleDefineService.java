@@ -102,6 +102,7 @@ public class roleDefineService implements IRoleDefineService {
     //添加角色
     //@Transactional(rollbackOn = { Exception.class })
     @Transactional
+    @Override
     public Integer addRole(String roleName, String remark, List<Integer> powerIDList) {
         Integer success1 = 0;
 

@@ -25,7 +25,6 @@ public interface ICarInfoService {
 
     boolean update(car_info saveCarInfo);
 
-    Map<String,Object> findUserInfoByDevID(String devID);
 
     Integer hasOrderID(String orderID);
 

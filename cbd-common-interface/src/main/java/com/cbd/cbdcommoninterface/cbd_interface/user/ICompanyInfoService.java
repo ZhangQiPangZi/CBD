@@ -16,14 +16,18 @@ public interface ICompanyInfoService {
 
     Integer hasCompanyID(String companyID);
 
-     company_info findById(String companyID);
+    company_info findById(String companyID);
 
-     int getCompanyTypeByID(String companyID);
+    int getCompanyTypeByID(String companyID);
 
-     List<Map<String,Object>> getCompanyInfoByparentID(String companyID, String strTableList, String strFieldList, String strWhere) ;
+    List<Map<String, Object>> getCompanyInfoByparentID(String companyID, String strTableList, String strFieldList, String strWhere);
 
     int findUserByPhoneNum(String phoneNum);
 
-     List<String> getParentCompanyByCompanyID(String companyID) ;
+    List<String> getParentCompanyByCompanyID(String companyID);
+
+
+    List<String> getUpCompanyNameListByCompanyID(Integer lft,Integer rgt);
+
 
 }

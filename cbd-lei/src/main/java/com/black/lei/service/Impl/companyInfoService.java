@@ -65,10 +65,19 @@ public class companyInfoService implements ICompanyInfoService {
     public List<String> getParentCompanyByCompanyID(String companyID) {
         //1.获取当前公司的左值和右值
         LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(companyID);
-        String lft = lftAndRgtVo.getLft();
-        String rgt = lftAndRgtVo.getRgt();
+        Integer lft = Integer.valueOf(lftAndRgtVo.getLft());
+        Integer rgt = Integer.valueOf(lftAndRgtVo.getRgt());
         //获取当前公司的上级公司信息
         List<String> companyNameList = company_infoDao.getParentCompanyByCompanyID(lft,rgt);
         return null;
     }
+
+
+    @Override
+    public List<String> getUpCompanyNameListByCompanyID(Integer lft,Integer rgt){
+        return company_infoDao.getUpCompanyNameListByCompanyID(lft,rgt);
+    }
+    //select companyID
+    //        from companyInfo
+    //        where lft &lt;= #{lft} and rgt &gt;= {rgt}
 }

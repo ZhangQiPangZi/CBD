@@ -56,20 +56,20 @@ public interface car_infoDao {
             "GROUP BY c.devID ")
     List<String> getDevIDListByCompanyID(@Param("companyID") String companyID);
 
-    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum , t.speed " +
             "       from track t,car_info  c " +
             "       where t.devID = #{devID} " +
             "       ORDER BY nTime DESC limit 1 ")
     CarForTreeVo findTrackLastAndCarInfo(@Param("devID") String devID);
 
 
-    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, MAX(t.nTime) AS nTime ,carPlateNum " +
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, MAX(t.nTime) AS nTime ,carPlateNum ,t.speed " +
             "            from car_info c  " +
             "            LEFT JOIN track t on c.devID = t.devID where c.companyID = #{companyID}" +
             "            GROUP BY c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime ")
     List<CarForTreeVo>  getUserForCarVo(String companyID);
 
-    @Select("select lft,rgt from company_info where companyID=#{companyID}")
+    @Select("select lft,rgt from companyInfo where companyID=#{companyID}")
     LftAndRgtVo getLftAndRgt(String companyID);
 
     //id,companyName,companyID,parentID,lft,rgt,level
@@ -79,8 +79,8 @@ public interface car_infoDao {
             "D.parentID as parentID ," +
             "D.lft as lft ," +
             "D.rgt as rgt ," +
-            "(select count(1) from company_info tmp where tmp.lft < D.lft and tmp.rgt > D.rgt) as level " +
-            "from company_info D " +
+            "(select count(1) from companyInfo tmp where tmp.lft < D.lft and tmp.rgt > D.rgt) as level " +
+            "from companyInfo D " +
             "where lft>=#{lft} and rgt<=#{rgt} " +
             "ORDER BY lft ")
     //'lft>'1' and rgt<'6' ORDER BY lft'
@@ -89,24 +89,24 @@ public interface car_infoDao {
 
 
 
-    @Select("select c.")
-    List<String> findLikelyDevID(@Param("lft") String lft,
-                                 @Param("rgt") String rgt,
-                                 @Param("searchKey") String searchKey);
-
-
-    // 根据车辆devID/车主姓名/电话/车牌号
-//    @Select("select c.devID " +
-//            "from car_info  c ,company_info d " +
-//            "where d.lft >= #{lft} and d.rgt<= #{rgt}  and c.companyID=d.companyID " +
-//            "and ( c.devID like CONCAT(CONCAT('%', #{searchKey}), '%') " +
-//            "or c.owerName like CONCAT(CONCAT('%', #{searchKey}), '%') " +
-//            "or c.phoneNum like CONCAT(CONCAT('%', #{searchKey}), '%') " +
-//            "or c.carPlateNum like CONCAT(CONCAT('%', #{searchKey}), '%') ) ")
-//
+//    @Select("select c.")
 //    List<String> findLikelyDevID(@Param("lft") String lft,
 //                                 @Param("rgt") String rgt,
 //                                 @Param("searchKey") String searchKey);
+
+
+//     根据车辆devID/车主姓名/电话/车牌号
+    @Select("select c.devID " +
+            "from car_info  c ,companyInfo d " +
+            "where d.lft >= #{lft} and d.rgt<= #{rgt}  and c.companyID=d.companyID " +
+            "and ( c.devID like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+            "or c.owerName like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+            "or c.phoneNum like CONCAT(CONCAT('%', #{searchKey}), '%') " +
+            "or c.carPlateNum like CONCAT(CONCAT('%', #{searchKey}), '%') ) ")
+
+    List<String> findLikelyDevID(@Param("lft") String lft,
+                                 @Param("rgt") String rgt,
+                                 @Param("searchKey") String searchKey);
 
     /**
      * @Update("update car_info " +
@@ -166,55 +166,17 @@ public interface car_infoDao {
     //根据设备号查找车辆
     List<Map<String, String>> findCarListBystrTEID(String strTEID);
 
-    //根据车主id查找车辆
-    @Select("select * from car_info " +
-            "where owerID = #{0}")
-    car_info findCarbyOwnerID(String owerID);
-
-    @Select("select owerID from car_info " +
-            "where devID = #{devID}")
-    String findOwerIDByDevID(@Param("devID") String devID);
-
-
-    //点击设备时获取车辆信息
-    //TODO
-    @Select("select a.userName,a.phoneNum,b.modelName,b.carPlateNum,b.devID,c.dbLon,c.dbLat,c.Max(nTime)" +
-            "from user as a,car_info as b ,track as c" +
-            "where c.devID=#{devID} AND c.company = #{companyID}")
-    Map<String,Object> getCarAndGPSInfo(String devID, String companyID);
-
-    //获取公司所有的车辆信息
-    @Select("select a.userName,a.phoneNum,b.modelName,b.carPlateNum,b.devID,c.dbLon,c.dbLat,c.Max(nTime)" +
-            "from user as a,car_info as b ,track as c" +
-            "where b.devID = c.devID AND b.company = #{0}")
-    List<Map<String,Object>> getCarAndGPSInfoList(String strCompanyID);
-
-    //根据公司id获取车辆信息-车主，电话，车型，车牌，设备信息
-    //select a.*,b.strTEID from Tlb_CarInfo as a,Tlb_CarAndDeviceRefer as b
-    //  	where a.strCarUUID = b.strCarUUID AND b.strCompanyID = #{0}
-    @Select("select a.userName,a.phoneNum,b.modelName,b.carPlateNum,b.devID from user as a,car_info as b " +
-            "where b.companyID = #{0}")
-    List<Map<String, Object>> getCarByCompanyID(String strCompanyID);
-
-
-    //根据公司id获取设备ID列表
-    //查找companyID下的车辆的devID
-    @Select("select devID from car_device where companyID = #{0}")
-    List<Map<String, Object>> getstrTEIDListByCompanyID(String strCompanyID);
-
-    @Select("select carPlateNum from car_info where owerID=#{owerID}")
-    String getCarPlateNumByOwerID(String owerID);
-
-
 
     @Select("select count(devID) from car_info where devID = #{devID} ")
     Integer hasDevID(@Param("devID") String devID);
 
 
-    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
-            "                   from track t LEFT JOIN car_info  c ON c.devID = t.devID " +
-            "                   where t.devID = #{devID} " +
-            "                   ORDER BY nTime DESC limit 1 ")
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat,t. nTime,c.carPlateNum , t.speed ,c.companyID,companyInfo.companyName " +
+            "                               from track t " +
+            "                               LEFT JOIN car_info  c ON c.devID = t.devID  " +
+            "                               LEFT JOIN companyInfo ON c.companyID = companyInfo.companyID " +
+            "                               where t.devID = #{devID} " +
+            "                               ORDER BY nTime DESC limit 1 ")
     CarForTreeVo findCarListByDevID(@Param("devID") String devID);
 
     @Select("select count(orderID) from car_info where orderID=#{orderID}")

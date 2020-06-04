@@ -46,15 +46,21 @@ public interface TrackLastDao {
     //            "       from track t LEFT JOIN car_info  c ON c.devID = t.devID  " +
     //            "       where t.devID = #{key} or c.phoneNum = #{key}" +
     //            "       ORDER BY nTime DESC limit 1 ")
-    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
-            " from track t LEFT JOIN car_info  c ON c.devID = t.devID " +
-            "where c.devID = #{devID} and nTime >= #{startTime} and nTime <= #{endTime} ")
+
+//    select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum
+//            from track t LEFT JOIN car_info  c ON c.devID = t.devID
+//            where c.devID = 123
+//						ORDER BY t.nTime
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum,t.speed " +
+            "            from track t LEFT JOIN car_info  c ON c.devID = t.devID " +
+            "            where c.devID = #{devID} and nTime >= #{startTime} and nTime <= #{endTime} " +
+            "            ORDER BY t.nTime  ")
     List<RealTrackVo> getTrackInfoByTEID(@Param("devID") String devID,
                                          @Param("startTime") long startTime,
                                          @Param("endTime") long endTime);
 
     //根据最近时间戳与devID/手机号查找实时定位
-    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum " +
+    @Select("select c.devID,c.owerName,c.phoneNum ,t.dbLon,t.dbLat, nTime,c.carPlateNum ,t.speed " +
             "       from track t LEFT JOIN car_info  c ON c.devID = t.devID  " +
             "       where t.devID = #{key} or c.phoneNum = #{key}" +
             "       ORDER BY nTime DESC limit 1 ")

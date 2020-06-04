@@ -29,17 +29,17 @@ public class AlipayConfig {
     public static String alipay_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwnA8MJH6TahbOQisJBXLIPb887bjHnFzONMI/+z9/difAchg+2zavrjGoBfc4N81Nkhdko5wi8UMedU0Ab4JMdtnLgXQgpuSIgZpz1uUXeX7rbDYZYVNsrjzSZl1a7WaF8E8TTvGUnNAYCbN+UZkpdxHNrufmgn/R6CRAZ7ZAoSDhrHMcwiFaSAWqz22qDKhchYGMoFaN16MsL28svd+VbLOhbVB0HtBvu8aNENzrQYcO7r4bhtBgFGFXXY9JjI4Z3lgFr/rePjlw3jsQ9sXmoLXAQKj/QuXEilkLnlhL3u+BuMpKAVqVN+lBklDqAXSZDAvl9CknwU1V7m/L4JuyQIDAQAB";
 
 	// 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-<<<<<<< HEAD
+
 	public static String notify_url = "http://n2xywn.natappfree.cc/alipay/notify";
 
 	// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
 	public static String return_url = "http://n2xywn.natappfree.cc/alipay/return";
-=======
-	public static String notify_url = " http://46nngq.natappfree.cc/alipay/notify";
 
-	// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-	public static String return_url = " http://46nngq.natappfree.cc/alipay/return";
->>>>>>> master
+//	public static String notify_url = " http://46nngq.natappfree.cc/alipay/notify";
+//
+//	// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+//	public static String return_url = " http://46nngq.natappfree.cc/alipay/return";
+
 
 	// 签名方式
 	public static String sign_type = "RSA2";

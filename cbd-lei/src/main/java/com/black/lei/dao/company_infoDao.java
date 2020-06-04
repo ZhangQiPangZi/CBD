@@ -41,12 +41,18 @@ public interface company_infoDao {
     //SELECT * FROM T_DIR WHERE N_LEFT<5 AND N_RIGHT>10
     @Select("select D.companyName " +
             "(select count(1) from companyInfo tmp where tmp.lft < D.lft and tmp.rgt > D.rgt) as level" +
-            " from company_info D where lft<#{lft} and rgt<#{rgt} " +
+            " from companyInfo D where lft<#{lft} and rgt<#{rgt} " +
             "order by lft")
-    List<String> getParentCompanyByCompanyID(String lft,String rgt);
+    List<String> getParentCompanyByCompanyID(Integer lft,Integer rgt);
 
     @Select("select count(companyID) from companyInfo where companyID = #{companyID} ")
     Integer hasCompanyID(@Param("companyID") String companyID);
 
+    @Select("select companyName " +
+            "            from companyInfo " +
+            "            where lft <= #{lft} and rgt >= #{rgt} " +
+            "            order by lft ")
+    List<String> getUpCompanyNameListByCompanyID(@Param("lft") Integer lft,
+                                                       @Param("rgt") Integer rgt);
 
 }
