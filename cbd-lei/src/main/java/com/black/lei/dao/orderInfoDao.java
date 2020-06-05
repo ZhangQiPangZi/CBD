@@ -23,8 +23,9 @@ public interface orderInfoDao {
     BaseOrderInfoVo findOrderInfoByOrderID(@Param("orderId") String orderID);
 
 
+    //查出devID不为空且为新增支付单的orderID 和devID
     @Select("select orderId as orderID ,devId as devID " +
-            " from orderinfo where orderStateTypeCode = 1 ")
+            " from orderinfo where devID is not null and orderStateTypeCode = 1 ")
     List<OrderScheduledVo>  findorderIDAndDevID();
 
 

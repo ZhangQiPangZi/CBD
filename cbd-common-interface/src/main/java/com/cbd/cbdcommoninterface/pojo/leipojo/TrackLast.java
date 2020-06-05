@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * @author shy_black
@@ -38,7 +39,7 @@ public class TrackLast implements Serializable {
 
     private String devID;
 
-    private Integer nTime;
+    private long nTime;
 
     private String dbLon;
 

@@ -26,12 +26,18 @@ public class CarForTreeVo implements Serializable {
 
     private String phoneNum;
 
-    private String nTime;
+    private long nTime;
 
     private String dbLon;
 
     private String dbLat;
 
     private String carPlateNum;
+
+    private Integer speed;
+
+    private String companyID;
+
+    private String companyName;
 
 }

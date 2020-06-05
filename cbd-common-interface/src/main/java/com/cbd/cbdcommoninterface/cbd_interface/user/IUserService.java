@@ -22,7 +22,7 @@ public interface IUserService {
 
     List<user> findAllUser(String companyID);
 
-    UserBaseInfoAndPowerInfoVo login(String phoneNum, String password);
+    UserBaseInfoAndPowerInfoVo login(String phoneNum);
 
     Integer updateUserInfo(UpdateUserVo updateUserVo);
 

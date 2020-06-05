@@ -6,15 +6,13 @@ import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
 import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ITrackLastService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
 import com.cbd.cbdcommoninterface.response.leiVo.RealTrackVo;
+import com.cbd.cbdcommoninterface.response.leiVo.StartToEndTrackVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -51,20 +49,18 @@ public class TrackLastController {
      */
     @ApiOperation(value = "查询设备在指定时间段的历史轨迹",httpMethod = "POST")
     @RequestMapping(value = "/TrackLast", method = RequestMethod.POST)
-    public Result<List<TrackLast>> getGPSInfoByTEID(@RequestParam(value = "devID",required = true) String devID,
-                                                    @RequestParam(value = "startTime",required = false,defaultValue = "0") Integer startTime,
-                                                    @RequestParam(value = "endTime",required = false,defaultValue = "0") Integer endTime) {
+    public Result<List<RealTrackVo>> getGPSInfoByTEID(@RequestBody StartToEndTrackVo s) {
 
-        log.info("开始获取历史轨迹数据，时间段为"+startTime,"---到---"+endTime);
+        log.info("开始获取历史轨迹数据，时间段为"+s.getStartTime(),"---到---"+s.getEndTime());
         boolean success = false;
         //获取选定设备号
-        if(devID == null) {
-            log.info("-----无该设备号---");
-            return Result.error(CodeMsg.SERVER_ERROR);
+        if(carInfoService.hasDevID(s.getKey()) == 0) {
+            log.info("-----无该设备---");
+            return Result.error(CodeMsg.EMPTY_DEVID_ERROR);//1024
         }
 
-        log.info("开始获取设备定位：", devID);
-        List<TrackLast> trackInfo = TrackLastService.getTrackInfoByTEID(devID,startTime,endTime);
+        log.info("开始获取设备定位：", s.getKey());
+        List<RealTrackVo> trackInfo = TrackLastService.getTrackInfoByTEID(s.getKey(),s.getStartTime(),s.getEndTime());
         if(trackInfo == null) {
             log.info("-----轨迹信息为空---");
 
@@ -78,34 +74,23 @@ public class TrackLastController {
 
     /**
      * 查询车辆实时定位并返回姓名，电话，定位信息
-     * @param devID
+     * @param key
      * @return
      */
-    @ApiOperation(value = "根据设备ID查询车辆的实时定位",httpMethod = "GET")
+    @ApiOperation(value = "(精确查找)根据 设备ID/手机号 查询车辆的实时定位",httpMethod = "GET")
     @RequestMapping("/realTrack")
-    public Result<RealTrackVo> getRealTrack(@RequestParam(value = "devID") String devID) {
+    public Result<RealTrackVo> getRealTrack(@RequestParam(value = "key") String key) {
 
         //获取实时定位
-        TrackLast realTrack = TrackLastService.getRealTrackByTEID(devID);
+        RealTrackVo realTrack = TrackLastService.getRealTrackByTEID(key);
 
-        //根据车的owerID在user表中找出车主的主要信息--姓名，电话,车牌号
-        Map<String,Object> baseInfo = carInfoService.findUserInfoByDevID(devID);
-
-        RealTrackVo realTrackVo = new RealTrackVo();
-
-        realTrackVo.setUserName(baseInfo.get("userName").toString());
-        realTrackVo.setPhoneNum(baseInfo.get("phoneNum").toString());
-        realTrackVo.setCarPlateNum(baseInfo.get("carPlateNum").toString());
-        realTrackVo.setTrackLast(realTrack);
-
-        if(realTrack == null) {
-            log.info("获取实时位置失败，请检查devID");
+        if(realTrack.getDevID() == null) {
+            log.info("获取实时位置失败，请检查devID/手机号");
             return Result.error(CodeMsg.SERVER_ERROR);
         }
         log.info("获取实时定位成功,定位信息："+realTrack.toString());
-        log.info("成功返回姓名-电话-定位信息"+baseInfo.toString());
 
-        return Result.success(realTrackVo);
+        return Result.success(realTrack);
     }
 
 }

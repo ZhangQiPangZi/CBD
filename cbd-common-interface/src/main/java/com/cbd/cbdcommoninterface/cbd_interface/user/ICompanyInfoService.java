@@ -9,19 +9,25 @@ import java.util.Map;
 /**
  * @author shy_black
  * @date 2020/4/22 10:11
- * @Description: 500行
+ * @Description:
  */
 @Component
 public interface ICompanyInfoService {
 
-     company_info findById(String companyID);
+    Integer hasCompanyID(String companyID);
 
-     int getCompanyTypeByID(String companyID);
+    company_info findById(String companyID);
 
-     List<Map<String,Object>> getCompanyInfoByparentID(String companyID, String strTableList, String strFieldList, String strWhere) ;
+    int getCompanyTypeByID(String companyID);
+
+    List<Map<String, Object>> getCompanyInfoByparentID(String companyID, String strTableList, String strFieldList, String strWhere);
 
     int findUserByPhoneNum(String phoneNum);
 
-     List<String> getParentCompanyByCompanyID(String companyID) ;
+    List<String> getParentCompanyByCompanyID(String companyID);
+
+
+    List<String> getUpCompanyNameListByCompanyID(Integer lft,Integer rgt);
+
 
 }

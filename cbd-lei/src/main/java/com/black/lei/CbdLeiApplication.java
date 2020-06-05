@@ -27,4 +27,5 @@ public class CbdLeiApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(CbdLeiApplication.class);
     }
+
 }

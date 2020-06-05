@@ -54,7 +54,18 @@ public class carInfoService implements ICarInfoService {
      */
 
 
+    //定时执行，当安装工安装好devID时，从orderInfo中取devID
+    //给car_info中添加devID 且 给track中添加一条初始定位
+
+    //每秒执行一次------------ 测试用
+    //@Scheduled(cron = "* * * * * ? *")
+    //每10秒执行一次-----------测试用
+//    @Scheduled(cron = "0/10 * * * * ? ")
+    //每天每隔1小时执行一次-----生产用
+    //@Scheduled(cron = "0 0 1-23 * * ? ")
+    @Transactional
     @Override
+
     public Integer hasOrderID(String orderID) {
         return carInfoDao.hasOrderID(orderID);
     }
@@ -65,29 +76,78 @@ public class carInfoService implements ICarInfoService {
     //@Scheduled(cron = "*  * * * ? *")
     //每天每隔1小时执行一次-----生产用
     @Scheduled(cron = "0 0 1-23 * * ? ")
+
     public void function() {
+
         List<OrderScheduledVo> orderIDAndDevIDList = orderInfoDao.findorderIDAndDevID();
 
-        log.info("找到了"+orderIDAndDevIDList.size()+"条待更新的数据");
+        log.info("找到了" + orderIDAndDevIDList.size() + "条待更新的数据");
         RandomTrackLastUtil randomTrackLastUtil = new RandomTrackLastUtil();
 
         Iterator<OrderScheduledVo> OSVit = orderIDAndDevIDList.iterator();
+
+        Integer countCarInfo = 0;
+        Integer countTrackInfo = 0;
         while (OSVit.hasNext()) {
 
             OrderScheduledVo tmpOSV = OSVit.next();
 
-            Integer updateNumber = carInfoDao.updateDevIDAndStatusByOrderID(tmpOSV);
-
-            log.info("car_info表成功更新了"+updateNumber+"条数据");
+            //向carInfo中添加devID
+            countCarInfo += carInfoDao.updateDevIDAndStatusByOrderID(tmpOSV);
 
             TrackLast trackLast = randomTrackLastUtil.createTrackLast();
             trackLast.setDevID(tmpOSV.getDevID());
 
-            Integer addNumber = trackLastDao.addTrackData(trackLast);
-            log.info("向track表中成功添加了"+addNumber+"条数据");
+            if (trackLast.getDevID() != null) {
+                //向track中添加初始数据
+                countTrackInfo += trackLastDao.addTrackData(trackLast);
+            }
+        }
+        log.info("car_info表成功更新了" + countCarInfo + "条数据");
+        log.info("向track表中成功添加了" + countTrackInfo + "条数据");
+
+        return;
+    }
+
+    @Override
+    public Integer hasDevID(String devID) {
+        return carInfoDao.hasDevID(devID);
+    }
+
+    @Override
+    public List<CarForTreeVo> findCarListByCompanyID(String companyID) {
+
+        String[] companyIDList = companyID.split(",");
+
+
+        List<CarForTreeVo> carForTreeVoList = new ArrayList<>();
+
+        for (String curCompanyID : companyIDList) {
+
+            //获取设备列表
+            List<String> devIDList = carInfoDao.getDevIDListByCompanyID(curCompanyID);
+
+            if(devIDList.size() == 0) {
+                continue;
+            }
+            Iterator<String> it = devIDList.iterator();
+            while (it.hasNext()) {
+                String tmp = it.next();
+                if (tmp == null) {
+                    continue;
+                } else {
+                    //获取指定设备号对应的需要的数据，定位数据及公司数据
+                    CarForTreeVo carForTreeVo = carInfoDao.findCarListByDevID(tmp);
+                    if (carForTreeVo != null) {
+                        carForTreeVoList.add(carForTreeVo);
+                    }
+                }
+            }
+
+
         }
 
-        return ;
+        return carForTreeVoList;
     }
 
 
@@ -178,23 +238,6 @@ public class carInfoService implements ICarInfoService {
         return carInfoDao.findById(strCarUUID);
     }
 
-    //1.在car_info里通过devID找到owerID
-    //2.在userID中通过owerID找出用户基础信息
-    //3.将用户基础信息放入json里，返回
-    @Override
-    public Map<String, Object> findUserInfoByDevID(String devID) {
-        JSONObject json = new JSONObject();
-
-        String owerID = carInfoDao.findOwerIDByDevID(devID);
-
-        log.info("owerID = " + owerID);
-
-        Map<String, Object> userBaseInfo = userInfoDao.findUserBaseInfoByOwerID(owerID);
-        userBaseInfo.put("carPlateNum", carInfoDao.getCarPlateNumByOwerID(owerID));
-        log.info("baseUserInfo = " + userBaseInfo.toString());
-        return userBaseInfo;
-    }
-
 
     @Override
     public boolean update(car_info saveCarInfo) {
@@ -243,10 +286,6 @@ public class carInfoService implements ICarInfoService {
         return carForTreeVoList;
     }
 
-
-    public car_info findCarbyOwnerID(String strPersonID) {
-        return carInfoDao.findCarbyOwnerID(strPersonID);
-    }
 
 //    public List<CarForTreeVo> findCarByOwner(String strCompanyID, String serarchKey) {
 //        String whereString = " AND ( d.strName like '%" + serarchKey + "%' or b.strTEID like '%" + serarchKey

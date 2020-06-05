@@ -50,11 +50,11 @@ public interface userDao {
     @Select("select statusID from user_status where statusName=#{statusName}")
     Integer getUserStatusID(String statusName);
 
-    @Select("select companyID from company_info where companyName = #{companyName}")
+    @Select("select companyID from companyInfo where companyName = #{companyName}")
     String getCompanyIDByCompanyName(String companyName);
 
     @Select("select a.ID,a.userName,a.sex,a.companyID,c.statusName,a.phoneNum,a.email,b.typeName , d.companyName " +
-            "from user a, person_type b,user_status c ,company_info d " +
+            "from user a, person_type b,user_status c ,companyInfo d " +
             "where a.userType=b.typeID and a.`status`=c.statusID and a.companyID = d.companyID and d.lft >= #{lft} and d.rgt <= #{rgt}" +
             "and userType = #{userType}")
     List<UserResponseVo> findCarOwerByUserType(@Param("lft") String lft,
@@ -63,7 +63,7 @@ public interface userDao {
 
 
      @Select("select a.ID,a.userName,a.sex,a.companyID,c.statusName,a.phoneNum,a.email,b.typeName , d.companyName " +
-                "from user a, person_type b,user_status c ,company_info d " +
+                "from user a, person_type b,user_status c ,companyInfo d " +
                 "where a.userType=b.typeID and a.`status`=c.statusID and a.companyID = d.companyID and d.lft >= #{lft} and d.rgt <= #{rgt} " +
                 "and ( a.userName like CONCAT(CONCAT('%', #{key}), '%') or a.phoneNum like CONCAT(CONCAT('%', #{key}), '%') )")
      List<UserResponseVo> findUserByPhoneNumOrByUserName(@Param("lft") String lft,
@@ -72,17 +72,16 @@ public interface userDao {
 
 
     @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email,b.typeName ,c.statusName , d.companyName , d.companyID  " +
-            "from user a, person_type b,user_status c ,company_info d " +
+            "from user a, person_type b,user_status c ,companyInfo d " +
             "where a.userType=b.typeID and a.`status`=c.statusID and a.companyID = d.companyID and d.lft >= #{lft} and d.rgt <= #{rgt} ")
     List<UserResponseVo> findAllUserInfoByPage(@Param("lft") String lft,
                                                @Param("rgt") String rgt);
 
 
     @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email,b.typeName ,c.statusName , d.companyName , d.companyID " +
-            "                        from user a,person_type b,user_status c,company_info d " +
-            "                        where a.userType=b.typeID and a.status=c.statusID and a.companyID=d.companyID and a.phoneNum=#{phoneNum} and a.password=#{password}")
-    UserBaseInfoAndPowerInfoVo login(@Param("phoneNum") String phoneNum ,
-                                     @Param("password") String password);
+            "                        from user a,person_type b,user_status c,companyInfo d " +
+            "                        where a.userType=b.typeID and a.status=c.statusID and a.companyID=d.companyID and a.phoneNum=#{phoneNum} ")
+    UserBaseInfoAndPowerInfoVo login(@Param("phoneNum") String phoneNum);
 
     @Select("select * from user " +
             "where ID = #{0}")
@@ -127,7 +126,7 @@ public interface userDao {
     @Select("select companyID from user where id=#{userID}")
     String getCompanyIDByUserID(@Param("userID") Integer userID);
 
-    @Select("select companyName from company_info where companyID=#{companyID} ")
+    @Select("select companyName from companyInfo where companyID=#{companyID} ")
     String getCompanyNameByCompanyID(@Param("companyID") String companyID);
 
     /**
@@ -152,7 +151,7 @@ public interface userDao {
      */
     @Select("select * from user " +
             "where phoneNum = #{phoneNum} limit 1")
-    user findByPhone(String phoneNum);
+    user findByPhone(@Param("phoneNum") String phoneNum);
 
     @Select("select count(phoneNum) from user " +
             "where phoneNum = #{phoneNum} ")
@@ -251,13 +250,13 @@ public interface userDao {
     void resetPassword(String strPhone, String strNewPassWord);
 
 //    @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email ,c.statusName , d.companyName , d.companyID, e.level , e.longitude , e.latitude" +
-//            "from user a,user_status c,company_info d ,user_installer e " +
+//            "from user a,user_status c,companyInfo d ,user_installer e " +
 //            "where a.status=c.statusID and a.companyID=d.companyID " +
 //            "and a.ID = e.installer_id and a.phoneNum= #{phoneNum} and a.password=#{password} ")
 
 
     @Select("select a.ID,a.userName,a.sex,a.phoneNum,a.email ,c.statusName , d.companyName , d.companyID, e.level , e.longitude , e.latitude " +
-            "            from user a,user_status c,company_info d ,user_installer e " +
+            "            from user a,user_status c,companyInfo d ,user_installer e " +
             "            where a.status=c.statusID and a.companyID=d.companyID " +
             "            and a.ID = e.installer_id and a.phoneNum= #{phoneNum} and a.password=#{password}")
     InstallerVo findInstallerByPhone(@Param("phoneNum") String phoneNum,

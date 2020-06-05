@@ -4,6 +4,7 @@ package com.black.lei.service.Impl;
 
 import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ITrackLastService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
+import com.cbd.cbdcommoninterface.response.leiVo.RealTrackVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,7 +28,7 @@ public class TrackLastService implements ITrackLastService {
     }
 
     @Override
-    public List<TrackLast> getTrackInfoByTEID(String devID,int startTime,int endTime) {
+    public List<RealTrackVo> getTrackInfoByTEID(String devID,long startTime,long endTime) {
 
         return TrackLastDao.getTrackInfoByTEID(devID,startTime,endTime);
     }
@@ -37,9 +38,9 @@ public class TrackLastService implements ITrackLastService {
         return null;
     }
 
-    public TrackLast getRealTrackByTEID(String devID) {
+    public RealTrackVo getRealTrackByTEID(String key) {
 
-        return TrackLastDao.getRealTrackByTEID(devID);
+        return TrackLastDao.getRealTrackByTEID(key);
     }
 
 

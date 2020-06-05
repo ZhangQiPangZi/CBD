@@ -4,6 +4,7 @@ import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
 
 import javax.xml.crypto.Data;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Random;
@@ -58,12 +59,8 @@ public class RandomTrackLastUtil {
     }
 
     //当前时间
-    public Integer curTime() {
-
-        String tmp = String.valueOf(System.currentTimeMillis());
-        Integer.valueOf(tmp);
-
-        return Integer.valueOf(tmp);
+    public long curTime() {
+        return System.currentTimeMillis();
     }
 
     //随机经度

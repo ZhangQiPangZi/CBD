@@ -38,9 +38,6 @@ public class roleDefineService implements IRoleDefineService {
     private role_userDao role_userDao;
 
     @Resource
-    private userDao userDao;
-
-    @Resource
     private com.black.lei.dao.powerDao powerDao;
 
     @Resource
@@ -55,11 +52,11 @@ public class roleDefineService implements IRoleDefineService {
         //返回roleID，roleName
         List<role> roleList = roleDao.getAllRoles();
 
-        log.info("获得的角色id和名称为："+roleList.toString());
+        log.info("获得的角色id和名称为：" + roleList.toString());
 
         List<RoleResponseVo> resList = new ArrayList<>();
         Iterator<role> it = roleList.iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             //执行过程中会执行数据锁定，性能稍差，若在循环过程中要去掉某个元素只能调用iter.remove()方法。
             //新建一个resList的RoleResponseVo对象，取出roleID，roleName，放入resList中
             role tmpRole = it.next();
@@ -69,11 +66,18 @@ public class roleDefineService implements IRoleDefineService {
             rrv.setRoleName(tmpRole.getRoleName());
             rrv.setData(roleDao.getPowerByRoleID(tmpRole.getRoleID()));
 
+            if (rrv.getData().size() == 0) {
+                List<power> emptPower = new ArrayList<>();
+                power tmpPower = new power();
+                tmpPower.setPowerName("");
+                emptPower.add(tmpPower);
+                rrv.setData(emptPower);
+            }
             resList.add(rrv);
 
         }
 
-        log.info("得到的角色->权限数据结构为"+resList.toString());
+        log.info("得到的角色->权限数据结构为" + resList.toString());
 
         //得到了所有的角色和权限，且数据结构为角色->权限：一对多
         return resList;
@@ -84,53 +88,59 @@ public class roleDefineService implements IRoleDefineService {
 
     @Override
     @Transactional
-    public List<SimpleGrantedAuthority> getUserRoleByID(Integer ID) {
-        List<Integer> roleID = role_userDao.getRolesByUserID(ID);
-        if(roleID == null) {
+    public List<role> getUserRoleByID(Integer ID) {
+        List<role> roleList = role_userDao.getRolesByUserID(ID);
+        if (roleList == null) {
             log.info("该用户未拥有任何角色");
             return null;
         }
-        //List<String> tmp = new ArrayList<>();
-        List<SimpleGrantedAuthority> sga = new ArrayList<>();
-        for(Integer i : roleID) {
-            sga.add(roleDao.getRoleNameByRoleID(i));
-        }
 
-        return sga;
+        return roleList;
 
     }
 
     //添加角色
     //@Transactional(rollbackOn = { Exception.class })
-    public boolean createRole(role addroleDefine) {
-        boolean success = false;
+    @Transactional
+    @Override
+    public Integer addRole(String roleName, String remark, List<Integer> powerIDList) {
+        Integer success1 = 0;
 
-        try {
-            //将新增角色存入数据库
-            roleDao.createRole(addroleDefine);
-            success = true;
-        } catch (Exception e) {
-            System.out.println("Exception e = " + e);
-            //TODO
-            //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//事务回滚
-            success = false;
+        //将新增角色存入角色表
+        success1 = roleDao.createRole(roleName, remark);
+        //查出角色的ID，用来向role_power中添加信息
+        Integer curRoleID = roleDao.getRoleIDByRoleName(roleName);
+        Iterator<Integer> it = powerIDList.iterator();
+        while (it.hasNext()) {
+            Integer success2 = 0;
+            Integer curPowerID = it.next();
+            success2 = role_powerDao.addPowerByRoleID(curRoleID,curPowerID,1);
+            if (success2 == 0) {
+                //TODO 添加失败，回滚
+                return 0;
+            }
+
         }
-
-        return success;
+        return success1;
     }
+
 
     //更新角色
     @Override
-    public Integer updateRole(int roleID,int powerID,int status) {
+    public Integer updateRole(int roleID, int powerID, int status) {
 
-            return role_powerDao.updateRolePowerStatus(roleID,powerID,status);
+        return role_powerDao.updateRolePowerStatus(roleID, powerID, status);
 
     }
 
     //删除指定角色
+    @Transactional
     @Override
-    public void deleteRole(int nRoleID) {
-        roleDao.deleteRole(nRoleID);
+    public Integer deleteRole(Integer roleID) {
+        //删除角色-权限表中roleID = 当前角色的数据
+        role_powerDao.deleteRolePowerByRoleID(roleID);
+
+        return roleDao.deleteRole(roleID);
     }
 
     //获取该公司类别所有权限
@@ -138,5 +148,17 @@ public class roleDefineService implements IRoleDefineService {
     public List<power> getPowerListByCompanyType(int companyType) {
 
         return powerDao.getPowerListByCompanyType(companyType);
+    }
+
+    @Override
+    public Integer addRolePower(Integer roleID, Integer powerID) {
+
+        return role_powerDao.addPowerByRoleID(roleID, powerID, 1);
+    }
+
+    @Override
+    public Integer updateRole(Integer roleID, String roleName) {
+        Integer res =  roleDao.updateRoleByRoleID(roleID,roleName);
+        return res ;
     }
 }

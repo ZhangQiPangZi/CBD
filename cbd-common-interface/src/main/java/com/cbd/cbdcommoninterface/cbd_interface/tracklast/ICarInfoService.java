@@ -25,7 +25,6 @@ public interface ICarInfoService {
 
     boolean update(car_info saveCarInfo);
 
-    Map<String,Object> findUserInfoByDevID(String devID);
 
     Integer hasOrderID(String orderID);
 
@@ -33,5 +32,9 @@ public interface ICarInfoService {
     List<CarForTreeVo> findLikelyCarOwnerBySearchKey(String companyID, String searchKey);
 
     void function();
+
+    Integer hasDevID(String devID);
+
+    List<CarForTreeVo> findCarListByCompanyID(String companyID);
 
 }

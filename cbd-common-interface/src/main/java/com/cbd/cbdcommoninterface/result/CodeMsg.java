@@ -19,8 +19,12 @@ public class CodeMsg implements Serializable {
     /** 设备异常 **/
     public static final CodeMsg OUT_OF_STOCK = new CodeMsg(ExpPrefixUtil.DevExpPrefix+"00", "库存不足");
 
+
+    /**用户使用异常**/
+
     /** 公司异常 **/
     public static final CodeMsg CPY_LEVEL_ERROR = new CodeMsg(ExpPrefixUtil.CpyExpPrefix+"00", "公司级别错误");
+
 
     public static final CodeMsg STAFF_NAME_ERROR = new CodeMsg("1012", "用户名错误！");
     public static final CodeMsg PASSWORD_ERROR = new CodeMsg("1013", "密码错误！");
@@ -29,12 +33,16 @@ public class CodeMsg implements Serializable {
     public static final CodeMsg INPUT_ERROR = new CodeMsg("1016", "JSON输入格式不匹配！");
     public static final CodeMsg NULL_TRACK_MSG_ERROR = new CodeMsg("1017", "该设备该时间段轨迹信息为空！");
     public static final CodeMsg PHONENUM_PASSWORD_INCORRECT_ERROR = new CodeMsg("1018","用户名与密码不匹配！");
-    public static final CodeMsg PHONENUM_MISS_ERROR = new CodeMsg("1019","未找到该用户！");
+    public static final CodeMsg USER_NOT_EXIT_ERROR = new CodeMsg("1019","用户不存在！");
     public static final CodeMsg PAY_ERROR = new CodeMsg("1020","支付失败！");
     public static final CodeMsg SIGNVERIFIED_ERROR = new CodeMsg("1020","验证商户失败！");
+    public static final CodeMsg AUTH_REEOR = new CodeMsg("1021","权限不足！");
+    public static final CodeMsg DIDNT_LOGIN_ERROR = new CodeMsg("1022","用户未登录！");
+    public static final CodeMsg SESSION_OUT_OF_TIME_ERROR = new CodeMsg("1023","用户会话过期！");
 
-
-
+    public static final CodeMsg EMPTY_DEVID_ERROR = new CodeMsg("1024","设备未找到！");
+    public static final CodeMsg EMPTY_COMPANY_ERROR = new CodeMsg("1025","未找到该公司！");
+    public static final CodeMsg EMPTY_CAR_ERROR = new CodeMsg("1026","该公司下未找到车辆！");
 
 
 

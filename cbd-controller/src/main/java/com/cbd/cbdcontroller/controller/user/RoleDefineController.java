@@ -1,7 +1,6 @@
 package com.cbd.cbdcontroller.controller.user;
 
 
-
 import com.cbd.cbdcommoninterface.cbd_interface.user.IPowerService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IRoleDefineService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.power;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,7 +51,7 @@ public class RoleDefineController {
     //    private int roleID;
     //    private int roleName;
     //    private List<?> data;
-    @ApiOperation(value = "管理员状态，获取DB中所有角色信息",httpMethod = "POST")
+    @ApiOperation(value = "管理员状态，获取DB中所有角色信息", httpMethod = "POST")
     @RequestMapping("/showRoleList")
     public Result<List<RoleResponseVo>> showRoleList(HttpServletRequest req) {
 
@@ -74,7 +74,7 @@ public class RoleDefineController {
      * @param status--需要更新后的状态（目标状态）
      * @return
      */
-    @ApiOperation(value = "更新角色的权限状态 开/关",httpMethod = "GET")
+    @ApiOperation(value = "更新角色的权限状态 开/关", httpMethod = "GET")
     @RequestMapping("/updateRolePower")
     public Result<String> updateRolePower(@RequestParam(value = "roleID") int roleID,
                                           @RequestParam(value = "powerID") int powerID,
@@ -84,87 +84,117 @@ public class RoleDefineController {
         log.info("res == " + res);
         if (res == 1) {
             return Result.success("更新成功");
-        } else if (res == 0) {
-            return Result.success("更新失败，请稍后重试");
         } else {
-            throw new GlobalException(CodeMsg.SERVER_ERROR);
+            return Result.error(CodeMsg.SERVER_ERROR);
         }
 
     }
 
-    @ApiOperation(value = "新增角色",httpMethod = "POST")
+    @ApiOperation(value = "新增角色", httpMethod = "POST")
     @RequestMapping("/addRole")
-    public Result<String> addRole(@RequestBody role role) {
+    public Result<String> addRole(@RequestParam("roleName") String roleName,
+                                  @RequestParam("remark") String remark,
+                                  @RequestParam("powerList") String powerID) {
+        //1,2,3
+        //{1,2,3}
         Integer res = 0;
-        //res = roleDefineService.addRole();
+
+        String[] tmpList = powerID.split(",");
+        List<Integer> powerIDList = new ArrayList<>();
+        for(String i : tmpList) {
+            Integer cur = Integer.valueOf(i);
+            powerIDList.add(cur);
+        }
+
+        res = roleDefineService.addRole(roleName, remark, powerIDList);
         if (res == 1) {
             return Result.success("添加角色成功");
-        } else if (res == 0) {
-            return Result.success("添加失败，请稍后重试");
         } else {
-            throw new GlobalException(CodeMsg.SERVER_ERROR);
+            return Result.error(CodeMsg.SERVER_ERROR);
         }
     }
 
+    @ApiOperation(value = "修改角色名", httpMethod = "POST")
+    @RequestMapping("/updateRole")
+    public Result<String> updateRole(@RequestParam("roleID") Integer roleID,
+                                     @RequestParam("roleName") String roleName) {
+
+        Integer res = roleDefineService.updateRole(roleID,roleName);
+        if (res == 0) {
+            return Result.error(CodeMsg.SERVER_ERROR);
+        } else {
+            return Result.success("修改成功！");
+        }
+    }
+
+    @ApiOperation(value = "删除角色", httpMethod = "POST")
+    @RequestMapping("/deleteRole")
+    public Result<String> deleteRole(@RequestParam("roleID") Integer roleID) {
+
+        Integer res = roleDefineService.deleteRole(roleID);
+        if (res == 0) {
+            return Result.error(CodeMsg.SERVER_ERROR);
+        } else {
+            return Result.success("删除成功！");
+        }
+    }
     /**
      * 需要管理员权限可见--
      *
      * @return
      */
-    @ApiOperation(value = "获取权限详情列表",httpMethod = "POST")
+    @ApiOperation(value = "获取权限详情列表", httpMethod = "POST")
     @RequestMapping("/getPowerList")
     public Result<List<power>> showPowerList() {
         List<power> powerList = powerService.getPowerList();
         return Result.success(powerList);
     }
 
-    @ApiOperation(value = "模糊查找权限列表",httpMethod = "GET")
+    @ApiOperation(value = "模糊查找权限列表", httpMethod = "GET")
     @RequestMapping("/findLikelyPower")
     public Result<List<power>> findLikelyPower(@RequestParam(value = "key") String key) {
         List<power> resList = powerService.findLikelyPower(key);
-        return Result.success(resList);
+        if (resList.size() == 0) {
+            return Result.error(CodeMsg.SERVER_ERROR);
+        } else {
+            return Result.success(resList);
+        }
     }
 
-    @ApiOperation(value = "添加权限",httpMethod = "POST")
+    @ApiOperation(value = "添加权限", httpMethod = "POST")
     @RequestMapping("/addPower")
     public Result<String> addPower(@RequestBody power power) {
 
         Integer res = powerService.addPower(power);
         if (res == 1) {
             return Result.success("添加权限成功！");
-        } else if (res == 0) {
-            return Result.success("添加权限失败！");
         } else {
-            throw new GlobalException(CodeMsg.SERVER_ERROR);
+            return Result.error(CodeMsg.SERVER_ERROR);
         }
     }
 
-    @ApiOperation(value = "修改权限",httpMethod = "POST")
+    //当关闭权限时，会自动关闭角色-权限表的状态
+    @ApiOperation(value = "修改权限", httpMethod = "POST")
     @RequestMapping("/updatePower")
     public Result<String> updatePower(@RequestBody power power) {
         Integer res = powerService.updatePower(power);
         if (res == 1) {
             return Result.success("更新权限成功！");
-        } else if (res == 0) {
-            return Result.success("更新权限失败！");
         } else {
-            throw new GlobalException(CodeMsg.SERVER_ERROR);
+            return Result.error(CodeMsg.SERVER_ERROR);
         }
     }
 
-    @ApiOperation(value = "删除权限",httpMethod = "POST")
+    @ApiOperation(value = "删除权限", httpMethod = "POST")
     @RequestMapping("/deletePower")
     public Result<String> deletePower(@RequestBody power power) {
         Integer res = powerService.deletePower(power);
         if (res == 1) {
             return Result.success("更新权限成功！");
-        } else if (res == 0) {
-            return Result.success("更新权限失败！");
         } else {
-            throw new GlobalException(CodeMsg.SERVER_ERROR);
+            return Result.error(CodeMsg.SERVER_ERROR);
         }
     }
-
 
 
 }

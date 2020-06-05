@@ -1,9 +1,7 @@
 package com.black.lei.dao;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.cbd.cbdcommoninterface.pojo.leipojo.role;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -27,19 +25,18 @@ public interface role_userDao {
 
 
     @Insert("insert into role_user(roleID,userID) " +
-            "values(roleID,userID)")
-    void addRole_User(int roleID,int userID);
+            "values(#{roleID},#{userID})")
+    void addRole_User(@Param("roleID") int roleID,@Param("userID") int userID);
 
 
     /**
      * 获取员工所有角色
-     * @param userID
-     * @return
      */
-    @Select("select roleID " +
-            "from role_user " +
-            "where userID = #{0}")
-    List<Integer> getRolesByUserID(Integer userID);
+    @Select("select r.* from role r " +
+            "            left join role_user ru ON r.roleID = ru.roleID " +
+            "            left join user u ON ru.userID = u.ID " +
+            "            where u.ID = #{ID} ")
+    List<role> getRolesByUserID(@Param("ID") Integer userID);
 
     /**
      * 删除员工所有角色

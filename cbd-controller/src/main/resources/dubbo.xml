@@ -34,8 +34,12 @@
     <dubbo:reference id="completedListService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.completed.CompletedListService"/>
     <dubbo:reference id="installOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.InstallOrderService"/>
     <dubbo:reference id="repairOrderService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.RepairOrderService"/>
+
+
     <dubbo:reference id="PayService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.salesapp.workbench.PayService"/>
     <dubbo:reference id="AchievementService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
+
+
 
     <dubbo:reference id="ICarInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService"/>
     <dubbo:reference id="ICompanyInfoService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService"/>

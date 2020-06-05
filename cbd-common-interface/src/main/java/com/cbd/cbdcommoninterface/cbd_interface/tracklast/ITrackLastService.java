@@ -3,6 +3,7 @@ package com.cbd.cbdcommoninterface.cbd_interface.tracklast;
 
 
 import com.cbd.cbdcommoninterface.pojo.leipojo.TrackLast;
+import com.cbd.cbdcommoninterface.response.leiVo.RealTrackVo;
 
 import java.util.List;
 import java.util.Map;
@@ -22,14 +23,14 @@ public interface ITrackLastService {
      * @param
      * @return
      */
-    List<TrackLast>  getTrackInfoByTEID(String devID, int startTime, int endTime);
+    List<RealTrackVo>  getTrackInfoByTEID(String devID, long startTime, long endTime);
 
     /**
      * 根据devID和最大时间戳查找定位数据
-     * @param devID
+     * @param key
      * @return
      */
-    TrackLast getRealTrackByTEID(String devID);
+    RealTrackVo getRealTrackByTEID(String key);
 
 
     Map<String, Object> getTrackInfoByTEIDForLogin(String devID);
