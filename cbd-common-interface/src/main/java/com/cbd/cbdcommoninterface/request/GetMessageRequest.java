@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class GetMessageRequest implements Serializable {
     private PageRequest pageRequest;
     private String managerID;
-    @ApiModelProperty(value = "设备数量" ,example = "0 未确认 1 已确认")
+    @ApiModelProperty(value = "消息状态" ,example = "0 未确认 1 已确认")
     private Integer mesStatus;
 
     public PageRequest getPageRequest() {

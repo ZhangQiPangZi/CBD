@@ -41,6 +41,7 @@
         select companyID
         from companyInfo
         where lft &lt;= #{lft} and rgt &gt;= {rgt}
+        order by lft ASC
     </select>
 
     <select id="getGradeCompanyList" resultMap="cpyMap">

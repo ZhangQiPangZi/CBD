@@ -46,19 +46,14 @@
     <dubbo:reference id="IUserService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IUserService"/>
     <dubbo:reference id="IAlipayService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.alipay.IAlipayService"/>
 
-
+    <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
+    <dubbo:reference id="contractService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>
+    <dubbo:reference id="companyService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService"/>
+    <dubbo:reference id="achievementService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
 
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
 
-    <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
-    <dubbo:annotation package="com.cbd.cbdcontroller.handler"/>
-    <dubbo:reference id="contractService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>
-    <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
-    <dubbo:reference id="companyService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService"/>
-    <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
-    <dubbo:reference id="achievementService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
-    <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>
 
     <!--服务提供者-->
 

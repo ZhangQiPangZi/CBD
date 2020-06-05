@@ -16,6 +16,7 @@ import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
 import com.cbd.cbdcommoninterface.enums.OrderTypeEnum;
 import com.cbd.cbdcommoninterface.keys.OrderTypeKey;
 import com.cbd.cbdcommoninterface.keys.RenewKey;
+import com.cbd.cbdcommoninterface.request.PayRequest;
 import com.cbd.cbdcommoninterface.response.leiVo.AlipayVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.Result;
@@ -63,12 +64,9 @@ public class AlipayController {
 
     @ApiOperation(value = "app支付调用页面", httpMethod = "POST")
     @RequestMapping("/wappay")
-    public void webAppPay(@RequestParam(value = "orderID", required = true) String orderID,
-                            @RequestParam(value = "orderName", required = true) String orderSubject,
-                            @RequestParam(value = "orderPrice", required = true) String orderPrice,
-                            @RequestParam(value = "orderType", required = true) Integer orderType,
+    public void webAppPay(  @RequestBody PayRequest payRequest,
                             HttpServletResponse response) throws AlipayApiException, IOException {
-        String form = gotopayPage(orderID, orderSubject, orderPrice, orderType, "QUICK_MSECURITY_PAY");
+        String form = gotopayPage(payRequest.getOrderID(), payRequest.getOrderSubject(), payRequest.getOrderPrice(), payRequest.getOrderType(), "QUICK_MSECURITY_PAY");
         response.setContentType("text/html;charset=" + charset);
         response.getWriter().write(form);
         response.getWriter().flush();
@@ -79,12 +77,9 @@ public class AlipayController {
 
     @ApiOperation(value = "web支付调用页面,orderID为合同ID", httpMethod = "POST")
     @RequestMapping("/webAddPay")
-    public void webAddPay(@RequestParam(value = "orderID", required = true) String orderID,
-                            @RequestParam(value = "orderName", required = true) String orderSubject,
-                            @RequestParam(value = "orderPrice", required = true) String orderPrice,
-                            @RequestParam(value = "orderType", required = true) Integer orderType,
+    public void webAddPay(  @RequestBody PayRequest payRequest,
                             HttpServletResponse response) throws AlipayApiException, IOException {
-        String form = gotopayPage(orderID, orderSubject, orderPrice, orderType, "FAST_INSTANT_TRADE_PAY");
+        String form = gotopayPage(payRequest.getOrderID(), payRequest.getOrderSubject(), payRequest.getOrderPrice(), payRequest.getOrderType(),"FAST_INSTANT_TRADE_PAY");
         response.setContentType("text/html;charset=" + charset);
         response.getWriter().write(form);
         response.getWriter().flush();
@@ -94,15 +89,12 @@ public class AlipayController {
 
     @ApiOperation(value = "web支付调用页面,orderID为合同ID", httpMethod = "POST")
     @RequestMapping("/webRenewPay")
-    public void webRenewPay(@RequestParam(value = "orderID", required = true) String orderID,
-                       @RequestParam(value = "orderName", required = true) String orderSubject,
-                       @RequestParam(value = "orderPrice", required = true) String orderPrice,
-                       @RequestParam(value = "orderType", required = true) Integer orderType,
-                       @RequestParam(value = "renewYears", required = true) Float renewYears,
+    public void webRenewPay(
+                       @RequestBody PayRequest payRequest,
                        HttpServletResponse response) throws AlipayApiException, IOException {
         //将续费年限放入缓存
-        redisService.set(RenewKey.RENEW_TIME, orderID, renewYears);
-        String form = gotopayPage(orderID, orderSubject, orderPrice, orderType, "FAST_INSTANT_TRADE_PAY");
+        redisService.set(RenewKey.RENEW_TIME, payRequest.getOrderID(), payRequest.getRenewYears());
+        String form = gotopayPage(payRequest.getOrderID(), payRequest.getOrderSubject(), payRequest.getOrderPrice(), payRequest.getOrderType(),"FAST_INSTANT_TRADE_PAY");
         response.setContentType("text/html;charset=" + charset);
         response.getWriter().write(form);
         response.getWriter().flush();

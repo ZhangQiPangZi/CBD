@@ -69,6 +69,7 @@ public interface CompanyService {
      */
     Boolean delAllCompanyByCpyName(String companyName);
 
+
     CompanyInfo findCompanyInfoByCompanyID(String companyID);
     CompanyInfo findCompanyInfoByCompanyName(String companyName);
 }
