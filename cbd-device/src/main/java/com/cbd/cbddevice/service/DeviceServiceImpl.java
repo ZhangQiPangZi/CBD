@@ -254,27 +254,24 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public List<DevInfoResponse> findDevInfoListByDevNameAndCompanyID(String devName, String companyID) {
-        DevConditionDto devConditionDto = new DevConditionDto();
         CompanyInfo cpyInfo = companyService.findCompanyInfoByCompanyID(companyID);
-        devConditionDto.setRgt(cpyInfo.getRgt());
-        devConditionDto.setLft(cpyInfo.getLft());
-        devConditionDto.setDevStatus(DeviceInfo.DevStatus.IN.ordinal());
+        Integer devTypeID = deviceDao.findDevTypeByDevName(devName).getDevTypeID();
+        DevNameDto devNameDto = new DevNameDto();
+        devNameDto.setDevTypeID(devTypeID);
+        devNameDto.setLft(cpyInfo.getLft());
+        devNameDto.setRgt(cpyInfo.getRgt());
 
         /**
-         * 获取所有子公司在库中的设备id
+         * 获取所有符合条件的设备id
          */
-        List<String> devIDList = deviceDao.findDevListByCondition(devConditionDto);
+        List<String> devIDList = deviceDao.findDeviceIDByDevName(devNameDto);
 
         /**
          * 根据设备名筛选设备
          */
         List<DevInfoResponse> devInfoResponseList = new ArrayList<>();
         for(String devID : devIDList){
-            DevType devType = deviceDao.getDevTypeByDevID(devID);
-            String curDevName = devType.getDevName();
-            if (curDevName.equals(devName)){
-                devInfoResponseList.add(findDevInfoByDevID(devID));
-            }
+            devInfoResponseList.add(findDevInfoByDevID(devID));
         }
 
         return devInfoResponseList;

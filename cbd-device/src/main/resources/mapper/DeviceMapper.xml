@@ -188,7 +188,17 @@
     <select id="getDevNumsByDevName" parameterType="com.cbd.cbdcommoninterface.dto.DevNameDto" resultType="java.lang.Integer">
         select count(*)
         from deviceInfo
-        where devTypeID = #{devTypeID} and devStatus = 0 and companyID in (
+        where devTypeID = #{devTypeID} and devStatus = 0 and recordStatus = 0 and companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+        )
+    </select>
+
+    <select id="findDeviceIDByDevName" parameterType="com.cbd.cbdcommoninterface.dto.DevNameDto" resultType="java.lang.Integer">
+        select devID
+        from deviceInfo
+        where devTypeID = #{devTypeID} and devStatus = 0 and recordStatus = 0 and companyID in (
           select companyID
           from companyInfo cpy
           where lft BETWEEN #{lft} and #{rgt}

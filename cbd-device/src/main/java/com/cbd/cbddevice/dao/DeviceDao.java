@@ -118,4 +118,6 @@ public interface DeviceDao {
     void updateDstDev(ConfirmDevDto confirmDevDto);
 
     Integer getDevNumsByDevName(DevNameDto devNameDto);
+
+    List<String> findDeviceIDByDevName(DevNameDto devNameDto);
 }
