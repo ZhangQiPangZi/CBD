@@ -50,7 +50,7 @@ public interface CompanyDao {
     void updateAddRgt(@Param("rgt") Integer parentRgt);
 
     @Insert("insert into companyInfo(companyID, companyName, companyPhone, companyCode, companyMail, companyTypeID" +
-            ", companyProvince, companyCity, companyDistrict, companylevel, lft, rgt)" +
+            ", companyProvince, companyCity, companyDistrict, companylevel, lft, rgt) " +
             "values(#{companyID}, #{companyName}, #{companyPhone}, #{companyCode}, #{companyMail}, #{companyTypeID}" +
             ", #{companyProvince}, #{companyCity}, #{companyDistrict}, #{companylevel}, #{lft}, #{rgt})")
     void insertCompany(AddCpyDto addCpyDto);

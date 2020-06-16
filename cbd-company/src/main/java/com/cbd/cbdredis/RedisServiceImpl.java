@@ -232,6 +232,12 @@ public class RedisServiceImpl implements RedisService {
         if (clazz == Integer.class) {
             return (T) Integer.valueOf(str);
         }
+        if (clazz == Float.class){
+            return (T)Float.valueOf(str);
+        }
+        if (clazz == Double.class){
+            return (T)Double.valueOf(str);
+        }
 
         return JSON.toJavaObject(JSON.parseObject(str), clazz);
     }

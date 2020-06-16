@@ -7,5 +7,4 @@ public class AllocationDevDto {
     private String devID;
     private Integer devManagerID;
     private Integer devStatus;
-
 }

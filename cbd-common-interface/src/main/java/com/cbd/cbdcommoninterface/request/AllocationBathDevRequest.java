@@ -9,7 +9,7 @@ public class AllocationBathDevRequest implements Serializable {
     private Integer devNums;
     @ApiModelProperty(value = "原公司ID")
     private String curCompanyID;
-    @ApiModelProperty(value = "目标（调拨）公司ID")
+    @ApiModelProperty(value = "目标（调拨）公司名")
     private String dstCompanyName;
 
     public String getDevName() {

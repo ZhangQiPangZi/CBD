@@ -8,5 +8,5 @@ public class PersonConditionDto {
     private Integer year;
     private Integer month;
     private String contractTypeName;
-
+    private String companyID;
 }

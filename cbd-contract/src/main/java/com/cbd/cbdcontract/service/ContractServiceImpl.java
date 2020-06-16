@@ -1,5 +1,7 @@
 package com.cbd.cbdcontract.service;
 
+import com.alibaba.fastjson.JSON;
+import com.cbd.cbdcommoninterface.cbd_interface.MQ.MQSender;
 import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService;
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
@@ -16,8 +18,7 @@ import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.GlobalException;
-import com.cbd.cbdcommoninterface.utils.PageUtils;
-import com.cbd.cbdcommoninterface.utils.UUIDUtils;
+import com.cbd.cbdcommoninterface.utils.*;
 import com.cbd.cbdcontract.dao.ContractDao;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -27,10 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -43,6 +43,8 @@ public class ContractServiceImpl implements ContractService {
     DeviceService deviceService;
     @Autowired
     RedisService redisService;
+    @Autowired
+    MQSender mqSender;
 
     @Override
     public List<String> findContractTypeNameByCompanyID(String companyID) {
@@ -120,6 +122,7 @@ public class ContractServiceImpl implements ContractService {
         if (shopID!=null && !shopID.isEmpty()){
             CompanyInfo shopInfo = companyService.findCompanyInfoByCompanyID(shopID);
             contractInfoResponse.setShopName(shopInfo.getCompanyName());
+            contractInfoResponse.setShopAddress(shopInfo.getCompanyProvince()+shopInfo.getCompanyCity()+shopInfo.getCompanyDistrict());
         }
 
         String contractTypeName = contractDao.getContractTypeName(contractInfo.getContractTypeID());
@@ -129,8 +132,29 @@ public class ContractServiceImpl implements ContractService {
         contractInfoResponse.setDevName(devType.getDevName());
         contractInfoResponse.setDevTypeName(devType.getDevType());
 
-        contractInfoResponse.setContractStatus(contractInfo.getContractStatus());
-        contractInfoResponse.setCreateTime(contractInfo.getCreateTime());
+        String contractStatus = "";
+        if (contractInfo.getContractStatus() == ContractInfo.ContractStatus.UNPAID.ordinal()){
+            contractStatus = "新建未支付";
+        }else if (contractInfo.getContractStatus() == ContractInfo.ContractStatus.PAID.ordinal()){
+            contractStatus = "已支付生效中";
+        }else {
+            contractStatus = "合同已到期";
+        }
+        contractInfoResponse.setContractStatus(contractStatus);
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String date = sdf.format(contractInfo.getCreateTime());
+        try {
+            c.setTime(sdf.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        c.add(Calendar.MONTH, (int) (contractInfo.getServerYears()*12));
+        String expireDate = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+        contractInfoResponse.setExpireDate(expireDate);
+
+
         contractInfoResponse.setDellFee(contractInfo.getDellFee());
         contractInfoResponse.setDevNums(contractInfo.getDevNums());
         // TODO 需要调用人事接口
@@ -185,6 +209,7 @@ public class ContractServiceImpl implements ContractService {
          * 获取调拨公司的信息
          */
         CompanyInfo dstCpy = companyService.findCompanyInfoByCompanyName(contractRequest.getCompanyName());
+        log.info("目标公司名:{}", dstCpy.getCompanyName());
 
         String companyID = dstCpy.getCompanyID();
         String shopID = null;
@@ -194,10 +219,23 @@ public class ContractServiceImpl implements ContractService {
         }
         try {
             contractDao.updateContractByDistribute(contractRequest.getContractID(),companyID, shopID);
+            /**
+             * 推送消息
+             */
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setMesID(UUIDUtils.getUUID());
+            CompanyInfo doAllocationCpy = companyService.findCompanyInfoByCompanyID(contractRequest.getDoAllocationCompanyID());
+            chatMessage.setSenderId(doAllocationCpy.getCompanyManagerID().toString());
+            chatMessage.setReceiverId(dstCpy.getCompanyManagerID().toString());
+
+            String pushMsg = contractRequest.getContractID()+":"+doAllocationCpy.getCompanyName()+"已向您派发合同，点击“查看详细信息”查看合同详细信息，谢谢！！！";
+            chatMessage.setContent(pushMsg);
+            chatMessage.setMsgType(ChatMessage.MsgType.DISTRIBUTE_CONTRACT.toString());
+            BusinessMessage message = new BusinessMessage(BusinessType.CBD_BUSINESS_QUEUE, JSON.toJSON(chatMessage));
+            mqSender.send(message);
         }catch (Exception e){
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
-
         return true;
     }
 
@@ -215,7 +253,7 @@ public class ContractServiceImpl implements ContractService {
         // 三种年限金额放入list
         renewMoneyList.add(halfMoney);
         renewMoneyList.add(halfMoney*2);
-        renewMoneyList.add(halfMoney*6);
+        renewMoneyList.add(halfMoney*4);
 
         return renewMoneyList;
     }
@@ -232,14 +270,21 @@ public class ContractServiceImpl implements ContractService {
         conditionDto.setRgt(rgt);
         conditionDto.setTimeSort(ContractConditionDto.timeSort.DESC.ordinal());
         List<String> IDList = contractDao.findContractListByCondition(conditionDto);
+        if (IDList.isEmpty()){
+            return null;
+        }
         String contractID = IDList.get(0);
 
         // 包装
         ContractInfo contractInfo = contractDao.findContractInfoByContractID(contractID);
         UnpaidContractInfoResponse contractInfoResponse = new UnpaidContractInfoResponse();
+        contractInfoResponse.setContractID(contractInfo.getContractID());
+        contractInfoResponse.setCompanyName(companyService.findCompanyInfoByCompanyID(contractInfo.getCompanyID()).getCompanyName());
         contractInfoResponse.setContractTypeName(contractDao.getContractTypeName(contractInfo.getContractTypeID()));
         contractInfoResponse.setDellFee(contractInfo.getDellFee());
-        contractInfoResponse.setDevName(contractDao.getDevType(contractInfo.getDevTypeID()).getDevName());
+        DevType devType = contractDao.getDevType(contractInfo.getDevTypeID());
+        contractInfoResponse.setDevName(devType.getDevName());
+        contractInfoResponse.setDevTypeName(devType.getDevType());
         contractInfoResponse.setDevNums(contractInfo.getDevNums());
         contractInfoResponse.setServerFee(contractInfo.getServerFee());
         contractInfoResponse.setServerYears(contractInfo.getServerYears());
@@ -318,14 +363,14 @@ public class ContractServiceImpl implements ContractService {
         addContractDevMesRequest.setCompanyID(contractInfo.getCompanyID());
         addContractDevMesRequest.setDevName(contractDao.getDevType(contractInfo.getDevTypeID()).getDevName());
         addContractDevMesRequest.setDevNums(contractInfo.getDevNums());
+        //增加设备调拨记录，完成设备批量调拨
         deviceService.addContractDeviceMessage(addContractDevMesRequest);
 
         //更改合同状态
         Integer contractStatus = ContractInfo.ContractStatus.PAID.ordinal();
         contractDao.updateContractStatus(contractID, contractStatus);
 
-        //推送信息
-
+        pushPayMsg(contractID);
     }
 
     @Override
@@ -339,12 +384,29 @@ public class ContractServiceImpl implements ContractService {
         contractDao.insertOrder(contractOrderID, contractID, serverFee, createTime);
 
         //更新合同过期记录
-        Float years = redisService.get(OrderTypeKey.ORDER_TYPE, contractID, Float.class);
+        Float years = redisService.get(RenewKey.RENEW_TIME, contractID, Double.class).floatValue();
+        log.info("续费年限:{}",years);
         contractDao.updateContractServerYears(contractID, years, createTime);
 
         redisService.delete(RenewKey.RENEW_TIME, contractID);
 
-        //推送信息
+        pushPayMsg(contractID);
+    }
 
+    /**
+     * 推送支付消息
+     */
+    public void pushPayMsg(String contractID){
+        ContractInfo contractInfo = contractDao.findContractInfoByContractID(contractID);
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setMesID(UUIDUtils.getUUID());
+        chatMessage.setSenderId(contractInfo.getPartyAPersonID().toString());
+        chatMessage.setReceiverId(contractInfo.getPartyAPersonID().toString());
+
+        String pushMsg = contractID+":"+"支付成功，合同已生效，点击“查看详细信息”查看合同详细信息，谢谢！！！";
+        chatMessage.setContent(pushMsg);
+        chatMessage.setMsgType(ChatMessage.MsgType.PAY_CONTRACT.toString());
+        BusinessMessage message = new BusinessMessage(BusinessType.CBD_BUSINESS_QUEUE, JSON.toJSON(chatMessage));
+        mqSender.send(message);
     }
 }

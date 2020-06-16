@@ -3,6 +3,7 @@ package com.cbd.cbdcontroller.controller.achievement;
 import com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService;
 import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.PageResponse;
+import com.cbd.cbdcommoninterface.response.QueryUserAndCpyIDResponse;
 import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,9 +23,9 @@ public class AchievementController {
     @Autowired
     AchievementService achievementService;
 
-    @ApiOperation("(测试用，上线删除)传入销售员id和所完成的这单使用的合同ID来增加销售额")
+    @ApiOperation("添加业绩，测试用，上线删除")
     @RequestMapping(value = "/addAchievement", method = RequestMethod.POST)
-    public Result<Boolean> addAchievement(@RequestParam(value = "salersID", required = false) Integer salersID, @RequestParam(value = "contractID", required = false) String contractID, @RequestParam(value = "companyID", required = false) String companyID){
+    public Result<Boolean> addAchievement(@RequestParam("salersID") Integer salersID, @RequestParam("contractID") String contractID, @RequestParam("companyID") String companyID){
         return Result.success(achievementService.addAchievement(salersID, contractID, companyID));
     }
 
@@ -80,6 +81,24 @@ public class AchievementController {
     @RequestMapping(value = "/findSpecificCpyAchievement", method = RequestMethod.POST)
     public Result<Map<String, Integer>> findSpecificCpyAchievement(@RequestBody SpecifiCpyRequest specifiCpyRequest){
         return Result.success(achievementService.findSpecificCpyAchievement(specifiCpyRequest));
+    }
+
+    @ApiOperation("查询公司和用户业绩")
+    @RequestMapping(value = "/queryUserOrCpyByKey", method = RequestMethod.POST)
+    public Result<List<QueryUserAndCpyIDResponse>> queryUserOrCpyByKey(@RequestBody QueryUserAndCpyRequest queryUserAndCpyRequest){
+        return Result.success(achievementService.queryUserOrCpyByKey(queryUserAndCpyRequest));
+    }
+
+    @ApiOperation("查询用户业绩")
+    @RequestMapping(value = "/queryUserByKey", method = RequestMethod.POST)
+    public Result<List<QueryUserAndCpyIDResponse>> queryUserByKey(@RequestBody QueryUserAndCpyRequest queryUserAndCpyRequest){
+        return Result.success(achievementService.queryUserByKey(queryUserAndCpyRequest));
+    }
+
+    @ApiOperation("获取指定公司或员工完成的合同类别名")
+    @RequestMapping(value = "/getContractTypeNameByCpyNameOrSalersID", method = RequestMethod.POST)
+    public Result<List<String>> getContractTypeNameByCpyNameOrSalersID(@RequestBody CompanyNameOrUserIDRequest companyNameOrUserIDRequest){
+        return Result.success(achievementService.getContractTypeNameByCpyNameOrSalersID(companyNameOrUserIDRequest.getKey()));
     }
 
 

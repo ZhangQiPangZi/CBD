@@ -35,7 +35,7 @@ public interface ContractService {
     ContractInfoResponse findContractInfoByContractID(String contractID);
 
     /**
-     * 获取当前公司下可派发的合同列表
+     * 获取当前公司下可使用的合同列表
      * @return
      */
     List<PageContractListResponse> findUsingContractListByCompanyID(String companyID);
@@ -81,7 +81,7 @@ public interface ContractService {
     void addOrder(String contractID);
 
     /**
-     * 续费合同，车佰度平台管理员访问
+     * 续费合同
      * @param contractID
      */
     void renewContract(String contractID);

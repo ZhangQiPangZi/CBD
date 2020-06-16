@@ -1,9 +1,6 @@
 package com.cbd.cbddevice.dao;
 
-import com.cbd.cbdcommoninterface.dto.AllocationDevDto;
-import com.cbd.cbdcommoninterface.dto.ConfirmMessageDto;
-import com.cbd.cbdcommoninterface.dto.DevConditionDto;
-import com.cbd.cbdcommoninterface.dto.DevFactoryDto;
+import com.cbd.cbdcommoninterface.dto.*;
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
 import com.cbd.cbdcommoninterface.pojo.device.DeviceAllotRecord;
 import com.cbd.cbdcommoninterface.pojo.device.DeviceInfo;
@@ -13,10 +10,7 @@ import com.cbd.cbdcommoninterface.pojo.message.DeviceMessageRecord;
 import com.cbd.cbdcommoninterface.request.PageDevConditionRequest;
 import com.cbd.cbdcommoninterface.response.DevReturnResponse;
 import com.cbd.cbdcommoninterface.response.PageDevListResponse;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -109,6 +103,19 @@ public interface DeviceDao {
     @Insert("insert into SIMInfo(SIMID, SIMStatus, SIMName) values(#{SIMID}, #{SIMStatus}, #{SIMName})")
     void insertSIM(SIMInfo simInfo);
 
-    @Select("select devName from deviceType")
-    List<String> getAllDevName();
+    @Select("select devID from deviceInfo where companyID = #{companyID} and recordStatus = 0")
+    List<String> getAllDevName(@Param("companyID") String companyID);
+
+    @Select("select distinct devManagerID from deviceInfo")
+    List<String> getAllDevManagerIDList();
+
+    @Select("select count(*) from deviceInfo where devStatus = 3 and devManagerID = #{managerID} and recordStatus = 0")
+    Integer getNeedReturnDeviceCounts(@Param("managerID") String managerID);
+
+    @Update("update deviceInfo " +
+            "set devStatus = #{devStatus}, devManagerID = #{devManagerID}, companyID = #{companyID} " +
+            "where devID = #{devID}")
+    void updateDstDev(ConfirmDevDto confirmDevDto);
+
+    Integer getDevNumsByDevName(DevNameDto devNameDto);
 }

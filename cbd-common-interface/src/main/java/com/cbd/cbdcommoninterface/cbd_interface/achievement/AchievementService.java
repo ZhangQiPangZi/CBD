@@ -1,7 +1,9 @@
 package com.cbd.cbdcommoninterface.cbd_interface.achievement;
 
 import com.cbd.cbdcommoninterface.request.*;
+import com.cbd.cbdcommoninterface.response.EchartPieResponse;
 import com.cbd.cbdcommoninterface.response.PageResponse;
+import com.cbd.cbdcommoninterface.response.QueryUserAndCpyIDResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -78,4 +80,39 @@ public interface AchievementService {
      * @return
      */
     Map<String, Integer> findSpecificCpyAchievement(SpecifiCpyRequest specifiCpyRequest);
+
+    /**
+     * 查询公司和用户业绩
+     * @param queryUserAndCpyRequest
+     * @return
+     */
+    List<QueryUserAndCpyIDResponse> queryUserOrCpyByKey(QueryUserAndCpyRequest queryUserAndCpyRequest);
+
+    /**
+     * 查询公司和用户业绩
+     * @param queryUserAndCpyRequest
+     * @return
+     */
+    List<QueryUserAndCpyIDResponse> queryUserByKey(QueryUserAndCpyRequest queryUserAndCpyRequest);
+
+    /**
+     * 获取指定公司或员工完成的合同类别名
+     * @param ID
+     * @return
+     */
+    List<String> getContractTypeNameByCpyNameOrSalersID(String ID);
+
+    /**
+     * 根据当前公司ID获取下属4s店业绩统计饼图
+     * @param cpyIDRequest
+     * @return
+     */
+    List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest);
+
+    /**
+     * 根据当前公司ID获取下属4s店销售员业绩统计饼图
+     * @param cpyIDRequest
+     * @return
+     */
+    List<EchartPieResponse> getPieSalersStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest);
 }

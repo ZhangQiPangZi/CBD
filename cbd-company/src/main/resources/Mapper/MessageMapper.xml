@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbd.cbdcompany.dao.MessageDao">
+    <resultMap id="chatMap" type="com.cbd.cbdcommoninterface.utils.ChatMessage">
+        <result property="mesID" column="mesID"/>
+        <result property="msgType" column="msgType"/>
+        <result property="senderId" column="senderId"/>
+        <result property="receiverId" column="receiverId"/>
+        <result property="content" column="content"/>
+        <result property="readFlag" column="readFlag"/>
+    </resultMap>
+
+    <select id="findMsgInfo" resultMap="chatMap">
+        select *
+        from messageRecord
+        where mesID = #{mesID}
+    </select>
+
+    <select id="pullUnreadMsgList" resultMap="chatMap">
+        select *
+        from messageRecord
+        where senderID = #{senderID} and receiverID = #{receiverID} and readFlag = 0 and msgType = 'CHAT'
+    </select>
+
+    <select id="pullUnreadBussinessMsgList" resultMap="chatMap">
+        select *
+        from messageRecord
+        where receiverID = #{receiverID} and readFlag = 0 and msgType != 'CHAT'
+    </select>
+
+    <select id="pullHistoryMsg" resultMap="chatMap">
+        select *
+        from messageRecord
+        where senderID = #{senderID} and receiverID = #{receiverID} and readFlag = 1 and msgType = 'CHAT'
+    </select>
+
+    <select id="pullReadBussinessMsgList" resultMap="chatMap">
+        select *
+        from messageRecord
+        where receiverID = #{receiverID} and readFlag = 1 and msgType != 'CHAT'
+    </select>
+</mapper>

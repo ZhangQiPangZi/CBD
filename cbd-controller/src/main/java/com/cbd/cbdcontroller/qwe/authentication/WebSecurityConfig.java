@@ -127,6 +127,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         httpSecurity.authorizeRequests().
+                antMatchers("ws://*").
+                permitAll().
                 antMatchers("/role/showRoleList ").hasAuthority("admin").
                 antMatchers("/**").fullyAuthenticated().
                         withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {

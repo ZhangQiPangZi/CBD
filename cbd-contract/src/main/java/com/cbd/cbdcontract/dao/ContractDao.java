@@ -58,7 +58,7 @@ public interface ContractDao {
     @Select("select contractTypeName from contractType")
     List<String> getAllContractType();
 
-    @Insert("insert into contractOrderPayRecord(contractOrderID, contractID, serverFee, createTime)" +
+    @Insert("insert into contractOrderPayRecord(contractOrderID, contractID, serverFee, createTime) " +
             "values (#{contractOrderID}, #{contractID}, #{serverFee}, #{createTime})")
     void insertOrder(@Param("contractOrderID") String contractOrderID, @Param("contractID") String contractID, @Param("serverFee") Float serverFee, @Param("createTime") Date createTime);
 

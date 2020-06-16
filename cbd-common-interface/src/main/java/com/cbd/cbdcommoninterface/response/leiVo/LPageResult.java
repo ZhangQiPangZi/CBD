@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class PageResult implements Serializable {
+public class LPageResult implements Serializable {
 
     //当前页码
     private int pageNum;

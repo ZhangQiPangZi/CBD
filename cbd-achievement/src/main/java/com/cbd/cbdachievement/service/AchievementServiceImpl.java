@@ -5,23 +5,26 @@ import com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService;
 import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService;
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
-import com.cbd.cbdcommoninterface.dto.CpyAchConditionDto;
-import com.cbd.cbdcommoninterface.dto.CpyConditionDto;
-import com.cbd.cbdcommoninterface.dto.DevAchConditionDto;
-import com.cbd.cbdcommoninterface.dto.PersonConditionDto;
+import com.cbd.cbdcommoninterface.cbd_interface.salesapp.user.UserService;
+import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
+import com.cbd.cbdcommoninterface.dto.*;
+import com.cbd.cbdcommoninterface.enums.QueryTypeEnum;
 import com.cbd.cbdcommoninterface.pojo.achievement.AchievementCompanyInfo;
 import com.cbd.cbdcommoninterface.pojo.achievement.AchievementDeviceInfo;
 import com.cbd.cbdcommoninterface.pojo.achievement.AchievementInfo;
 import com.cbd.cbdcommoninterface.pojo.company.CompanyInfo;
+import com.cbd.cbdcommoninterface.pojo.leipojo.user;
 import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.GlobalException;
+import com.cbd.cbdcommoninterface.utils.JaroWinklerDistance;
 import com.cbd.cbdcommoninterface.utils.PageUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +42,8 @@ public class AchievementServiceImpl implements AchievementService {
     DeviceService deviceService;
     @Autowired
     AchievementDao achievementDao;
+    @Autowired
+    IUserService userService;
 
     @Override
     @Transactional(rollbackFor=Exception.class)
@@ -58,20 +63,24 @@ public class AchievementServiceImpl implements AchievementService {
             }
             achievementDao.replacePersonAchievement(month, year, curAchievement, salersID, companyID);
 
-            //添加合同业绩
-            Integer appointContractCount = achievementDao.findContractCount(contractID, month, year);
-            Integer curContractCount = 1;
-            if (appointContractCount != null){
-                curContractCount += appointContractCount;
-            }
-            String contractTypeName = contractService.findContractInfoByContractID(contractID).getContractTypeName();
-            achievementDao.replaceContractAchievement(month, year, salersID, companyID, contractID, curContractCount, contractTypeName);
 
             //添加公司业绩
             //获取所有父公司ID
             List<String> parentIDList = companyService.getUpCompanyIDByCompanyID(companyID);
             //遍历所有父公司ID，添加业绩
             for(String parentCpyID : parentIDList){
+                /**
+                 * 添加合同业绩
+                 */
+                Integer appointContractCount = achievementDao.findContractCount(contractID, month, year, salersID, companyID);
+                Integer curContractCount = 1;
+                if (appointContractCount != null){
+                    curContractCount += appointContractCount;
+                }
+                String contractTypeName = contractService.findContractInfoByContractID(contractID).getContractTypeName();
+
+                achievementDao.replaceContractAchievement(month, year, salersID, parentCpyID, contractID, curContractCount, contractTypeName);
+
                 /**
                  * 添加公司业绩
                  */
@@ -117,11 +126,10 @@ public class AchievementServiceImpl implements AchievementService {
                 //添加设备业绩
                 ContractInfoResponse orderContractInfo = contractService.findContractInfoByContractID(contractID);
                 String devName = orderContractInfo.getDevName();
-                Integer devNums = orderContractInfo.getDevNums();
                 Integer devTypeID = deviceService.findDevTypeByDevName(devName).getDevTypeID();
                 //获取此公司指定月份之前设备销售数量
                 Integer beforeSalesNums = achievementDao.findDevAchievement(devTypeID, parentCpyID, month, year);
-                Integer curSalesNums = devNums;
+                Integer curSalesNums = 1;
                 if (beforeSalesNums != null){
                     curSalesNums += beforeSalesNums;
                 }
@@ -231,16 +239,17 @@ public class AchievementServiceImpl implements AchievementService {
         for (String salersID : salersIDList){
             PagePersonStaticsResponse personStaticsResponse = new PagePersonStaticsResponse();
             personStaticsResponse.setSalersID(salersID);
-            // TODO 调人事接口获取员工信息
-//            personStaticsResponse.setSalersName();
-//            personStaticsResponse.setSalersSexy();
-//            String companyID = ;
-//            personStaticsResponse.setCompanyName(companyService.findCompanyInfoByCompanyID(companyID).getCompanyName());
+
+            user salersInfo = userService.findUserInfoByID(salersID);
+            personStaticsResponse.setSalersName(salersInfo.getUserName());
+            personStaticsResponse.setSalersSexy(salersInfo.getSex());
+            String companyID =salersInfo.getCompanyID();
+            personStaticsResponse.setCompanyName(companyService.findCompanyInfoByCompanyID(companyID).getCompanyName());
             //获取指定员工的销售额统计
             Integer salersAchievementCount = achievementDao.getPersonAchievementByPersonID(salersID);
             personStaticsResponse.setAchievementCount(salersAchievementCount);
             //获取指定员工的完成合同统计
-            Integer salersContractCount = achievementDao.getPersonContractCountByPersonID(salersID);
+            Integer salersContractCount = achievementDao.getPersonContractCountByPersonID(salersID, companyID);
             personStaticsResponse.setContractCount(salersContractCount);
             personStaticsResponseList.add(personStaticsResponse);
         }
@@ -275,7 +284,7 @@ public class AchievementServiceImpl implements AchievementService {
     public PageResponse findDevAchievementByCondition(PageDevAchConditionRequest devAchConditionRequest) {
 
         //设置设备业绩的当前月份
-        if(devAchConditionRequest.getYear().equals("")){
+        if(devAchConditionRequest.getYear() == null){
             Calendar cal = Calendar.getInstance();
             int year = cal.get(Calendar.YEAR);
             //因为初始值为0,所以要+1
@@ -286,7 +295,12 @@ public class AchievementServiceImpl implements AchievementService {
 
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(devAchConditionRequest.getCompanyID());
         DevAchConditionDto devAchConditionDto = new DevAchConditionDto();
-        devAchConditionDto.setDevTypeID(deviceService.findDevTypeByDevName(devAchConditionRequest.getDevName()).getDevTypeID());
+        if(!StringUtils.isEmpty(devAchConditionRequest.getDevType())){
+            devAchConditionDto.setDevType(devAchConditionRequest.getDevType());
+        }
+        if (!StringUtils.isEmpty(devAchConditionRequest.getDevName())){
+            devAchConditionDto.setDevTypeID(deviceService.findDevTypeByDevName(devAchConditionRequest.getDevName()).getDevTypeID());
+        }
         if(devAchConditionRequest.getYear() != null){
             devAchConditionDto.setYear(devAchConditionRequest.getYear());
         }
@@ -334,6 +348,10 @@ public class AchievementServiceImpl implements AchievementService {
         personConditionDto.setYear(achConditionRequest.getYear());
         personConditionDto.setSalersID(achConditionRequest.getSalersID());
 
+        //获取员工所属公司ID
+        String companyID = userService.findUserCPYIDByUserID(achConditionRequest.getSalersID());
+        personConditionDto.setCompanyID(companyID);
+
         PageRequest pageRequest = achConditionRequest.getPageRequest();
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
@@ -352,6 +370,7 @@ public class AchievementServiceImpl implements AchievementService {
                 temp.setDate(Date);
                 temp.setAchievement(achievementInfo.getAchievement());
                 temp.setContractCount(achievementInfo.getContractCount());
+                listResponseMap.put(Date, temp);
             }else {
                 PagePersonListResponse temp = listResponseMap.get(Date);
                 temp.setContractCount(listResponseMap.get(Date).getContractCount()+ achievementInfo.getContractCount());
@@ -381,10 +400,13 @@ public class AchievementServiceImpl implements AchievementService {
             month = Integer.parseInt(Date.substring(5,7));
         }
 
-        PersonConditionDto personConditionDto = new PersonConditionDto();;
+        PersonConditionDto personConditionDto = new PersonConditionDto();
         personConditionDto.setMonth(month);
         personConditionDto.setYear(year);
         personConditionDto.setSalersID(personRequest.getSalersID());
+
+        String companyID = userService.findUserCPYIDByUserID(personRequest.getSalersID());
+        personConditionDto.setCompanyID(companyID);
 
         List<AchievementInfo> achievementInfoList = achievementDao.findPersonAchievementByCondition(personConditionDto);
         Map<String, Integer> resultMap = new HashMap<>();
@@ -422,6 +444,7 @@ public class AchievementServiceImpl implements AchievementService {
                 temp.setDate(Date);
                 temp.setAchievement(achievementInfo.getAchievement());
                 temp.setContractCount(achievementInfo.getContractCount());
+                listResponseMap.put(Date, temp);
             }else {
                 PagePersonListResponse temp = listResponseMap.get(Date);
                 temp.setContractCount(listResponseMap.get(Date).getContractCount()+ achievementInfo.getContractCount());
@@ -464,5 +487,113 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         return resultMap;
+    }
+
+    @Override
+    public List<QueryUserAndCpyIDResponse> queryUserOrCpyByKey(QueryUserAndCpyRequest queryUserAndCpyRequest) {
+        /**
+         * 获取按key的相似度排序的idList
+         * 一 先到公司表查，再到员工表查 初步精确度由case when + like sql完成
+         * 二 再调用JaroWinklerDistance算法对所有查出来的结果做字符串相似度匹配排序
+         */
+        CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(queryUserAndCpyRequest.getCompanyID());
+        Integer lft = companyInfo.getLft();
+        Integer rgt = companyInfo.getRgt();
+        queryUserAndCpyRequest.setLft(lft);
+        queryUserAndCpyRequest.setRgt(rgt);
+        List<CpyNameIDDto> cpyIDList = achievementDao.queryCpyIDByKey(queryUserAndCpyRequest);
+        List<UserNameIDDto> userIDList = achievementDao.queryUserIDByKey(queryUserAndCpyRequest);
+
+        List<QueryUserAndCpyIDResponse> queryUserAndCpyIDResponseList = new ArrayList<>();
+        for (CpyNameIDDto cpyNameIDDto : cpyIDList){
+            QueryUserAndCpyIDResponse queryUserAndCpyIDResponse = new QueryUserAndCpyIDResponse();
+            queryUserAndCpyIDResponse.setQueryType(QueryTypeEnum.COMPANY.toString());
+            queryUserAndCpyIDResponse.setResultID(cpyNameIDDto.getCompanyID());
+            queryUserAndCpyIDResponse.setResultName(cpyNameIDDto.getCompanyName());
+            queryUserAndCpyIDResponseList.add(queryUserAndCpyIDResponse);
+        }
+
+        for (UserNameIDDto userNameIDDto : userIDList){
+            QueryUserAndCpyIDResponse queryUserAndCpyIDResponse = new QueryUserAndCpyIDResponse();
+            queryUserAndCpyIDResponse.setQueryType(QueryTypeEnum.SALER.toString());
+            queryUserAndCpyIDResponse.setResultID(userNameIDDto.getID().toString());
+            queryUserAndCpyIDResponse.setResultName(userNameIDDto.getUsername());
+            queryUserAndCpyIDResponseList.add(queryUserAndCpyIDResponse);
+        }
+
+        //JaroWinklerDistance算法对所有查出来的结果做字符串相似度匹配排序
+        String queryKey = queryUserAndCpyRequest.getQueryKey();
+        //按相似度降序排列
+        Collections.sort(queryUserAndCpyIDResponseList, new Comparator<QueryUserAndCpyIDResponse>() {
+            @Override
+            public int compare(QueryUserAndCpyIDResponse o1, QueryUserAndCpyIDResponse o2) {
+                Float o1Result = JaroWinklerDistance.JaroWinklerSimilarity(o1.getResultName(), queryKey);
+                Float o2Result = JaroWinklerDistance.JaroWinklerSimilarity(o1.getResultName(), queryKey);
+                if (o1Result >= o2Result){
+                    return -1;
+                }
+                return 1;
+            }
+        });
+
+        return queryUserAndCpyIDResponseList;
+    }
+
+    @Override
+    public List<QueryUserAndCpyIDResponse> queryUserByKey(QueryUserAndCpyRequest queryUserAndCpyRequest) {
+        CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(queryUserAndCpyRequest.getCompanyID());
+        Integer lft = companyInfo.getLft();
+        Integer rgt = companyInfo.getRgt();
+        queryUserAndCpyRequest.setLft(lft);
+        queryUserAndCpyRequest.setRgt(rgt);
+
+        List<UserNameIDDto> userIDList = achievementDao.queryUserIDByKey(queryUserAndCpyRequest);
+        List<QueryUserAndCpyIDResponse> queryUserAndCpyIDResponseList = new ArrayList<>();
+
+        for (UserNameIDDto userNameIDDto : userIDList){
+            QueryUserAndCpyIDResponse queryUserAndCpyIDResponse = new QueryUserAndCpyIDResponse();
+            queryUserAndCpyIDResponse.setQueryType(QueryTypeEnum.SALER.toString());
+            queryUserAndCpyIDResponse.setResultID(userNameIDDto.getID().toString());
+            queryUserAndCpyIDResponse.setResultName(userNameIDDto.getUsername());
+            queryUserAndCpyIDResponseList.add(queryUserAndCpyIDResponse);
+        }
+
+        //JaroWinklerDistance算法对所有查出来的结果做字符串相似度匹配排序
+        String queryKey = queryUserAndCpyRequest.getQueryKey();
+        //按相似度降序排列
+        Collections.sort(queryUserAndCpyIDResponseList, new Comparator<QueryUserAndCpyIDResponse>() {
+            @Override
+            public int compare(QueryUserAndCpyIDResponse o1, QueryUserAndCpyIDResponse o2) {
+                Float o1Result = JaroWinklerDistance.JaroWinklerSimilarity(o1.getResultName(), queryKey);
+                Float o2Result = JaroWinklerDistance.JaroWinklerSimilarity(o1.getResultName(), queryKey);
+                if (o1Result >= o2Result){
+                    return -1;
+                }
+                return 1;
+            }
+        });
+
+        return queryUserAndCpyIDResponseList;
+    }
+
+    @Override
+    public List<String> getContractTypeNameByCpyNameOrSalersID(String ID) {
+        CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyName(ID);
+        if (companyInfo == null){
+            return achievementDao.getContractTypeNameBySalersID(ID);
+        }
+
+        return achievementDao.getContractTypeNameByCpyID(companyInfo.getCompanyID());
+    }
+
+    @Override
+    public List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest) {
+
+        return null;
+    }
+
+    @Override
+    public List<EchartPieResponse> getPieSalersStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest) {
+        return null;
     }
 }

@@ -19,9 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author shy_black
@@ -92,6 +89,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
             //获取用户详细信息
             UserBaseInfoAndPowerInfoVo userBaseInfoAndPowerInfoVo = userService.login(userDetail.getPhoneNum());
 
+            userBaseInfoAndPowerInfoVo.setRoleList(userDetail.getRoleList());
 
             Result<UserResponseVo> res = Result.success(userBaseInfoAndPowerInfoVo);
 

@@ -14,12 +14,14 @@ import com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService;
 import com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService;
 import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
 import com.cbd.cbdcommoninterface.enums.OrderTypeEnum;
+import com.cbd.cbdcommoninterface.keys.ContractIDKey;
 import com.cbd.cbdcommoninterface.keys.OrderTypeKey;
 import com.cbd.cbdcommoninterface.keys.RenewKey;
 import com.cbd.cbdcommoninterface.request.PayRequest;
 import com.cbd.cbdcommoninterface.response.leiVo.AlipayVo;
 import com.cbd.cbdcommoninterface.result.CodeMsg;
 import com.cbd.cbdcommoninterface.result.Result;
+import com.cbd.cbdcommoninterface.utils.UUIDUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +81,11 @@ public class AlipayController {
     @RequestMapping("/webAddPay")
     public void webAddPay(  @RequestBody PayRequest payRequest,
                             HttpServletResponse response) throws AlipayApiException, IOException {
-        String form = gotopayPage(payRequest.getOrderID(), payRequest.getOrderSubject(), payRequest.getOrderPrice(), payRequest.getOrderType(),"FAST_INSTANT_TRADE_PAY");
+        //因为为业务着想，orderID用的就是合同ID，但是后续若同一个合同续费，因为用的同一个订单ID，所以支付宝会认为交易信息被篡改
+        //所以这块用redis来保存合同ID，orderID则用uuid
+        String realOrderID = UUIDUtils.getUUID();
+        redisService.set(ContractIDKey.CONTRACT_ID, realOrderID, payRequest.getOrderID());
+        String form = gotopayPage(realOrderID, payRequest.getOrderSubject(), payRequest.getOrderPrice(), payRequest.getOrderType(),"FAST_INSTANT_TRADE_PAY");
         response.setContentType("text/html;charset=" + charset);
         response.getWriter().write(form);
         response.getWriter().flush();
@@ -87,14 +93,16 @@ public class AlipayController {
 
     }
 
-    @ApiOperation(value = "web支付调用页面,orderID为合同ID", httpMethod = "POST")
+    @ApiOperation(value = "合同续费调用页面,orderID为合同ID", httpMethod = "POST")
     @RequestMapping("/webRenewPay")
     public void webRenewPay(
                        @RequestBody PayRequest payRequest,
                        HttpServletResponse response) throws AlipayApiException, IOException {
         //将续费年限放入缓存
         redisService.set(RenewKey.RENEW_TIME, payRequest.getOrderID(), payRequest.getRenewYears());
-        String form = gotopayPage(payRequest.getOrderID(), payRequest.getOrderSubject(), payRequest.getOrderPrice(), payRequest.getOrderType(),"FAST_INSTANT_TRADE_PAY");
+        String realOrderID = UUIDUtils.getUUID();
+        redisService.set(ContractIDKey.CONTRACT_ID, realOrderID, payRequest.getOrderID());
+        String form = gotopayPage(realOrderID, payRequest.getOrderSubject(), payRequest.getOrderPrice(), payRequest.getOrderType(),"FAST_INSTANT_TRADE_PAY");
         response.setContentType("text/html;charset=" + charset);
         response.getWriter().write(form);
         response.getWriter().flush();
@@ -112,45 +120,68 @@ public class AlipayController {
      * @throws IOException
      */
     private String gotopayPage(String orderID, String orderSubject, String orderPrice, Integer orderType, String productCode) throws AlipayApiException, IOException {
-        // 订单模型
-        AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
-
-        //订单ID
-        model.setOutTradeNo(orderID);
 
         //将此订单类型放入Redis
         redisService.set(OrderTypeKey.ORDER_TYPE, orderID, orderType);
-        String realType = "";
+        String realType = "app";
         if (orderType.equals(OrderTypeEnum.APPTYPE.ordinal())){
-            realType = "app";
-        }else if (orderType.equals(OrderTypeEnum.WEBADDTYPE.ordinal())){
+            // 订单模型
+            AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
+
+            //订单ID
+            model.setOutTradeNo(orderID);
+
+            //订单信息--标题
+            model.setSubject(orderSubject);
+            //订单金额
+            model.setTotalAmount(orderPrice);
+
+            //支付最长等待时间
+            model.setTimeoutExpress("5m");
+            model.setProductCode(productCode);
+
+            AlipayTradeWapPayRequest wapPayRequest = new AlipayTradeWapPayRequest();
+            wapPayRequest.setReturnUrl(return_url);
+            wapPayRequest.setNotifyUrl(notify_url);
+            wapPayRequest.setBizModel(model);
+
+            // 调用SDK生成表单, 并直接将完整的表单html输出到页面
+            AlipayClient alipayClient = newAlipayClient();
+            String form = alipayClient.pageExecute(wapPayRequest).getBody();
+            System.out.println(form);
+
+            return form;
+        }
+        if (orderType.equals(OrderTypeEnum.WEBADDTYPE.ordinal())){
             realType = "AddContract";
         }else {
             realType = "renewContract";
         }
 
+        AlipayVo vo = new AlipayVo();
+        vo.setOut_trade_no(orderID);
+        vo.setTotal_amount(orderPrice);
+        vo.setSubject(orderSubject);
+        vo.setProduct_code(productCode);
+        String json = JSON.toJSONString(vo);
+        logger.info("发起支付传参："+json);
+        AlipayClient alipayClient = new DefaultAlipayClient(gatewayUrl, app_id,
+                merchant_private_key, "json", charset, alipay_public_key, sign_type);
+        // 设置请求参数
+        AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
+        alipayRequest.setReturnUrl(return_url);
+        alipayRequest.setNotifyUrl(notify_url);
+        alipayRequest.setBizContent(json);
+        String result = null;
+        try {
+            result = alipayClient.pageExecute(alipayRequest).getBody();
+        } catch (Exception e) {
+            logger.info("payerror" + result);
+        }
+
         log.info("OrderID:{}, OrderType:{}", orderID, realType);
 
-        //订单信息--标题
-        model.setSubject(orderSubject);
-        //订单金额
-        model.setTotalAmount(orderPrice);
-
-        //支付最长等待时间
-        model.setTimeoutExpress("5m");
-        model.setProductCode(productCode);
-
-        AlipayTradeWapPayRequest wapPayRequest = new AlipayTradeWapPayRequest();
-        wapPayRequest.setReturnUrl(return_url);
-        wapPayRequest.setNotifyUrl(notify_url);
-        wapPayRequest.setBizModel(model);
-
-        // 调用SDK生成表单, 并直接将完整的表单html输出到页面
-        AlipayClient alipayClient = newAlipayClient();
-        String form = alipayClient.pageExecute(wapPayRequest).getBody();
-        System.out.println(form);
-
-        return form;
+        return result;
     }
 
 
@@ -190,23 +221,20 @@ public class AlipayController {
             //处理你的业务逻辑，更新订单状态等
             log.info("验签成功，开始执行业务代码");
 
-
-            Integer success = alipayService.handleOrderMsg(out_trade_no);
-
-
             //获取订单类型，根据订单类型处理不同业务
             Integer orderType = redisService.get(OrderTypeKey.ORDER_TYPE, out_trade_no, Integer.class);
 
             if (orderType.equals(OrderTypeEnum.APPTYPE.ordinal())){
-                 success = alipayService.handleOrderMsg(out_trade_no);
+                 alipayService.handleOrderMsg(out_trade_no);
             }else if (orderType.equals(OrderTypeEnum.WEBADDTYPE.ordinal())){
-                //out_trade_no就是ContractID
-                contractService.addOrder(out_trade_no);
+                contractService.addOrder(redisService.get(ContractIDKey.CONTRACT_ID, out_trade_no, String.class));
             }else {
-                contractService.renewContract(out_trade_no);
+                log.info("合同id：{}",redisService.get(ContractIDKey.CONTRACT_ID, out_trade_no, String.class));
+                contractService.renewContract(redisService.get(ContractIDKey.CONTRACT_ID, out_trade_no, String.class));
             }
-            //清除redis的orderType
+            //清除redis的orderType,contractID
             redisService.delete(OrderTypeKey.ORDER_TYPE, out_trade_no);
+            redisService.delete(ContractIDKey.CONTRACT_ID, out_trade_no);
 
             return ("success");
         } else {
@@ -223,8 +251,8 @@ public class AlipayController {
      * @Description: 支付宝同步跳转接口
      */
     @ApiOperation(value = "支付宝回调页面，同步",  httpMethod = "GET")
-    @GetMapping("return")
-    private Result<String> alipayReturn(HttpServletRequest request, String out_trade_no, String trade_no, String orderPrice)
+    @GetMapping(value = "return", produces = "text/json;charset=UTF-8")
+    private String alipayReturn(HttpServletRequest request, String out_trade_no, String trade_no, String total_amount)
             throws AlipayApiException {
         Map<String, String> map = new HashMap<String, String>();
         Map<String, String[]> requestParams = request.getParameterMap();
@@ -244,14 +272,15 @@ public class AlipayController {
         } catch (AlipayApiException e) {
             logger.info("支付宝回调异常", e);
             // 验签发生异常,则直接返回失败
-            return Result.error(CodeMsg.PAY_ERROR);
+            return ("支付失败，请您返回支付页面重试");
         }
         if (signVerified) {
-            return Result.success("支付成功，即将调回主页面");
+            return ("支付成功，请您关闭当前页面查看合同信息");
         } else {
-            return Result.error(CodeMsg.SIGNVERIFIED_ERROR);
+            return ("支付失败，请您返回支付页面重试");
         }
     }
+
     @ApiOperation(value = "前端回调接口",  httpMethod = "POST")
     @RequestMapping(value = "/check",method = RequestMethod.POST)
     public Result<String> check(@RequestParam("orderID")  String orderID){

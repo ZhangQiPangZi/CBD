@@ -9,7 +9,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MQConfig {
     @Bean
-    public Queue userMessageInfoQueue() {
-        return new Queue(BusinessType.USER_MESSAGE_QUEUE, true);
+    public Queue saveMessageQueue(){
+        return new Queue(BusinessType.SAVE_MESSAGE_QUEUE, true);
+    }
+
+    @Bean
+    public Queue businessQueue(){
+        return new Queue(BusinessType.CBD_BUSINESS_QUEUE, true);
     }
 }

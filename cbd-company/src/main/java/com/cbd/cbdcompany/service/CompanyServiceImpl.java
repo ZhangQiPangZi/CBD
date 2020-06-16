@@ -12,6 +12,7 @@ import com.cbd.cbdcommoninterface.result.GlobalException;
 import com.cbd.cbdcommoninterface.utils.UUIDUtils;
 import com.cbd.cbdcompany.dao.CompanyDao;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -214,7 +215,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         //先判断是添加哪种类型的公司
         //先添加子公司
-        if (addCpyRequest.getParentCompanyName() != null){
+        if (!StringUtils.isEmpty(addCpyRequest.getParentCompanyName())){
             CompanyInfo parentCpyInfo = findCompanyInfoByCompanyName(addCpyRequest.getParentCompanyName());
             Integer parentLft = parentCpyInfo.getLft();
             Integer parentRgt = parentCpyInfo.getRgt();
@@ -246,6 +247,7 @@ public class CompanyServiceImpl implements CompanyService {
             try{
                 companyDao.insertCompany(addCpyDto);
             }catch (Exception e){
+                e.printStackTrace();
                 throw new GlobalException(CodeMsg.SERVER_ERROR);
             }
         }

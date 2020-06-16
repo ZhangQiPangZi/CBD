@@ -21,6 +21,8 @@
     <!--reference 采用xml配置实现,在代码中获取远程服务用注解@Autowired-->
     <!-- id名字取成具体的服务名就行，check为false，
         interface是你要调用的那个具体服务的接口，也就是你在common-interface中定义的接口 -->
+    <dubbo:reference id="deviceService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
+    <dubbo:annotation package="com.cbd.cbdcompany.service"/>
 
     <!--服务提供者-->
     <!--这两行算是发布了一个服务，如果有多个服务需要发布，挨着往下写即可，消费者同理-->
@@ -33,4 +35,10 @@
     <dubbo:service protocol="dubbo" ref="redisService" interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
     <!--要发布的服务的实现类-->
     <bean id="redisService" class="com.cbd.cbdredis.RedisServiceImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="MQSender" interface="com.cbd.cbdcommoninterface.cbd_interface.MQ.MQSender"/>
+    <bean id="MQSender" class="com.cbd.cbdRabbitMQ.MQSenderImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="messageService" interface="com.cbd.cbdcommoninterface.cbd_interface.message.MessageService"/>
+    <bean id="messageService" class="com.cbd.cbdcompany.service.MessageServiceImpl"/>
 </beans>

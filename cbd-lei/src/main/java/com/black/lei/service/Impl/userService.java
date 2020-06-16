@@ -2,7 +2,6 @@ package com.black.lei.service.Impl;
 
 
 import com.black.lei.dao.user_installerDao;
-import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.ICompanyInfoService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
 import com.cbd.cbdcommoninterface.pojo.leipojo.role;
@@ -238,13 +237,13 @@ public class userService implements IUserService {
 //        return null;
 //    }
     @Override
-    public PageResponse findAllUserByPage(PageRequest pageRequest) {
+    public PageResponse findAllUserByPage(LPageRequest LPageRequest) {
 
-        int pageNum = pageRequest.getPageNum();
-        int pageSize = pageRequest.getPageSize();
+        int pageNum = LPageRequest.getPageNum();
+        int pageSize = LPageRequest.getPageSize();
         log.info("pageNum = " + pageNum, "pageSize = " + pageSize);
 
-        LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(pageRequest.getCompanyID());
+        LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(LPageRequest.getCompanyID());
         String lft = lftAndRgtVo.getLft();
         String rgt = lftAndRgtVo.getRgt();
 
@@ -284,16 +283,16 @@ public class userService implements IUserService {
 
 
     @Override
-    public PageResponse findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key) {
-        return PageUtils.getPageResponse(getUserByPhoneOByUserName(pageRequest, key));
+    public PageResponse findUserByPhoneNumOrByUserName(LPageRequest LPageRequest, String key) {
+        return PageUtils.getPageResponse(getUserByPhoneOByUserName(LPageRequest, key));
     }
 
 
-    public PageInfo<UserResponseVo> getUserByPhoneOByUserName(PageRequest pageRequest, String key) {
-        int pageNum = pageRequest.getPageNum();
-        int pageSize = pageRequest.getPageSize();
+    public PageInfo<UserResponseVo> getUserByPhoneOByUserName(LPageRequest LPageRequest, String key) {
+        int pageNum = LPageRequest.getPageNum();
+        int pageSize = LPageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
-        LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(pageRequest.getCompanyID());
+        LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(LPageRequest.getCompanyID());
         String lft = lftAndRgtVo.getLft();
         String rgt = lftAndRgtVo.getRgt();
 
@@ -303,15 +302,15 @@ public class userService implements IUserService {
     }
 
     @Override
-    public PageResponse findCarOwer(PageRequest pageRequest, Integer userType) {
-        return PageUtils.getPageResponse(getCarOwer(pageRequest, userType));
+    public PageResponse findCarOwer(LPageRequest LPageRequest, Integer userType) {
+        return PageUtils.getPageResponse(getCarOwer(LPageRequest, userType));
     }
 
-    public PageInfo<UserResponseVo> getCarOwer(PageRequest pageRequest, Integer userType) {
-        int pageNum = pageRequest.getPageNum();
-        int pageSize = pageRequest.getPageSize();
+    public PageInfo<UserResponseVo> getCarOwer(LPageRequest LPageRequest, Integer userType) {
+        int pageNum = LPageRequest.getPageNum();
+        int pageSize = LPageRequest.getPageSize();
 
-        LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(pageRequest.getCompanyID());
+        LftAndRgtVo lftAndRgtVo = car_infoDao.getLftAndRgt(LPageRequest.getCompanyID());
         String lft = lftAndRgtVo.getLft();
         String rgt = lftAndRgtVo.getRgt();
 
@@ -386,6 +385,16 @@ public class userService implements IUserService {
                         RIU.getInstallerVo().getLatitude());
 
         return success2;
+    }
+
+    @Override
+    public String findUserCPYIDByUserID(Integer userID) {
+        return userDao.getCompanyIDByUserID(userID);
+    }
+
+    @Override
+    public user findUserInfoByID(String ID) {
+        return userDao.findById(ID);
     }
 
 

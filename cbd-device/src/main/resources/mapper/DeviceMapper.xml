@@ -185,4 +185,14 @@
         values (#{devID}, #{SIMID}, #{devTypeID}, #{devStatus}, #{devManagerID}, #{devInputTime}, #{devGateWayID}, #{companyID}, #{devFactoryID})
     </insert>
 
+    <select id="getDevNumsByDevName" parameterType="com.cbd.cbdcommoninterface.dto.DevNameDto" resultType="java.lang.Integer">
+        select count(*)
+        from deviceInfo
+        where devTypeID = #{devTypeID} and devStatus = 0 and companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+        )
+    </select>
+
 </mapper>

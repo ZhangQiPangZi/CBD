@@ -26,6 +26,16 @@
         <result property="contractTypeName" column="contractTypeName"/>
     </resultMap>
 
+    <resultMap id="CpyNameIDMap" type="com.cbd.cbdcommoninterface.dto.CpyNameIDDto">
+        <result property="companyName" column="companyName"/>
+        <result property="companyID" column="companyID"/>
+    </resultMap>
+
+    <resultMap id="UserNameIDMap" type="com.cbd.cbdcommoninterface.dto.UserNameIDDto">
+        <result property="username" column="username"/>
+        <result property="ID" column="ID"/>
+    </resultMap>
+
     <select id="findAchCpyInfoByCondition" parameterType="com.cbd.cbdcommoninterface.dto.ContractConditionDto" resultMap="achCpyMap">
         select companyID, salersCount, contractCount, achievementCount
         from achievementStatisticsInfo
@@ -39,7 +49,7 @@
         <if test="companyDistrict != null and companyDistrict != ''">and cpy.companyDistrict = #{companyDistrict}</if>
         )
         <if test="sortMoney != null">
-            order by salersCount
+            order by achievementCount
             <if test="sortMoney == 0">desc </if>
             <if test="sortMoney == 1">asc </if>
         </if>
@@ -56,7 +66,7 @@
     </insert>
 
     <insert id="replaceContractAchievement">
-      replace into achievementContractInfo(month, year, salersID, companyID, contractID, curContractCount, contractTypeName)
+      replace into achievementContractInfo(month, year, salersID, companyID, contractID, contractCount, contractTypeName)
       values (#{month}, #{year}, #{salersID}, #{companyID}, #{contractID}, #{curContractCount}, #{contractTypeName})
     </insert>
 
@@ -86,7 +96,7 @@
     </select>
 
     <select id="getPersonAchievementByPersonID" resultType="java.lang.Integer">
-        select sum(achivement)
+        select sum(achievement)
         from achievementPersonInfo
         where salersID = #{salersID}
     </select>
@@ -94,7 +104,7 @@
     <select id="getPersonContractCountByPersonID" resultType="java.lang.Integer">
         select sum(contractCount)
         from achievementContractInfo
-        where salersID = #{salersID}
+        where salersID = #{salersID} and companyID = #{companyID}
     </select>
 
     <select id="getDevNameByCompanyID" resultType="java.lang.String">
@@ -115,12 +125,19 @@
 
     <select id="findDevAchievementByCondition" parameterType="com.cbd.cbdcommoninterface.dto.DevAchConditionDto" resultMap="achDevMap">
         select devTypeID, companyID, month, year, salesNums
-        from achievementDeviceInfo
+        from achievementDeviceInfo a1
         where companyID in (
           select companyID
           from companyInfo cpy
           where lft BETWEEN #{lft} and #{rgt}
         )
+        <if test="devType != null">
+            and devTypeID in (
+              select devTypeID
+              from deviceType
+              where devType = #{devType}
+            )
+        </if>
         <if test="devTypeID != null">
             and devTypeID = #{devTypeID}
         </if>
@@ -134,22 +151,22 @@
     </select>
 
     <select id="findPersonAchievementByCondition" parameterType="com.cbd.cbdcommoninterface.dto.PersonConditionDto" resultMap="achPerMap">
-        select achievement, contractCount, month, year, contractTypeName
+        select achievement, contractCount, a1.month, a1.year, contractTypeName
         from achievementPersonInfo a1 join achievementContractInfo a2 on a1.salersID = a2.salersID
-        where a1.salersID = #{salersID}
+        where a1.salersID = #{salersID} and a2.companyID = #{companyID}
         <if test="month != null">
             and a1.month = #{month}
         </if>
         <if test="year != null">
             and a1.year = #{year}
         </if>
-        <if test="contractTypeName != null">
+        <if test="contractTypeName != null and contractTypeName != ''">
             and contractTypeName = #{contractTypeName}
         </if>
     </select>
 
     <select id="findCpyAchievementByCondition" parameterType="com.cbd.cbdcommoninterface.dto.PersonConditionDto" resultMap="achPerMap">
-        select achievement, contractCount, month, year, contractTypeName
+        select achievement, contractCount, a1.month, a1.year, contractTypeName
         from achievementCompanyInfo a1 join achievementContractInfo a2 on a1.companyID = a2.companyID
         where a1.companyID = #{companyID}
         <if test="month != null">
@@ -158,8 +175,52 @@
         <if test="year != null">
             and a1.year = #{year}
         </if>
-        <if test="contractTypeName != null">
+        <if test="contractTypeName != null and contractTypeName != ''">
             and contractTypeName = #{contractTypeName}
         </if>
+    </select>
+
+    <select id="findStaticsCpyAchievement" resultMap="achCpyMap">
+        select *
+        from achievementStatisticsInfo
+        where companyID = #{parentCpyID}
+    </select>
+    
+    <select id="queryCpyIDByKey" parameterType="com.cbd.cbdcommoninterface.request.QueryUserAndCpyRequest" resultMap="CpyNameIDMap">
+        select companyName, ac.companyID
+        from achievementCompanyInfo ac join companyInfo cp on ac.companyID = cp.companyID
+        where companyName like concat('%',#{queryKey},'%') and ac.companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+        )
+        order by (
+          case
+            WHEN companyName = #{queryKey} THEN 1
+            WHEN companyName like concat(#{queryKey},'%') THEN 2
+            WHEN companyName like concat('%',#{queryKey},'%') THEN 3
+            WHEN companyName like concat('%',#{queryKey}) THEN 4
+            ELSE 5
+          END
+        )
+    </select>
+
+    <select id="queryUserIDByKey" parameterType="com.cbd.cbdcommoninterface.request.QueryUserAndCpyRequest" resultMap="UserNameIDMap">
+        select ID, userName
+        from achievementPersonInfo ap join user u on ap.salersID = u.ID
+        where userName like concat('%',#{queryKey},'%') and ap.companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+        )
+        order by (
+          case
+            WHEN userName = #{queryKey} THEN 1
+            WHEN userName like concat(#{queryKey},'%') THEN 2
+            WHEN userName like concat('%',#{queryKey},'%') THEN 3
+            WHEN userName like concat('%',#{queryKey}) THEN 4
+            ELSE 5
+          END
+        )
     </select>
 </mapper>

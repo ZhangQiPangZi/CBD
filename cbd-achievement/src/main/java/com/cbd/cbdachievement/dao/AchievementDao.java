@@ -1,12 +1,10 @@
 package com.cbd.cbdachievement.dao;
 
-import com.cbd.cbdcommoninterface.dto.CpyAchConditionDto;
-import com.cbd.cbdcommoninterface.dto.CpyConditionDto;
-import com.cbd.cbdcommoninterface.dto.DevAchConditionDto;
-import com.cbd.cbdcommoninterface.dto.PersonConditionDto;
+import com.cbd.cbdcommoninterface.dto.*;
 import com.cbd.cbdcommoninterface.pojo.achievement.AchievementCompanyInfo;
 import com.cbd.cbdcommoninterface.pojo.achievement.AchievementDeviceInfo;
 import com.cbd.cbdcommoninterface.pojo.achievement.AchievementInfo;
+import com.cbd.cbdcommoninterface.request.QueryUserAndCpyRequest;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -31,7 +29,7 @@ public interface AchievementDao {
      * @param year
      * @return
      */
-    @Select("select achivement from achievementPersonInfo where salersID = #{salersID} and month = #{month} and year = #{year}")
+    @Select("select achievement from achievementPersonInfo where salersID = #{salersID} and month = #{month} and year = #{year}")
     Float findPersonAchievement(@Param("salersID") Integer salersID, @Param("month") int month, @Param("year") int year);
 
     /**
@@ -51,8 +49,8 @@ public interface AchievementDao {
      * @param year
      * @return
      */
-    @Select("select contractCount from achievementContractInfo where contractID = #{contractID} and month = #{month} and year = #{year}")
-    Integer findContractCount(@Param("contractID") String contractID, @Param("month") int month, @Param("year") int year);
+    @Select("select contractCount from achievementContractInfo where contractID = #{contractID} and month = #{month} and year = #{year} and salersID = #{salersID} and companyID  =#{companyID}")
+    Integer findContractCount(@Param("contractID") String contractID, @Param("month") int month, @Param("year") int year, @Param("salersID") Integer salersID, @Param("companyID") String companyID);
 
     /**
      * 更新或新增合同业绩
@@ -72,7 +70,7 @@ public interface AchievementDao {
      * @param year
      * @return
      */
-    @Select("select achivement from achievementCompanyInfo where companyID = #{parentCpyID} and month = #{month} and year = #{year}")
+    @Select("select achievement from achievementCompanyInfo where companyID = #{parentCpyID} and month = #{month} and year = #{year}")
     Float findCpyAchievement(@Param("parentCpyID") String parentCpyID, @Param("month") int month, @Param("year") int year);
 
     /**
@@ -89,7 +87,6 @@ public interface AchievementDao {
      * @param parentCpyID
      * @return
      */
-    @Select("select achivement from achievementStatisticsInfo where companyID = #{parentCpyID}")
     AchievementCompanyInfo findStaticsCpyAchievement(@Param("parentCpyID") String parentCpyID);
 
     /**
@@ -142,7 +139,7 @@ public interface AchievementDao {
      * @param salersID
      * @return
      */
-    Integer getPersonContractCountByPersonID(@Param("salersID") String salersID);
+    Integer getPersonContractCountByPersonID(@Param("salersID") String salersID, @Param("companyID") String companyID);
 
     /**
      * 获取当前公司下有销售记录的设备类型ID列表
@@ -175,4 +172,14 @@ public interface AchievementDao {
      * @return
      */
     List<AchievementInfo> findCpyAchievementByCondition(CpyAchConditionDto cpyAchConditionDto);
+
+    List<CpyNameIDDto> queryCpyIDByKey(QueryUserAndCpyRequest queryUserAndCpyRequest);
+
+    List<UserNameIDDto> queryUserIDByKey(QueryUserAndCpyRequest queryUserAndCpyRequest);
+
+    @Select("select distinct contractTypeName from achievementContractInfo where salersID = #{salersID}")
+    List<String> getContractTypeNameBySalersID(@Param("salersID") String id);
+
+    @Select("select distinct contractTypeName from achievementContractInfo where companyID = #{companyID}")
+    List<String> getContractTypeNameByCpyID(@Param("companyID") String id);
 }

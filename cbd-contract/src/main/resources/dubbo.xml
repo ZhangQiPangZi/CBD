@@ -22,6 +22,10 @@
     <dubbo:annotation package="com.cbd.cbdcontract.service"/>
     <dubbo:reference id="deviceService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
     <dubbo:annotation package="com.cbd.cbdcontract.service"/>
+    <dubbo:reference id="redisService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService"/>
+    <dubbo:annotation package="com.cbd.cbdcontract.service"/>
+    <dubbo:reference id="MQSender" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.MQ.MQSender"/>
+    <dubbo:annotation package="com.cbd.cbdcontract.service"/>
 
     <!--服务提供者-->
     <dubbo:service protocol="dubbo" ref="contractService" interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>

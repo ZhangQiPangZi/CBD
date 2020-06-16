@@ -38,6 +38,12 @@ public class DeviceController {
         return Result.success(flag);
     }
 
+    @ApiOperation("获取设备类型名称")
+    @RequestMapping(value = "/getDevTypeName", method = RequestMethod.POST)
+    public Result<String> getDevTypeName(@RequestBody DevNameRequest devNameRequest){
+        return Result.success(deviceService.findDevTypeByDevName(devNameRequest.getDevName()).getDevType());
+    }
+
     @ApiOperation("获取当前公司下的设备厂家列表")
     @RequestMapping(value = "/findAllDevFactoryNameByCompanyID", method = RequestMethod.POST)
     public Result<List<String>> findAllDevFactoryNameByCompanyID(@RequestBody CompanyIDRequest companyIDRequest){
@@ -86,11 +92,6 @@ public class DeviceController {
         return Result.success(deviceService.findDeviceContactByDevID(devIDRequest.getDevID()));
     }
 
-    @ApiOperation("根据消息ID确认消息并进行设备的调拨")
-    @RequestMapping(value = "/confirmDeviceMessageByMesID", method = RequestMethod.POST)
-    public Result<Boolean> confirmDeviceMessageByMesID(@RequestBody MesIDRequest mesIDRequest){
-        return Result.success(deviceService.confirmDeviceMessageByMesID(mesIDRequest.getMesID()));
-    }
 
     @ApiOperation("逻辑删除设备记录，确认设备返厂时用")
     @RequestMapping(value = "/delReturnDeviceByDevID", method = RequestMethod.POST)
@@ -98,22 +99,16 @@ public class DeviceController {
         return Result.success(deviceService.delReturnDeviceByDevID(devIDRequest.getDevID()));
     }
 
-    @ApiOperation("判断此消息是否确认")
-    @RequestMapping(value = "/judgeConfirmMessage", method = RequestMethod.POST)
-    public Result<Boolean> judgeConfirmMessage(@RequestBody MesIDRequest mesIDRequest){
-        return Result.success(deviceService.judgeConfirmMessage(mesIDRequest.getMesID()));
-    }
-
-    @ApiOperation("获取分类后的消息，mesStatus可以不传，代表查询所有消息")
-    @RequestMapping(value = "/findMessageByManagerIDAndMessageStatus", method = RequestMethod.POST)
-    public Result<PageResponse> findMessageByManagerIDAndMessageStatus(@RequestBody GetMessageRequest messageRequest){
-        return Result.success(deviceService.findMessageByManagerIDAndMessageStatus(messageRequest));
-    }
-
     @ApiOperation("获取所有设备名,车佰度平台管理员访问")
     @RequestMapping(value = "/getAllDevName", method = RequestMethod.POST)
-    public Result<List<String>> getAllDevName(){
-        return Result.success(deviceService.getAllDevName());
+    public Result<List<String>> getAllDevName(@RequestBody CompanyIDRequest companyIDRequest){
+        return Result.success(deviceService.getAllDevName(companyIDRequest.getCompanyID()));
+    }
+
+    @ApiOperation("获取公司可用的指定设备最大数量")
+    @RequestMapping(value = "/getDevMaxNums", method = RequestMethod.POST)
+    public Result<Integer> getDevMaxNums(@RequestBody CpyDevNameRequest cpyDevNameRequest){
+        return Result.success(deviceService.getDevMaxNums(cpyDevNameRequest.getCompanyID(), cpyDevNameRequest.getDevName()));
     }
 
 }

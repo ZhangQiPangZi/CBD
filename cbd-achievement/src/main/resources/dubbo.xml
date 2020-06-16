@@ -27,6 +27,9 @@
     <dubbo:reference id="contractService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>
     <dubbo:annotation package="com.cbd.cbdachievement.service"/>
 
+    <dubbo:reference id="IUserService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IUserService"/>
+    <dubbo:annotation package="com.cbd.cbdachievement.service"/>
+
     <!--服务提供者-->
     <dubbo:service protocol="dubbo" ref="achievementService" interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
     <!--要发布的服务的实现类-->

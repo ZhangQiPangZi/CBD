@@ -30,17 +30,21 @@ public interface IUserService {
 
     Integer isPasswordCorrect(String phoneNum, String password);
 
-    PageResponse findAllUserByPage(PageRequest pageRequest);
+    PageResponse findAllUserByPage(LPageRequest LPageRequest);
 
-//    PageInfo<UserResponseVo> getAllUserPageInfo(PageRequest pageRequest);
+//    PageInfo<UserResponseVo> getAllUserPageInfo(LPageRequest pageRequest);
 
-    PageResponse findUserByPhoneNumOrByUserName(PageRequest pageRequest, String key);
+    PageResponse findUserByPhoneNumOrByUserName(LPageRequest LPageRequest, String key);
 
-    PageResponse findCarOwer(PageRequest pageRequest,Integer userType);
+    PageResponse findCarOwer(LPageRequest LPageRequest, Integer userType);
 
     Integer addUserInfo(AddUserVo addUserVo);
 
     Integer addInstallerInfo(AddUserVo addUserVo);
+
+    String findUserCPYIDByUserID(Integer userID);
+
+    user findUserInfoByID(String ID);
 
     //InstallerVo findInstallerInfoByPhoneNum(String phoneNum);
 

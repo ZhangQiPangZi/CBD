@@ -54,6 +54,8 @@
     <dubbo:reference id="contractService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService"/>
     <dubbo:reference id="companyService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService"/>
     <dubbo:reference id="achievementService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService"/>
+    <dubbo:reference id="MQSender" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.MQ.MQSender"/>
+    <dubbo:reference id="messageService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.message.MessageService"/>
 
     <!--这个就是需要使用远程服务的那个包的路径 有多个包时用逗号隔开-->
     <dubbo:annotation package="com.cbd.cbdcontroller.controller"/>

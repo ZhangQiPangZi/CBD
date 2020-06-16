@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
-public class PageRequest implements Serializable {
+public class LPageRequest implements Serializable {
 
 
     private int pageNum;

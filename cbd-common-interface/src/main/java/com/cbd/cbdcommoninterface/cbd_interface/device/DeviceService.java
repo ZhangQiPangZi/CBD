@@ -102,7 +102,7 @@ public interface DeviceService {
     DevReturnResponse findDeviceContactByDevID(String devID);
 
     /**
-     *  根据消息ID确认消息并进行设备的调拨
+     * 根据消息ID确认消息并进行设备的调拨
      * @param mesID
      * @return
      */
@@ -114,20 +114,6 @@ public interface DeviceService {
     Boolean addContractDeviceMessage(AddContractDevMesRequest contractDevMesRequest);
 
     /**
-     * 判断此消息是否确认
-     * @param mesID
-     * @return
-     */
-    Boolean judgeConfirmMessage(String mesID);
-
-    /**
-     * 获取分类后的消息，mesStatus可以不传，代表查询所有消息
-     * @param messageRequest
-     * @return
-     */
-    PageResponse findMessageByManagerIDAndMessageStatus(GetMessageRequest messageRequest);
-
-    /**
      * 根据设备名获取设备类别信息
      * @param devName
      * @return
@@ -135,10 +121,30 @@ public interface DeviceService {
     DevType findDevTypeByDevName(String devName);
 
     /**
-     * 获取所有设备名,车佰度平台管理员访问
+     * 获取平台下所有设备名,车佰度平台管理员访问
      * @return
      */
-    List<String> getAllDevName();
+    List<String> getAllDevName(String companyID);
 
+    /**
+     * 获取所有库管ID列表
+     * @return
+     */
+    List<String> getAllDevManagerIDList();
+
+    /**
+     * 获取指定库管管理的待返厂设备数量
+     * @param managerID
+     * @return
+     */
+    Integer getNeedReturnDeviceCounts(String managerID);
+
+    /**
+     * 获取公司可用的指定设备最大数量
+     * @param companyID
+     * @param devName
+     * @return
+     */
+    Integer getDevMaxNums(String companyID, String devName);
 
 }
