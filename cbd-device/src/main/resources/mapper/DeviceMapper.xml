@@ -195,7 +195,7 @@
         )
     </select>
 
-    <select id="findDeviceIDByDevName" parameterType="com.cbd.cbdcommoninterface.dto.DevNameDto" resultType="java.lang.Integer">
+    <select id="findDeviceIDByDevName" parameterType="com.cbd.cbdcommoninterface.dto.DevNameDto" resultType="java.lang.String">
         select devID
         from deviceInfo
         where devTypeID = #{devTypeID} and devStatus = 0 and recordStatus = 0 and companyID in (
