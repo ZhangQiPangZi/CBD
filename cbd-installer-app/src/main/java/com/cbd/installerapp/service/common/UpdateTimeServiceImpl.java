@@ -15,7 +15,9 @@ public class UpdateTimeServiceImpl implements UpdateTimeService {
 
     @Override
     public int updateOrderTime(String orderTime,Integer orderId){
+        //更改安装工任务列表中的时间
         updateTimeDao.updateOrderTime(orderTime,orderId);
+        //更改订单信息表中订单的预约时间
         return updateTimeDao.updateOrderInfoTime(orderTime,orderId);
     }
 }

@@ -25,6 +25,8 @@ public class AssignServiceImpl implements AssignService {
 
     @Override
     public List<InstallerInfoVO> orderByLevel(AssignQuery query){
+        //挑选出预约时间段空闲的工程师 并且根据工程师的能力等级进行排序
+        //如果传入关键字key 还可以根据工程师的名字进行搜索
         List<InstallerInfoDO> temp = assignDao.orderByLevel(query);
         List<InstallerInfoVO> result = new ArrayList<>();
 
@@ -34,6 +36,7 @@ public class AssignServiceImpl implements AssignService {
             info.setId(inn.getId());
             info.setName(inn.getName());
             info.setLevel(inn.getLevel());
+            //封装utils 根据工程师的经纬度计算距离
             distance = LocationUtils.getDistance(query.getLongitude(),query.getLatitude(),inn.getLongitude(),inn.getLatitude())/1000;
             info.setDistance(distance);
             result.add(info);
@@ -79,8 +82,7 @@ public class AssignServiceImpl implements AssignService {
 
                 @Override
                 public int compare(InstallerInfoVO info1, InstallerInfoVO info2) {
-
-                    // 按照学生的年龄进行降序排列
+                    // 按照距离进行降序排序
                     if (info1.getDistance() > info2.getDistance()) {
                         return -1;
                     }
@@ -106,6 +108,11 @@ public class AssignServiceImpl implements AssignService {
         return assignDao.assignInstaller(query);
     }
 
+    /**
+     * 暂无工程师 稍后指派
+     * @param id
+     * @return
+     */
     @Override
     public int assignLater(Integer id){
         return assignDao.assignLater(id);

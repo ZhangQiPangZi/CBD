@@ -16,6 +16,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SalesInfoDO getUserInfo(String phoneNum){
+        //根据用户的电话号码查询用户的详细信息
         return userDao.getUserInfo(phoneNum);
     }
 }

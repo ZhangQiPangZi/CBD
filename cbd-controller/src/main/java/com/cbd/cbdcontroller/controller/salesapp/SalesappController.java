@@ -153,6 +153,7 @@ public class SalesappController {
     @ApiOperation("返回合同列表")
     @ResponseBody
     public Result<List<PageContractListResponse>> findContractList(@RequestParam String companyID){
+        //由于合同的分发由张祺负责，此处调用张祺的接口
         return Result.success(contractService.findUsingContractListByCompanyID(companyID));
     }
 

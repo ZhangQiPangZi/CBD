@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserDao {
     /**
-     * 根据用户电话查询用户基础信息
+     * 根据用户电话查询用户基础信息(用户电话具有唯一性)
      * @param phoneNum
      * @return
      */

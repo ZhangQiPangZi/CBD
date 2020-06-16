@@ -2,6 +2,7 @@ package com.cbd.installerapp.service.waitingtask;
 
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
 import com.cbd.cbdcommoninterface.cbd_interface.installerapp.waitingtask.InstallOrderService;
+import com.cbd.cbdcommoninterface.cbd_interface.tracklast.ICarInfoService;
 import com.cbd.cbdcommoninterface.pojo.device.DeviceInfo;
 import com.cbd.cbdcommoninterface.pojo.installerapp.waitingtask.DevIdDO;
 import com.cbd.installerapp.dao.waitingtask.InstallOrderDao;
@@ -18,6 +19,8 @@ public class InstallOrderServiceImpl implements InstallOrderService {
     private InstallOrderDao installOrderDao;
     @Autowired
     private DeviceService deviceService;
+    @Autowired
+    private ICarInfoService iCarInfoService;
 
     @Override
     @Transactional(rollbackFor=Exception.class)
@@ -30,6 +33,8 @@ public class InstallOrderServiceImpl implements InstallOrderService {
         String simId = temp.getSimId();
         installOrderDao.installOrderComplete(devId,simId,orderId);
 
+        //更新car_info的devId 像track中初始化一条数据
+        iCarInfoService.function();
         installOrderDao.updateState(id);
 
         //调用张祺的设备状态更改 入参为devId 和devStatus
