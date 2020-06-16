@@ -23,6 +23,9 @@ public class OrderInfoQuery implements Serializable {
     @ApiModelProperty(value = "车牌号",example = "京A·125G2",required = true)
     private String licenseNumber;
 
+    @ApiModelProperty(value = "车辆型号",example = "宝马五系",required = true)
+    private String carType;
+
     @ApiModelProperty(value = "电话",example = "1531812431",required = true)
     private String phoneNumber;
 
