@@ -60,7 +60,7 @@ public interface AssignDao {
     int insertToTaskList(@Param("query") AssignQuery query);
 
     /**
-     * 稍后指派工程师
+     * 改变订单的状态为待指派
      * @param id
      * @return
      */

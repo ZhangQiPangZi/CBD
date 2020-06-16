@@ -27,6 +27,7 @@ public class TaskListServiceImpl implements TaskListService {
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
 
+        //获取该工程师所有待处理订单 按订单类型进行搜索
         List<OrderInfosDO> result = taskListDao.getTaskList(installerId,orderTypeCode);
         PageInfo<OrderInfosDO> resultList = new PageInfo<>(result);
         return PageUtils.getPageResponse(resultList);

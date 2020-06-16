@@ -29,6 +29,7 @@ public class MessageListServiceImpl implements MessageListService {
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
 
+        //获取所有订单列表 根据订单类型搜索
         List<OrderInfoDO> result = messageListDao.getList(orderTypeCode);
         PageInfo<OrderInfoDO> resultList = new PageInfo<>(result);
         return PageUtils.getPageResponse(resultList);
@@ -56,6 +57,7 @@ public class MessageListServiceImpl implements MessageListService {
 
         if(orderTypeCode!=3){
             devIdDO = messageListDao.getDevId(id);
+            //标识符给前端 标记重新指派时的设备id和simId
             devIdDO.setFlag(1);
             messageListDao.deleteDevId(id);
         }

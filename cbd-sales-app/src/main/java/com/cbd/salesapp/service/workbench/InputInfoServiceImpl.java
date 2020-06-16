@@ -17,8 +17,10 @@ public class InputInfoServiceImpl implements InputInfoService {
     private InputInfoDao inputInfoDao;
     @Override
     public int confirmInputInfo(OrderInfoQuery query){
+        //随机生成订单流水号
         query.setOrderId(UUID.randomUUID().toString());
         inputInfoDao.confirmInputInfo(query);
+        //录入信息后，将数据库中生成的订单的序号返回给前端
         return query.getId();
     }
 }
