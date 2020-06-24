@@ -24,25 +24,25 @@ public class MessageListServiceImpl implements MessageListService {
     private MessageListDao messageListDao;
 
     @Override
-    public PageResponse getList(Integer orderTypeCode, PageRequest pageRequest){
+    public PageResponse getList(Integer orderTypeCode, PageRequest pageRequest,Integer salesId){
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
         PageHelper.startPage(pageNum, pageSize);
 
         //获取所有订单列表 根据订单类型搜索
-        List<OrderInfoDO> result = messageListDao.getList(orderTypeCode);
+        List<OrderInfoDO> result = messageListDao.getList(orderTypeCode,salesId);
         PageInfo<OrderInfoDO> resultList = new PageInfo<>(result);
         return PageUtils.getPageResponse(resultList);
     }
 
     @Override
-    public int processedCount(){
-        return messageListDao.processedCount();
+    public int processedCount(Integer salesId){
+        return messageListDao.processedCount(salesId);
     }
 
     @Override
-    public int pendingCount(){
-        return messageListDao.pendingCount();
+    public int pendingCount(Integer salesId){
+        return messageListDao.pendingCount(salesId);
     }
 
     @Override

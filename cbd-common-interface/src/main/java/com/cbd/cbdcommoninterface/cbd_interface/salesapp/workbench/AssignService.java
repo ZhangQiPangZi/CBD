@@ -32,12 +32,14 @@ public interface AssignService {
      * @param query
      * @return
      */
-    int assignInstaller(@Param("query") AssignQuery query);
+    int assignInstaller(AssignQuery query);
 
     /**
      * 稍后指派工程师
      * @param id
+     * @param devId
+     * @param simId
      * @return
      */
-    int assignLater(@Param("id") Integer id);
+    int assignLater(Integer id,String devId,String simId);
 }

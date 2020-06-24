@@ -62,22 +62,22 @@ public class SalesappController {
     @RequestMapping(value = "/get-list",method = RequestMethod.POST)
     @ApiOperation("获取订单列表")
     @ResponseBody
-    public Result<PageResponse> getList(@RequestParam(required = false) Integer orderTypeCode, @RequestBody PageRequest pageRequest){
-        return Result.success(messageListService.getList(orderTypeCode,pageRequest));
+    public Result<PageResponse> getList(@RequestParam(required = false) Integer orderTypeCode, @RequestBody PageRequest pageRequest,@RequestParam Integer salesId){
+        return Result.success(messageListService.getList(orderTypeCode,pageRequest,salesId));
     }
 
     @RequestMapping(value = "/processed-count",method = RequestMethod.GET)
     @ApiOperation("已指派订单数量")
     @ResponseBody
-    public int processedCount(){
-        return messageListService.processedCount();
+    public int processedCount(@RequestParam Integer salesId){
+        return messageListService.processedCount(salesId);
     }
 
     @RequestMapping(value = "/pending-count",method = RequestMethod.GET)
     @ApiOperation("待指派订单数量")
     @ResponseBody
-    public int pendingCount(){
-        return messageListService.pendingCount();
+    public int pendingCount(@RequestParam Integer salesId){
+        return messageListService.pendingCount(salesId);
     }
 
     @RequestMapping(value = "/get-order-info",method = RequestMethod.GET)
@@ -140,8 +140,8 @@ public class SalesappController {
     @RequestMapping(value = "/assign-later",method = RequestMethod.GET)
     @ApiOperation("稍后指派")
     @ResponseBody
-    public int assignLater(@RequestParam Integer id){
-        return assignService.assignLater(id);
+    public int assignLater(@RequestParam Integer id,@RequestParam String devId,@RequestParam String simId){
+        return assignService.assignLater(id,devId,simId);
     }
 
     /**
