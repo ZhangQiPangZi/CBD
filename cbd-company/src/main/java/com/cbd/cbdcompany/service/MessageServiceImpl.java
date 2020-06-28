@@ -2,10 +2,14 @@ package com.cbd.cbdcompany.service;
 
 import com.alibaba.fastjson.JSON;
 import com.cbd.cbdcommoninterface.cbd_interface.MQ.MQSender;
+import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
 import com.cbd.cbdcommoninterface.cbd_interface.message.MessageService;
+import com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService;
+import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
 import com.cbd.cbdcommoninterface.dto.ChatInfoDto;
 import com.cbd.cbdcommoninterface.enums.ReadFlagEnum;
+import com.cbd.cbdcommoninterface.keys.ContractAcceptKey;
 import com.cbd.cbdcommoninterface.pojo.message.DeviceMessageRecord;
 import com.cbd.cbdcommoninterface.request.PageMsgRequest;
 import com.cbd.cbdcommoninterface.request.PageRequest;
@@ -30,6 +34,12 @@ public class MessageServiceImpl implements MessageService {
     MessageDao messageDao;
     @Autowired
     DeviceService deviceService;
+    @Autowired
+    RedisService redisService;
+    @Autowired
+    IUserService userService;
+    @Autowired
+    CompanyService companyService;
     @Autowired
     @Qualifier("MQSenderImpl")
     MQSender mqSender;
@@ -60,8 +70,8 @@ public class MessageServiceImpl implements MessageService {
             ChatInfoResponse temp = new ChatInfoResponse();
             temp.setSenderID(senderID);
             temp.setUnReadCounts(messageDao.getUnreadChatCounts(senderID, pageMsgRequest.getReceiverID()));
-            //TODO 调人事接口，获取名字
-            temp.setCustomerName(senderID);
+            //调人事接口，获取名字
+            temp.setCustomerName(userService.findUserInfoByID(senderID).getUserName());
 
             chatInfoResponseList.add(temp);
         }
@@ -127,8 +137,8 @@ public class MessageServiceImpl implements MessageService {
         //只有设备调拨消息才需要再次推送消息
         if (mesType.equals("ALLOCATION")){
             deviceService.confirmDeviceMessageByMesID(mesID);
-            //TODO 调人事接口，获取公司名
-            String cpyName = msg.getReceiverId();
+            //调人事接口，获取公司名
+            String cpyName = companyService.findCompanyInfoByCompanyID(userService.findUserInfoByID(msg.getReceiverId()).getCompanyID()).getCompanyName();
             content = "您向"+cpyName+"调拨的设备已接收，谢谢！！！";
             //推送消息
             ChatMessage chatMessage = new ChatMessage();
@@ -140,9 +150,28 @@ public class MessageServiceImpl implements MessageService {
             chatMessage.setMsgType(ChatMessage.MsgType.ACCEPT.toString());
             BusinessMessage message = new BusinessMessage(BusinessType.CBD_BUSINESS_QUEUE, JSON.toJSON(chatMessage));
             mqSender.send(message);
-
         }else if (mesType.equals("CONTRACT_ALLOCATION")){
-            deviceService.confirmDeviceMessageByMesID(mesID);
+            // 第一次确认不能直接调拨设备，要等车佰度那边确认之后才可批量调拨设备
+            if (!redisService.exists(ContractAcceptKey.CONTRACT_ACCEPT,mesID)){
+                //向车佰度管理员推送消息
+                DeviceMessageRecord deviceMessageRecord = deviceService.getDevMessageRecord(mesID);
+                String cpyName = companyService.findCompanyInfoByCompanyID(userService.findUserInfoByID(msg.getReceiverId()).getCompanyID()).getCompanyName();
+                content = mesID+":"+cpyName+"已经签订合同,现需要您调拨"+deviceMessageRecord.getDevName()+"设备"+deviceMessageRecord.getDevNums()+"台，点击“调拨”按钮一键调拨，谢谢！！！";
+                //推送消息
+                ChatMessage chatMessage = new ChatMessage();
+                chatMessage.setSenderId("系统消息");
+                chatMessage.setReceiverId(msg.getSenderId());
+                chatMessage.setMesID(UUIDUtils.getUUID());
+                chatMessage.setContent(content);
+                chatMessage.setMsgType(ChatMessage.MsgType.ACCEPT.toString());
+                BusinessMessage message = new BusinessMessage(BusinessType.CBD_BUSINESS_QUEUE, JSON.toJSON(chatMessage));
+                mqSender.send(message);
+
+                redisService.set(ContractAcceptKey.CONTRACT_ACCEPT,mesID,true);
+            }else{
+                deviceService.confirmDeviceMessageByMesID(mesID);
+                redisService.delete(ContractAcceptKey.CONTRACT_ACCEPT,mesID);
+            }
         }
 
         //修改消息记录表中消息状态为已读
@@ -179,8 +208,8 @@ public class MessageServiceImpl implements MessageService {
 
         ChatAlloteResponse chatAlloteResponse = new ChatAlloteResponse();
         chatAlloteResponse.setServerID(serviceID);
-        //TODO 调人事接口，获取姓名
-        chatAlloteResponse.setServerName(serviceID);
+        //调人事接口，获取姓名
+        chatAlloteResponse.setServerName(userService.findUserInfoByID(serviceID).getUserName());
         return chatAlloteResponse;
     }
 

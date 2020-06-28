@@ -5,7 +5,6 @@ import com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService;
 import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService;
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
-import com.cbd.cbdcommoninterface.cbd_interface.salesapp.user.UserService;
 import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
 import com.cbd.cbdcommoninterface.dto.*;
 import com.cbd.cbdcommoninterface.enums.QueryTypeEnum;
@@ -587,13 +586,116 @@ public class AchievementServiceImpl implements AchievementService {
     }
 
     @Override
-    public List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest) {
+    public List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PieCpyAchByDateRequest pieCpyAchByDateRequest) {
+        CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(pieCpyAchByDateRequest.getCompanyID());
+        //如果是4s店，那么不展示图
+        if (companyInfo.getCompanylevel() == CompanyInfo.Companylevel.DISCPY.ordinal()){
+            return null;
+        }
 
-        return null;
+        //获取下属4s店业绩统计信息
+        List<EchartPieResponse> echartPieResponseList = new ArrayList<>();
+
+        PieCpyAchDto pieCpyAchDto = new PieCpyAchDto();
+        pieCpyAchDto.setLft(companyInfo.getLft());
+        pieCpyAchDto.setRgt(companyInfo.getRgt());
+        if (pieCpyAchByDateRequest.getYear() == null){
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            //因为初始值为0,所以要+1
+            int month = cal.get(Calendar.MONTH)+1;
+            pieCpyAchDto.setMonth(month);
+            pieCpyAchDto.setYear(year);
+        }else {
+            pieCpyAchDto.setMonth(pieCpyAchByDateRequest.getMonth());
+            pieCpyAchDto.setYear(pieCpyAchByDateRequest.getYear());
+        }
+
+        //根据条件获取指定公司的业绩信息
+        List<PieCpyAchResultDto> pieCpyAchResultDtoList = achievementDao.findPieCpyAchievementByDate(pieCpyAchDto);
+        for (PieCpyAchResultDto achievementInfo : pieCpyAchResultDtoList){
+            EchartPieResponse echartPieResponse = new EchartPieResponse();
+            echartPieResponse.setValue(achievementInfo.getAchievement());
+            echartPieResponse.setName(achievementInfo.getCompanyName());
+            echartPieResponseList.add(echartPieResponse);
+        }
+
+        return echartPieResponseList;
     }
 
     @Override
-    public List<EchartPieResponse> getPieSalersStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest) {
-        return null;
+    public List<EchartPieResponse> getPieCarModelByCompanyID(CompanyIDRequest cpyIDRequest) {
+        List<EchartPieResponse> echartPieResponseList = new ArrayList<>();
+        CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(cpyIDRequest.getCompanyID());
+
+        //统计车型
+        PieCpyAchDto pieCpyAchDto = new PieCpyAchDto();
+        pieCpyAchDto.setLft(companyInfo.getLft());
+        pieCpyAchDto.setRgt(companyInfo.getRgt());
+        List<String> carTypeList = achievementDao.getAllCarType(pieCpyAchDto);
+        Map<String, Integer> countMap = new HashMap<>();
+        for (String carType : carTypeList){
+            if (countMap.containsKey(carType)){
+                countMap.put(carType, countMap.get(carType)+1);
+            }else {
+                countMap.put(carType, 1);
+            }
+        }
+
+        for (String carType: countMap.keySet()){
+            EchartPieResponse echartPieResponse = new EchartPieResponse();
+            echartPieResponse.setValue(Float.valueOf(countMap.get(carType)));
+            echartPieResponse.setName(carType);
+            echartPieResponseList.add(echartPieResponse);
+        }
+
+        return echartPieResponseList;
     }
+
+    @Override
+    public EchartLieResponse getLieCompanyAchievementByCompanyID(LieCpyAchRequest lieCpyAchRequest) {
+        EchartLieResponse echartLieResponse = new EchartLieResponse();
+
+        List<EchartDataResponse> echartDataResponseList = new ArrayList<>();
+        LieCpyDto lieCpyDto = new LieCpyDto();
+        Integer year = lieCpyAchRequest.getYear();
+        if (year == null){
+            Calendar cal = Calendar.getInstance();
+            year = cal.get(Calendar.YEAR);
+        }
+        lieCpyDto.setYear(year);
+        lieCpyDto.setCompanyID(companyService.findCompanyInfoByCompanyName(lieCpyAchRequest.getCompanyName()).getCompanyID());
+
+        List<LieCpyAchResultDto> lieCpyAchResultDtoList = achievementDao.findLieCpyAchievementByYear(lieCpyDto);
+        if (lieCpyAchResultDtoList.isEmpty()){
+            return null;
+        }
+        Map<String, Float[]> cpyMap = new HashMap<>();
+        //计算销售额并赋值
+        for (LieCpyAchResultDto lieCpyAchResultDto : lieCpyAchResultDtoList){
+            if (!cpyMap.containsKey(lieCpyAchResultDto.getContractTypeName())){
+                cpyMap.put(lieCpyAchResultDto.getContractTypeName(), new Float[12]);
+            }
+            //计算指定合同指定月份的销售额
+            Float achievement = contractService.findContractInfoByContractID(lieCpyAchResultDto.getContractID()).getDellFee() * lieCpyAchResultDto.getContractCount();
+            cpyMap.get(lieCpyAchResultDto.getContractTypeName())[lieCpyAchResultDto.getMonth()-1] = achievement;
+        }
+
+        for (String contractName: cpyMap.keySet()){
+            EchartDataResponse echartDataResponse = new EchartDataResponse();
+            echartDataResponse.setName(contractName);
+            echartDataResponse.setData(cpyMap.get(contractName));
+            echartDataResponseList.add(echartDataResponse);
+        }
+
+        echartLieResponse.setTitle(lieCpyDto.getYear()+"年销售额与合同折线统计图");
+        List<String> resultList = new ArrayList<>();
+        resultList.addAll(cpyMap.keySet());
+        echartLieResponse.setLegend(resultList);
+        echartLieResponse.setEchartDataResponseList(echartDataResponseList);
+
+        return echartLieResponse;
+    }
+
+
 }

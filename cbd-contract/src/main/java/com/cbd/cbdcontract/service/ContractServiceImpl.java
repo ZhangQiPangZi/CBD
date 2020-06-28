@@ -205,6 +205,10 @@ public class ContractServiceImpl implements ContractService {
     @Override
     @Transactional(rollbackFor=Exception.class)
     public Boolean distributeContractByContractIDAndCompanyName(DistributeContractRequest contractRequest) {
+        //合同状态效验
+        if(contractDao.findContractInfoByContractID(contractRequest.getContractID()).getContractStatus() != ContractInfo.ContractStatus.PAID.ordinal()){
+            throw new GlobalException(CodeMsg.CONTRACT_STATUS_FAILURE);
+        }
         /**
          * 获取调拨公司的信息
          */
@@ -338,6 +342,7 @@ public class ContractServiceImpl implements ContractService {
         }catch (Exception e){
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
+        // TODO 发送消息提醒甲方公司
 
         return contractID;
     }

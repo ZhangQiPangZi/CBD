@@ -1,6 +1,7 @@
 package com.cbd.cbdcommoninterface.cbd_interface.device;
 
 import com.cbd.cbdcommoninterface.pojo.device.DevType;
+import com.cbd.cbdcommoninterface.pojo.message.DeviceMessageRecord;
 import com.cbd.cbdcommoninterface.request.*;
 import com.cbd.cbdcommoninterface.response.*;
 
@@ -146,5 +147,7 @@ public interface DeviceService {
      * @return
      */
     Integer getDevMaxNums(String companyID, String devName);
+
+    DeviceMessageRecord getDevMessageRecord(String mesID);
 
 }

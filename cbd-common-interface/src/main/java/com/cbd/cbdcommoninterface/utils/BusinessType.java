@@ -12,4 +12,8 @@ public class BusinessType {
      */
     public static final String CBD_BUSINESS_QUEUE = "cbdBusiness";
 
+    /**
+     * 邮件发送队列
+     */
+    public static final String SEND_MAIL_QUEUE = "sendMail";
 }

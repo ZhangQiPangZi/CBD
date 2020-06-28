@@ -16,5 +16,7 @@ public class ExpPrefixUtil {
     /** company模块异常码前缀*/
     public static final String CpyExpPrefix = "30";
 
+    /** contract模块异常码前缀*/
+    public static final String CtrExpPrefix = "40";
 
 }

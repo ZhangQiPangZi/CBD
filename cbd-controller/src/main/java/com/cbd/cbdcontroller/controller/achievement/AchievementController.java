@@ -2,6 +2,8 @@ package com.cbd.cbdcontroller.controller.achievement;
 
 import com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService;
 import com.cbd.cbdcommoninterface.request.*;
+import com.cbd.cbdcommoninterface.response.EchartLieResponse;
+import com.cbd.cbdcommoninterface.response.EchartPieResponse;
 import com.cbd.cbdcommoninterface.response.PageResponse;
 import com.cbd.cbdcommoninterface.response.QueryUserAndCpyIDResponse;
 import com.cbd.cbdcommoninterface.result.Result;
@@ -101,5 +103,22 @@ public class AchievementController {
         return Result.success(achievementService.getContractTypeNameByCpyNameOrSalersID(companyNameOrUserIDRequest.getKey()));
     }
 
+    @ApiOperation("根据当前公司ID获取下属4s店业绩统计饼图")
+    @RequestMapping(value = "/getPieCompanyStaticsAchievementByCompanyID", method = RequestMethod.POST)
+    public Result<List<EchartPieResponse>> getPieCompanyStaticsAchievementByCompanyID(@RequestBody PieCpyAchByDateRequest pieCpyAchByDateRequest){
+        return Result.success(achievementService.getPieCompanyStaticsAchievementByCompanyID(pieCpyAchByDateRequest));
+    }
+
+    @ApiOperation("根据当前公司ID获取所有车型销售统计饼图")
+    @RequestMapping(value = "/getPieCarModelByCompanyID", method = RequestMethod.POST)
+    public Result<List<EchartPieResponse>> getPieCarModelByCompanyID(@RequestBody CompanyIDRequest cpyIDRequest){
+        return Result.success(achievementService.getPieCarModelByCompanyID(cpyIDRequest));
+    }
+
+    @ApiOperation("根据当前公司ID获取公司销售额与合同折线统计图")
+    @RequestMapping(value = "/getLieCompanyAchievementByCompanyID", method = RequestMethod.POST)
+    public Result<EchartLieResponse> getLieCompanyAchievementByCompanyID(@RequestBody LieCpyAchRequest lieCpyAchRequest){
+        return Result.success(achievementService.getLieCompanyAchievementByCompanyID(lieCpyAchRequest));
+    }
 
 }

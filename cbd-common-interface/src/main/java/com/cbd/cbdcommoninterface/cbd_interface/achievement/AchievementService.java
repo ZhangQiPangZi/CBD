@@ -1,9 +1,7 @@
 package com.cbd.cbdcommoninterface.cbd_interface.achievement;
 
 import com.cbd.cbdcommoninterface.request.*;
-import com.cbd.cbdcommoninterface.response.EchartPieResponse;
-import com.cbd.cbdcommoninterface.response.PageResponse;
-import com.cbd.cbdcommoninterface.response.QueryUserAndCpyIDResponse;
+import com.cbd.cbdcommoninterface.response.*;
 
 import java.util.List;
 import java.util.Map;
@@ -89,7 +87,7 @@ public interface AchievementService {
     List<QueryUserAndCpyIDResponse> queryUserOrCpyByKey(QueryUserAndCpyRequest queryUserAndCpyRequest);
 
     /**
-     * 查询公司和用户业绩
+     * 查询用户业绩
      * @param queryUserAndCpyRequest
      * @return
      */
@@ -104,15 +102,22 @@ public interface AchievementService {
 
     /**
      * 根据当前公司ID获取下属4s店业绩统计饼图
-     * @param cpyIDRequest
+     * @param pieCpyAchByDateRequest
      * @return
      */
-    List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest);
+    List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PieCpyAchByDateRequest pieCpyAchByDateRequest);
 
     /**
-     * 根据当前公司ID获取下属4s店销售员业绩统计饼图
+     * 根据当前公司ID获取所有车型销售统计饼图
      * @param cpyIDRequest
      * @return
      */
-    List<EchartPieResponse> getPieSalersStaticsAchievementByCompanyID(PageCpyIDRequest cpyIDRequest);
+    List<EchartPieResponse> getPieCarModelByCompanyID(CompanyIDRequest cpyIDRequest);
+
+    /**
+     * 根据当前公司ID获取公司销售额与合同折线统计图
+     * @param lieCpyAchRequest
+     * @return
+     */
+    EchartLieResponse getLieCompanyAchievementByCompanyID(LieCpyAchRequest lieCpyAchRequest);
 }

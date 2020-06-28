@@ -36,6 +36,18 @@
         <result property="ID" column="ID"/>
     </resultMap>
 
+    <resultMap id="PieMap" type="com.cbd.cbdcommoninterface.dto.PieCpyAchResultDto">
+        <result property="companyName" column="companyName"/>
+        <result property="achievement" column="achievement"/>
+    </resultMap>
+
+    <resultMap id="LieMap" type="com.cbd.cbdcommoninterface.dto.LieCpyAchResultDto">
+        <result property="contractID" column="contractID"/>
+        <result property="contractTypeName" column="contractTypeName"/>
+        <result property="contractCount" column="contractCount"/>
+        <result property="month" column="month"/>
+    </resultMap>
+
     <select id="findAchCpyInfoByCondition" parameterType="com.cbd.cbdcommoninterface.dto.ContractConditionDto" resultMap="achCpyMap">
         select companyID, salersCount, contractCount, achievementCount
         from achievementStatisticsInfo
@@ -223,4 +235,31 @@
           END
         )
     </select>
+
+    <select id="findPieCpyAchievementByDate" parameterType="com.cbd.cbdcommoninterface.dto.PieCpyAchDto" resultMap="PieMap">
+        select achievement, companyName
+        from achievementCompanyInfo ac join companyInfo c on ac.companyID = c.companyID
+        where ac.year = #{year} and month = #{month} and ac.companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt} and companylevel = 0
+        )
+    </select>
+
+    <select id="getAllCarType" parameterType="com.cbd.cbdcommoninterface.dto.PieCpyAchDto" resultType="java.lang.String">
+        select carType
+        from orderinfo o join user u on u.ID = o.salesId
+        where u.companyID in (
+          select companyID
+          from companyInfo cpy
+          where lft BETWEEN #{lft} and #{rgt}
+        )
+    </select>
+
+    <select id="findLieCpyAchievementByYear" parameterType="com.cbd.cbdcommoninterface.dto.LieCpyDto" resultMap="LieMap">
+        select contractID, contractTypeName, contractCount, month
+        from achievementContractInfo ac
+        where ac.companyID = #{companyID} and ac.year = #{year}
+    </select>
+
 </mapper>

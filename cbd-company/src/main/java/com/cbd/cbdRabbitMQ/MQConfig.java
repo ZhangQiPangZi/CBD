@@ -17,4 +17,9 @@ public class MQConfig {
     public Queue businessQueue(){
         return new Queue(BusinessType.CBD_BUSINESS_QUEUE, true);
     }
+
+    @Bean
+    public Queue sendMailQueue(){
+        return new Queue(BusinessType.SEND_MAIL_QUEUE, true);
+    }
 }

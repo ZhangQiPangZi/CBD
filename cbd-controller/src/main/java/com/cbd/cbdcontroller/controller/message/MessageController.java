@@ -1,6 +1,7 @@
 package com.cbd.cbdcontroller.controller.message;
 
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
+import com.cbd.cbdcommoninterface.cbd_interface.message.EmailService;
 import com.cbd.cbdcommoninterface.cbd_interface.message.MessageService;
 import com.cbd.cbdcommoninterface.request.GetMessageRequest;
 import com.cbd.cbdcommoninterface.request.MesIDRequest;
@@ -30,6 +31,15 @@ public class MessageController {
     ChatServer chatServer;
     @Autowired
     MessageService messageService;
+    @Autowired
+    EmailService emailService;
+
+    @ApiOperation("测试邮箱")
+    @RequestMapping(value = "/stringEmaile",method = RequestMethod.GET)
+    public String sendStringEmail(){
+        emailService.sendStringEmail("zhangqi_qiuzhi@qq.com","你好","我发的你收到了吗？");
+        return "发送成功";
+    }
 
     @ApiOperation("拉取未确认消息条数,业务消息")
     @RequestMapping(value = "/pullUnConfirmMsgCounts", method = RequestMethod.POST)

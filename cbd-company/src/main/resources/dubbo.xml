@@ -22,6 +22,7 @@
     <!-- id名字取成具体的服务名就行，check为false，
         interface是你要调用的那个具体服务的接口，也就是你在common-interface中定义的接口 -->
     <dubbo:reference id="deviceService" check="false"  interface="com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService"/>
+    <dubbo:reference id="IUserService" check="false" interface="com.cbd.cbdcommoninterface.cbd_interface.user.IUserService"/>
     <dubbo:annotation package="com.cbd.cbdcompany.service"/>
 
     <!--服务提供者-->
@@ -41,4 +42,7 @@
 
     <dubbo:service protocol="dubbo" ref="messageService" interface="com.cbd.cbdcommoninterface.cbd_interface.message.MessageService"/>
     <bean id="messageService" class="com.cbd.cbdcompany.service.MessageServiceImpl"/>
+
+    <dubbo:service protocol="dubbo" ref="emailService" interface="com.cbd.cbdcommoninterface.cbd_interface.message.EmailService"/>
+    <bean id="emailService" class="com.cbd.cbdcompany.service.EmailServiceImpl"/>
 </beans>

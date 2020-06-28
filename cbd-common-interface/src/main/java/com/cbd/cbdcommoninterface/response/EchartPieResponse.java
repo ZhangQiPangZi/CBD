@@ -6,6 +6,6 @@ import java.io.Serializable;
 
 @Data
 public class EchartPieResponse implements Serializable {
-    private Integer value;
+    private Float value;
     private String name;
 }

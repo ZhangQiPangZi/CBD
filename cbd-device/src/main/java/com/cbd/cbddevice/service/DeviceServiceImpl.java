@@ -555,6 +555,11 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceDao.getDevNumsByDevName(devNameDto);
     }
 
+    @Override
+    public DeviceMessageRecord getDevMessageRecord(String mesID) {
+        return deviceDao.getDevMessageRecord(mesID);
+    }
+
     @Transactional(rollbackFor=Exception.class)
     public Boolean doAllocationDevice(String companyName, String devID, String mesID, String devName) {
         /**

@@ -182,4 +182,25 @@ public interface AchievementDao {
 
     @Select("select distinct contractTypeName from achievementContractInfo where companyID = #{companyID}")
     List<String> getContractTypeNameByCpyID(@Param("companyID") String id);
+
+    /**
+     * 获取下属4s店销售业绩列表
+     * @param pieCpyAchDto
+     * @return
+     */
+    List<PieCpyAchResultDto> findPieCpyAchievementByDate(PieCpyAchDto pieCpyAchDto);
+
+    /**
+     * 获取所有销售车型的统计列表
+     * @param pieCpyAchDto
+     * @return
+     */
+    List<String> getAllCarType(PieCpyAchDto pieCpyAchDto);
+
+    /**
+     * 获取当前公司指定年份的合同销售列表
+     * @param lieCpyDto
+     * @return
+     */
+    List<LieCpyAchResultDto> findLieCpyAchievementByYear(LieCpyDto lieCpyDto);
 }

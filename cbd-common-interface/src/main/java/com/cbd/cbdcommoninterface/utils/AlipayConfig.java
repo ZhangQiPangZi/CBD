@@ -30,10 +30,10 @@ public class AlipayConfig {
 
 	// 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
 
-	public static String notify_url = "http://6bpwr2.natappfree.cc/alipay/notify";
+	public static String notify_url = "http://8px46h.natappfree.cc/alipay/notify";
 
 	// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-	public static String return_url = "http://6bpwr2.natappfree.cc/alipay/return";
+	public static String return_url = "http://8px46h.natappfree.cc/alipay/return";
 //	public static String add_contract_return_url = "http://6qjgn5.natappfree.cc/#/contract/contractCreate";
 //	public static String renew_contract_return_url = "http://6qjgn5.natappfree.cc/#/contractRenewal";
 
