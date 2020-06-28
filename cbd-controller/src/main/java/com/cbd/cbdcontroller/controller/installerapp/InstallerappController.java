@@ -132,7 +132,7 @@ public class InstallerappController {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String newCompanyImageName = sdf.format(date);
                 String newCompanyImagepath = "D:\\test\\"+newCompanyImageName+"-"+ UUID.randomUUID().toString().substring(0,5);
-                inputPicture(newCompanyImagepath,3);
+                inputPicture(newCompanyImagepath,id);
                 File newFile = new File(newCompanyImagepath);
                 if (!newFile.exists()) {
                     newFile.createNewFile();

@@ -37,7 +37,7 @@ public interface AssignDao {
      * @param query
      * @return
      */
-    @Update("update orderinfo set installerId = #{query.installerId},orderStateTypeCode='1' WHERE id =#{query.id};")
+    @Update("update orderinfo set installerId = #{query.installerId},orderStateTypeCode='1',devId=#{query.devId},simId=#{query.simId} where id=#{query.id};")
     int assignInstaller(@Param("query") AssignQuery query);
 
     /**
@@ -64,6 +64,6 @@ public interface AssignDao {
      * @param id
      * @return
      */
-    @Update("update orderinfo set orderStateTypeCode='-1' WHERE id =#{id};")
-    int assignLater(@Param("id") Integer id);
+    @Update("update orderinfo set orderStateTypeCode='-1',devId=#{devId},simId=#{simId} WHERE id =#{id};")
+    int assignLater(@Param("id") Integer id,@Param("devId") String devId,@Param("simId")String simId);
 }

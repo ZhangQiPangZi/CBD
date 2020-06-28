@@ -9,8 +9,9 @@
         FROM orderinfo o
         LEFT JOIN user u
         ON o.installerId = u.ID
+        WHERE o.salesId = #{salesId}
         <if test="null!=orderTypeCode">
-            WHERE o.orderTypeCode=#{orderTypeCode}
+           AND o.orderTypeCode=#{orderTypeCode}
         </if>
         ORDER BY o.orderStateTypeCode ASC
     </select>

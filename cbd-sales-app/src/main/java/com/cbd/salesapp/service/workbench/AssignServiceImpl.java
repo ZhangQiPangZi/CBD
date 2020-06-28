@@ -114,7 +114,7 @@ public class AssignServiceImpl implements AssignService {
      * @return
      */
     @Override
-    public int assignLater(Integer id){
-        return assignDao.assignLater(id);
+    public int assignLater(Integer id,String devId,String simId){
+        return assignDao.assignLater(id,devId,simId);
     }
 }

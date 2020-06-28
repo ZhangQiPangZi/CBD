@@ -23,19 +23,19 @@ public interface MessageListService {
      * @param pageRequest
      * @return
      */
-    PageResponse getList(Integer orderTypeCode, PageRequest pageRequest);
+    PageResponse getList(Integer orderTypeCode, PageRequest pageRequest,Integer salseId);
 
     /**
      * 统计已指派订单的数量
      * @return
      */
-    int processedCount();
+    int processedCount(Integer salesId);
 
     /**
      * 统计未指派订单的数量
      * @return
      */
-    int pendingCount();
+    int pendingCount(Integer salesId);
 
     /**
      * 查看订单的详细信息

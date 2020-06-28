@@ -19,21 +19,21 @@ public interface MessageListDao {
      * @param orderTypeCode
      * @return
      */
-    List<OrderInfoDO> getList(@Param("orderTypeCode")Integer orderTypeCode);
+    List<OrderInfoDO> getList(@Param("orderTypeCode")Integer orderTypeCode,@Param("salesId") Integer salesId);
 
     /**
      * 统计已指派订单的数量
      * @return
      */
-    @Select("SELECT COUNT(*) FROM orderinfo WHERE orderstateTypeCode = '1';")
-    int processedCount();
+    @Select("SELECT COUNT(*) FROM orderinfo WHERE orderstateTypeCode = '1' AND salesId=#{salesId};")
+    int processedCount(@Param("salesId") Integer salesId);
 
     /**
      * 统计未指派订单的数量
      * @return
      */
-    @Select("SELECT COUNT(*) FROM orderinfo WHERE orderstateTypeCode = '-1';")
-    int pendingCount();
+    @Select("SELECT COUNT(*) FROM orderinfo WHERE orderstateTypeCode = '-1' AND salesId=#{salesId};")
+    int pendingCount(@Param("salesId") Integer salesId);
 
     /**
      * 查看订单的详细信息
