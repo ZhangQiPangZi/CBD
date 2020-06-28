@@ -106,9 +106,10 @@ public class AchievementServiceImpl implements AchievementService {
                             disCpyIDList.add(cpyInfo.getCompanyID());
                         }
                     }
-                    // TODO 调人事接口，获取当前公司下的销售人员数量
+                    // 获取当前公司下的销售人员数量
                     for (String disCpyID : disCpyIDList){
-
+                        Integer cpySalesNums = achievementDao.getSalersNums(disCpyID);
+                        salersCount += cpySalesNums;
                     }
                 }else {
                     curAchievementCount += beforeAchievementCount;

@@ -203,4 +203,7 @@ public interface AchievementDao {
      * @return
      */
     List<LieCpyAchResultDto> findLieCpyAchievementByYear(LieCpyDto lieCpyDto);
+
+    @Select("select count(*) from user where userType = 2 and companyID = #{companyID}")
+    Integer getSalersNums(@Param("companyID") String disCpyID);
 }

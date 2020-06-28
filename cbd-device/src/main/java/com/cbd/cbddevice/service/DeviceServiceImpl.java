@@ -187,8 +187,8 @@ public class DeviceServiceImpl implements DeviceService {
         devInfoResponse.setDevCompanyName(companyInfo.getCompanyName());
         devInfoResponse.setDevGateWayID(deviceInfo.getDevGateWayID());
         devInfoResponse.setDevInputTime(deviceInfo.getDevInputTime());
-        //TODO 这边要调人员接口获取
-        devInfoResponse.setDevManagerName(companyInfo.getCompanyManagerID().toString());
+        //调人员接口获取
+        devInfoResponse.setDevManagerName(userService.findUserInfoByID(companyInfo.getCompanyManagerID().toString()).getUserName());
 
         DevType devType = deviceDao.getDevTypeByDevID(devID);
         devInfoResponse.setDevName(devType.getDevName());
@@ -406,8 +406,8 @@ public class DeviceServiceImpl implements DeviceService {
             recordResponse.setOptTime(allotRecord.getOptTime());
             recordResponse.setSrcCompanyName(companyService.findCompanyInfoByCompanyID(allotRecord.getSrcCompanyID()).getCompanyName());
             recordResponse.setDstCompanyName(companyService.findCompanyInfoByCompanyID(allotRecord.getDstCompanyID()).getCompanyName());
-            // TODO 要调人员接口
-            recordResponse.setSrcManagerName(allotRecord.getSrcManagerID().toString());
+
+            recordResponse.setSrcManagerName(userService.findUserInfoByID(allotRecord.getSrcManagerID().toString()).getUserName());
 
             recordResponseList.add(recordResponse);
         }
@@ -475,11 +475,10 @@ public class DeviceServiceImpl implements DeviceService {
             DeviceMessageRecord deviceMessageRecord = new DeviceMessageRecord();
             deviceMessageRecord.setMesID(mesID);
             deviceMessageRecord.setMesType(DeviceMessageRecord.MessageType.CONTRACT_ALLOCATION.ordinal());
-            // TODO 要调人事接口
             //srcComapny为车百度平台
             String srcCompanyName = "车佰度平台";
             deviceMessageRecord.setSrcManagerID(companyService.findCompanyInfoByCompanyName(srcCompanyName).getCompanyManagerID());
-            // TODO 要调人事接口
+
             deviceMessageRecord.setDstManagerID(companyService.findCompanyInfoByCompanyID(contractDevMesRequest.getCompanyID()).getCompanyManagerID());
             // 新建消息为未确认状态
             deviceMessageRecord.setMesStatus(DeviceMessageRecord.MessageStatus.UNCONFIRMED.ordinal());
@@ -567,7 +566,7 @@ public class DeviceServiceImpl implements DeviceService {
          *  并且暂存当前设备管理员ID
          */
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyName(companyName);
-        //TODO 这边要调人员接口获取
+
         Integer dstManagerID = companyInfo.getCompanyManagerID();
         String dstCompanyID = companyInfo.getCompanyID();
         DeviceInfo srcDeviceInfo = deviceDao.findDeviceInfoByDevID(devID);

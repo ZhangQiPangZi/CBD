@@ -6,6 +6,7 @@ import com.cbd.cbdcommoninterface.cbd_interface.company.CompanyService;
 import com.cbd.cbdcommoninterface.cbd_interface.contract.ContractService;
 import com.cbd.cbdcommoninterface.cbd_interface.device.DeviceService;
 import com.cbd.cbdcommoninterface.cbd_interface.redis.RedisService;
+import com.cbd.cbdcommoninterface.cbd_interface.user.IUserService;
 import com.cbd.cbdcommoninterface.dto.ContractConditionDto;
 import com.cbd.cbdcommoninterface.dto.DevConditionDto;
 import com.cbd.cbdcommoninterface.keys.OrderTypeKey;
@@ -45,6 +46,8 @@ public class ContractServiceImpl implements ContractService {
     RedisService redisService;
     @Autowired
     MQSender mqSender;
+    @Autowired
+    IUserService userService;
 
     @Override
     public List<String> findContractTypeNameByCompanyID(String companyID) {
@@ -157,8 +160,8 @@ public class ContractServiceImpl implements ContractService {
 
         contractInfoResponse.setDellFee(contractInfo.getDellFee());
         contractInfoResponse.setDevNums(contractInfo.getDevNums());
-        // TODO 需要调用人事接口
-        contractInfoResponse.setPartyAPersonName(contractInfo.getPartyAPersonID().toString());
+
+        contractInfoResponse.setPartyAPersonName(userService.findUserInfoByID(contractInfo.getPartyAPersonID().toString()).getUserName());
         contractInfoResponse.setServerFee(contractInfo.getServerFee());
         contractInfoResponse.setServerYears(contractInfo.getServerYears());
 
@@ -342,7 +345,6 @@ public class ContractServiceImpl implements ContractService {
         }catch (Exception e){
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
-        // TODO 发送消息提醒甲方公司
 
         return contractID;
     }
