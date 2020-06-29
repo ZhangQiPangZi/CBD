@@ -2,10 +2,7 @@ package com.cbd.cbdcontroller.controller.achievement;
 
 import com.cbd.cbdcommoninterface.cbd_interface.achievement.AchievementService;
 import com.cbd.cbdcommoninterface.request.*;
-import com.cbd.cbdcommoninterface.response.EchartLieResponse;
-import com.cbd.cbdcommoninterface.response.EchartPieResponse;
-import com.cbd.cbdcommoninterface.response.PageResponse;
-import com.cbd.cbdcommoninterface.response.QueryUserAndCpyIDResponse;
+import com.cbd.cbdcommoninterface.response.*;
 import com.cbd.cbdcommoninterface.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -105,13 +102,13 @@ public class AchievementController {
 
     @ApiOperation("根据当前公司ID获取下属4s店业绩统计饼图")
     @RequestMapping(value = "/getPieCompanyStaticsAchievementByCompanyID", method = RequestMethod.POST)
-    public Result<List<EchartPieResponse>> getPieCompanyStaticsAchievementByCompanyID(@RequestBody PieCpyAchByDateRequest pieCpyAchByDateRequest){
+    public Result<EchartPieResultResponse> getPieCompanyStaticsAchievementByCompanyID(@RequestBody PieCpyAchByDateRequest pieCpyAchByDateRequest){
         return Result.success(achievementService.getPieCompanyStaticsAchievementByCompanyID(pieCpyAchByDateRequest));
     }
 
     @ApiOperation("根据当前公司ID获取所有车型销售统计饼图")
     @RequestMapping(value = "/getPieCarModelByCompanyID", method = RequestMethod.POST)
-    public Result<List<EchartPieResponse>> getPieCarModelByCompanyID(@RequestBody CompanyIDRequest cpyIDRequest){
+    public Result<EchartPieResultResponse> getPieCarModelByCompanyID(@RequestBody CompanyIDRequest cpyIDRequest){
         return Result.success(achievementService.getPieCarModelByCompanyID(cpyIDRequest));
     }
 

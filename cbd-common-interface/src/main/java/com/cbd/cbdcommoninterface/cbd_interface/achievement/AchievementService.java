@@ -105,14 +105,14 @@ public interface AchievementService {
      * @param pieCpyAchByDateRequest
      * @return
      */
-    List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PieCpyAchByDateRequest pieCpyAchByDateRequest);
+    EchartPieResultResponse getPieCompanyStaticsAchievementByCompanyID(PieCpyAchByDateRequest pieCpyAchByDateRequest);
 
     /**
      * 根据当前公司ID获取所有车型销售统计饼图
      * @param cpyIDRequest
      * @return
      */
-    List<EchartPieResponse> getPieCarModelByCompanyID(CompanyIDRequest cpyIDRequest);
+    EchartPieResultResponse getPieCarModelByCompanyID(CompanyIDRequest cpyIDRequest);
 
     /**
      * 根据当前公司ID获取公司销售额与合同折线统计图

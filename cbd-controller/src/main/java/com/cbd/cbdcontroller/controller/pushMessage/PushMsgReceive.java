@@ -64,6 +64,8 @@ public class PushMsgReceive {
             res = "您有合同派发消息待查看，请您登录车佰度平台处理，若已处理请忽略此消息，谢谢！";
         }else if (type.equals(ChatMessage.MsgType.PAY_CONTRACT.toString())){
             res = "您已成功支付，合同已生效，如需进行设备调拨，请您登录车佰度平台处理，若已处理请忽略此消息，谢谢！";
+        }else if (type.equals(ChatMessage.MsgType.CONTRACT_ALLOCATION.toString())){
+            res = "有新的业务公司已支付合同，现需您进行设备调拨，请您登录车佰度平台处理，若已处理请忽略此消息，谢谢！";
         }
 
         return res;

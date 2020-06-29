@@ -139,7 +139,9 @@ public class MessageServiceImpl implements MessageService {
             deviceService.confirmDeviceMessageByMesID(mesID);
             //调人事接口，获取公司名
             String cpyName = companyService.findCompanyInfoByCompanyID(userService.findUserInfoByID(msg.getReceiverId()).getCompanyID()).getCompanyName();
-            content = "您向"+cpyName+"调拨的设备已接收，谢谢！！！";
+            DeviceMessageRecord deviceMessageRecord = deviceService.getDevMessageRecord(mesID);
+
+            content = "您向"+cpyName+"调拨的"+deviceMessageRecord.getDevName()+"设备"+deviceMessageRecord.getDevNums()+"台已接收，谢谢！！！";
             //推送消息
             ChatMessage chatMessage = new ChatMessage();
             //因为是确认信息，所以发送方和接收方反过来
@@ -163,7 +165,7 @@ public class MessageServiceImpl implements MessageService {
                 chatMessage.setReceiverId(msg.getSenderId());
                 chatMessage.setMesID(UUIDUtils.getUUID());
                 chatMessage.setContent(content);
-                chatMessage.setMsgType(ChatMessage.MsgType.ACCEPT.toString());
+                chatMessage.setMsgType(ChatMessage.MsgType.DO_CONTRACT_ALLOCATION.toString());
                 BusinessMessage message = new BusinessMessage(BusinessType.CBD_BUSINESS_QUEUE, JSON.toJSON(chatMessage));
                 mqSender.send(message);
 

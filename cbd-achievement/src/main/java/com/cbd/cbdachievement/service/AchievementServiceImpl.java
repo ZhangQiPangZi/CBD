@@ -174,6 +174,7 @@ public class AchievementServiceImpl implements AchievementService {
             companyListResponse.setCompanyCity(cpyInfo.getCompanyCity());
             companyListResponse.setCompanyDistrict(cpyInfo.getCompanyDistrict());
             companyListResponse.setCompanyProvince(cpyInfo.getCompanyProvince());
+            companyListResponse.setContractCount(achievementCompanyInfo.getContractCount());
 
             companyListResponseList.add(companyListResponse);
         }
@@ -587,7 +588,7 @@ public class AchievementServiceImpl implements AchievementService {
     }
 
     @Override
-    public List<EchartPieResponse> getPieCompanyStaticsAchievementByCompanyID(PieCpyAchByDateRequest pieCpyAchByDateRequest) {
+    public EchartPieResultResponse getPieCompanyStaticsAchievementByCompanyID(PieCpyAchByDateRequest pieCpyAchByDateRequest) {
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(pieCpyAchByDateRequest.getCompanyID());
         //如果是4s店，那么不展示图
         if (companyInfo.getCompanylevel() == CompanyInfo.Companylevel.DISCPY.ordinal()){
@@ -595,7 +596,9 @@ public class AchievementServiceImpl implements AchievementService {
         }
 
         //获取下属4s店业绩统计信息
+        EchartPieResultResponse echartPieResultResponse = new EchartPieResultResponse();
         List<EchartPieResponse> echartPieResponseList = new ArrayList<>();
+        List<String> legend = new ArrayList<>();
 
         PieCpyAchDto pieCpyAchDto = new PieCpyAchDto();
         pieCpyAchDto.setLft(companyInfo.getLft());
@@ -618,15 +621,22 @@ public class AchievementServiceImpl implements AchievementService {
             EchartPieResponse echartPieResponse = new EchartPieResponse();
             echartPieResponse.setValue(achievementInfo.getAchievement());
             echartPieResponse.setName(achievementInfo.getCompanyName());
+            legend.add(achievementInfo.getCompanyName());
             echartPieResponseList.add(echartPieResponse);
         }
 
-        return echartPieResponseList;
+        echartPieResultResponse.setLegend(legend);
+        echartPieResultResponse.setEchartPieResponseList(echartPieResponseList);
+
+        return echartPieResultResponse;
     }
 
     @Override
-    public List<EchartPieResponse> getPieCarModelByCompanyID(CompanyIDRequest cpyIDRequest) {
+    public EchartPieResultResponse getPieCarModelByCompanyID(CompanyIDRequest cpyIDRequest) {
+        EchartPieResultResponse echartPieResultResponse = new EchartPieResultResponse();
         List<EchartPieResponse> echartPieResponseList = new ArrayList<>();
+        List<String> legend = new ArrayList<>();
+
         CompanyInfo companyInfo = companyService.findCompanyInfoByCompanyID(cpyIDRequest.getCompanyID());
 
         //统计车型
@@ -647,10 +657,14 @@ public class AchievementServiceImpl implements AchievementService {
             EchartPieResponse echartPieResponse = new EchartPieResponse();
             echartPieResponse.setValue(Float.valueOf(countMap.get(carType)));
             echartPieResponse.setName(carType);
+            legend.add(carType);
             echartPieResponseList.add(echartPieResponse);
         }
 
-        return echartPieResponseList;
+        echartPieResultResponse.setLegend(legend);
+        echartPieResultResponse.setEchartPieResponseList(echartPieResponseList);
+
+        return echartPieResultResponse;
     }
 
     @Override

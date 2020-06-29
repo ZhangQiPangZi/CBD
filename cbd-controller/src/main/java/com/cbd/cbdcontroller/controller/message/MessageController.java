@@ -34,13 +34,6 @@ public class MessageController {
     @Autowired
     EmailService emailService;
 
-    @ApiOperation("测试邮箱")
-    @RequestMapping(value = "/stringEmaile",method = RequestMethod.GET)
-    public String sendStringEmail(){
-        emailService.sendStringEmail("zhangqi_qiuzhi@qq.com","你好","我发的你收到了吗？");
-        return "发送成功";
-    }
-
     @ApiOperation("拉取未确认消息条数,业务消息")
     @RequestMapping(value = "/pullUnConfirmMsgCounts", method = RequestMethod.POST)
     public Result<Integer> pullUnConfirmMsgCounts(@RequestBody ReceiverIDRequest receiverIDRequest){

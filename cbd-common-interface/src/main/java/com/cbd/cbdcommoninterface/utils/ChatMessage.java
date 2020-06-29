@@ -41,7 +41,11 @@ public class ChatMessage implements Serializable {
         /**
          * 聊天消息
          */
-        CHAT
+        CHAT,
+        /**
+         * 调拨合同中的设备
+         */
+        DO_CONTRACT_ALLOCATION
     }
 
     private String mesID;

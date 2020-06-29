@@ -321,7 +321,7 @@ public class DeviceServiceImpl implements DeviceService {
         /**
          * 推送消息
          */
-        pushMsg(allocationDevRequest.getDoAllocationCompanyID(),companyService.findCompanyInfoByCompanyName(companyName).getCompanyManagerID(), mesID);
+        pushMsg(allocationDevRequest.getDoAllocationCompanyID(),companyService.findCompanyInfoByCompanyName(companyName).getCompanyManagerID(), mesID, devName, 1);
         return flag;
     }
 
@@ -389,7 +389,7 @@ public class DeviceServiceImpl implements DeviceService {
             /**
              * 推送消息
              */
-            pushMsg(allocationBathDevRequest.getCurCompanyID(), companyService.findCompanyInfoByCompanyName(allocationBathDevRequest.getDstCompanyName()).getCompanyManagerID(), mesID);
+            pushMsg(allocationBathDevRequest.getCurCompanyID(), companyService.findCompanyInfoByCompanyName(allocationBathDevRequest.getDstCompanyName()).getCompanyManagerID(), mesID, allocationBathDevRequest.getDevName(), allocationBathDevRequest.getDevNums());
         }catch (GlobalException e){
             throw e;
         }
@@ -495,7 +495,7 @@ public class DeviceServiceImpl implements DeviceService {
             chatMessage.setSenderId(deviceMessageRecord.getSrcManagerID().toString());
             chatMessage.setReceiverId(deviceMessageRecord.getDstManagerID().toString());
 
-            String pushMsg = "合同已完成支付，如需获取合同规定的设备，请点击“获取设备”,将由本平台调拨设备至贵公司，谢谢！！！";
+            String pushMsg = "合同已完成支付，如需获取合同中规定的设备，请点击“获取设备”,将由本平台调拨设备至贵公司，谢谢！！！";
             chatMessage.setContent(pushMsg);
             chatMessage.setMsgType(ChatMessage.MsgType.CONTRACT_ALLOCATION.toString());
             BusinessMessage message = new BusinessMessage(BusinessType.CBD_BUSINESS_QUEUE, JSON.toJSON(chatMessage));
@@ -636,7 +636,7 @@ public class DeviceServiceImpl implements DeviceService {
         }
     }
 
-    private void pushMsg(String doAllocationCompanyID, Integer dstManagerID, String mesID){
+    private void pushMsg(String doAllocationCompanyID, Integer dstManagerID, String mesID, String devName, Integer devNums){
         /**
          * 推送消息
          */
@@ -647,7 +647,7 @@ public class DeviceServiceImpl implements DeviceService {
         chatMessage.setSenderId(doAllocationCpy.getCompanyManagerID().toString());
         chatMessage.setReceiverId(dstManagerID.toString());
 
-        String pushMsg = doAllocationCpy.getCompanyName()+"正在向您调拨一批设备，收到设备后请尽快确认，谢谢！！！";
+        String pushMsg = doAllocationCpy.getCompanyName()+"正在向您调拨"+devName+"设备"+devNums+"台"+"收到设备后请尽快确认，谢谢！！！";
         chatMessage.setContent(pushMsg);
         chatMessage.setMsgType(ChatMessage.MsgType.ALLOCATION.toString());
         BusinessMessage message = new BusinessMessage(BusinessType.CBD_BUSINESS_QUEUE, JSON.toJSON(chatMessage));
