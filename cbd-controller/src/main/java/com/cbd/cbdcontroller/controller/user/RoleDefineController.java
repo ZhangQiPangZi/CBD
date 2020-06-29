@@ -101,7 +101,7 @@ public class RoleDefineController {
 
         String[] tmpList = powerID.split(",");
         List<Integer> powerIDList = new ArrayList<>();
-        for(String i : tmpList) {
+        for (String i : tmpList) {
             Integer cur = Integer.valueOf(i);
             powerIDList.add(cur);
         }
@@ -119,7 +119,7 @@ public class RoleDefineController {
     public Result<String> updateRole(@RequestParam("roleID") Integer roleID,
                                      @RequestParam("roleName") String roleName) {
 
-        Integer res = roleDefineService.updateRole(roleID,roleName);
+        Integer res = roleDefineService.updateRole(roleID, roleName);
         if (res == 0) {
             return Result.error(CodeMsg.SERVER_ERROR);
         } else {
@@ -138,11 +138,23 @@ public class RoleDefineController {
             return Result.success("删除成功！");
         }
     }
-    /**
-     * 需要管理员权限可见--
-     *
-     * @return
-     */
+
+    @ApiOperation(value = "根据角色ID获取角色详情列表", httpMethod = "POST")
+    @RequestMapping("/getRoleInfoByRoleList")
+    public Result<List<power>> getRoleInfoByRoleList(@RequestParam("roleID") Integer roleID) {
+//        List<power> powerList = powerService.getPowerList();
+//        return Result.success(powerList);
+
+        List<power> powerList = powerService.getPowerListByRoleID(roleID);
+
+        if(null == powerList){
+            return Result.error(CodeMsg.SERVER_ERROR);
+        }
+        return Result.success(powerList);
+
+    }
+
+
     @ApiOperation(value = "获取权限详情列表", httpMethod = "POST")
     @RequestMapping("/getPowerList")
     public Result<List<power>> showPowerList() {

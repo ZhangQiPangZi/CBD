@@ -54,4 +54,8 @@ public interface role_powerDao {
             "roleID = #{roleID} ")
     Integer deleteRolePowerByRoleID(@Param("roleID") Integer roleID);
 
+    @Select("select powerID from role_power where " +
+            "roleID = #{roleID} ")
+    List<Integer> getPowerByRoleID(@Param("roleID") Integer roleID);
+
 }

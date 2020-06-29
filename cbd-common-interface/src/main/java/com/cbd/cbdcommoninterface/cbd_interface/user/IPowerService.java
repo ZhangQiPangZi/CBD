@@ -38,5 +38,7 @@ public interface IPowerService {
 
     List<power> getPowerListByUserID(Integer userID);
 
+    List<power> getPowerListByRoleID(Integer roleID);
+
 
 }
