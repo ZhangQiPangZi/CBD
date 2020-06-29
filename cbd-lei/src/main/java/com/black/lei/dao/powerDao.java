@@ -69,4 +69,7 @@ public interface powerDao {
     //	@Select(value=" SELECT * FROM s_permission sp WHERE sp.url = #{sUserId} ")
     @Select("select * from power where url = #{url}")
     List<power> findSPermissionListBySPermissionUrl(@Param("url") String url);
+
+    @Select("select * from power where powerID = #{powerID}")
+    power getPowerByPowerID(Integer powerID);
 }

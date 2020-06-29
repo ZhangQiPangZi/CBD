@@ -8,8 +8,10 @@ import com.cbd.cbdcommoninterface.response.leiVo.RealTrackVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * @author shy_black
@@ -38,11 +40,16 @@ public class TrackLastService implements ITrackLastService {
         return null;
     }
 
+
     public RealTrackVo getRealTrackByTEID(String key) {
 
         return TrackLastDao.getRealTrackByTEID(key);
     }
 
+    @Override
+    public void newTest() {
+        return;
+    }
 
 
 }

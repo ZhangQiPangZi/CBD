@@ -9,6 +9,8 @@ import com.cbd.cbdcommoninterface.result.GlobalException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -78,6 +80,25 @@ public class PowerService implements IPowerService {
         return powerDao.getPowerListByUserID(userID);
     }
 
+    @Override
+    public List<power> getPowerListByRoleID(Integer roleID) {
+        //根据roleID查powerName
+        List<Integer> powerIDList = role_powerDao.getPowerByRoleID(roleID);
+
+        //拿到了powerID，去取power信息
+        Iterator<Integer> it = powerIDList.iterator();
+
+        List<power> powerList = new ArrayList<>();
+
+        while(it.hasNext()) {
+
+            Integer curPowerID = it.next();
+            powerList.add(powerDao.getPowerByPowerID(curPowerID));
+
+        }
+
+        return powerList;
+    }
 
 
 }

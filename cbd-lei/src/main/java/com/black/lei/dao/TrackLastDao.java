@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -16,6 +18,7 @@ import java.util.List;
  * @Description:
  */
 @Mapper
+@Repository
 public interface TrackLastDao {
     /**
      * 查询最后轨迹表(车辆平台初始化)
@@ -73,5 +76,9 @@ public interface TrackLastDao {
     @Insert("insert into track (devID,nTime,dbLon,dbLat,direction,speed,mileage) " +
             "values(#{devID},#{nTime},#{dbLon},#{dbLat},#{direction},#{speed},#{mileage} )")
     Integer addTrackData(TrackLast trackLast);
+
+    @Insert("insert into track (devID,nTime,dbLon,dbLat) " +
+            "values(#{devID},#{nTime},#{dbLon},#{dbLat})")
+    Integer addTrackDataTest(TrackLast trackLast);
 
 }

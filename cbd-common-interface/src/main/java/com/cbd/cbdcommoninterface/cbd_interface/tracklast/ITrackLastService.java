@@ -34,4 +34,6 @@ public interface ITrackLastService {
 
 
     Map<String, Object> getTrackInfoByTEIDForLogin(String devID);
+
+    void newTest();
 }
